@@ -1,0 +1,18 @@
+<div class="filter-controls">
+  <mat-form-field appearance="outline">
+    <mat-label>Filter by Event Type</mat-label>
+    <mat-select [(ngModel)]="selectedType" (selectionChange)="applyFilter()">
+      <mat-option *ngFor="let type of eventTypes()" [value]="type.value">
+        {{ type.label }} ({{ type.count }})
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <button mat-stroked-button 
+    color="accent" 
+    (click)="clearFilter()"
+    [disabled]="!selectedType">
+    <mat-icon>clear</mat-icon>
+    Clear Filter
+  </button>
+</div>

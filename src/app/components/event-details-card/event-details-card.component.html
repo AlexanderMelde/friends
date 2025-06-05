@@ -1,0 +1,35 @@
+<div class="event-details-card">
+  <mat-card *ngIf="link">
+    <mat-card-header>
+      <mat-card-title>{{ connectionTitle }}</mat-card-title>
+      <mat-card-subtitle>
+        {{ link.sharedEvents.length }} Shared {{ link.sharedEvents.length === 1 ? 'Event' : 'Events' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="connection-avatars">
+        <div class="avatar-container" *ngIf="sourceNode" (click)="selectNode(sourceNode, $event)">
+          <img [src]="sourceNode.photoUrl" [alt]="sourceNode.name" class="avatar">
+          <span class="avatar-name">{{ sourceNode.name }}</span>
+        </div>
+        
+        <div class="connection-line">
+          <span class="connection-count">{{ link.value }}</span>
+        </div>
+        
+        <div class="avatar-container" *ngIf="targetNode" (click)="selectNode(targetNode, $event)">
+          <img [src]="targetNode.photoUrl" [alt]="targetNode.name" class="avatar">
+          <span class="avatar-name">{{ targetNode.name }}</span>
+        </div>
+      </div>
+      
+      <mat-divider></mat-divider>
+      
+      <app-events-list
+        [events]="link.sharedEvents"
+        title="Shared Events">
+      </app-events-list>
+    </mat-card-content>
+  </mat-card>
+</div>

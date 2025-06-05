@@ -1,0 +1,45 @@
+.graph-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: #f9f9f9;
+}
+
+svg {
+  display: block;
+}
+
+/* Controls styling */
+.network-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
+.zoom-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoom-controls button {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .network-controls {
+    bottom: 8px;
+    right: 8px;
+  }
+  
+  .zoom-controls {
+    gap: 4px;
+  }
+  
+  .zoom-controls button {
+    transform: scale(0.9);
+  }
+}

@@ -1,0 +1,28 @@
+<div class="graph-container" #graphContainer (click)="graphService.selectNode(null); graphService.selectLink(null)">
+  <!-- D3 will attach the SVG graph here -->
+</div>
+
+<!-- Controls overlay -->
+<div class="network-controls">
+  <div class="zoom-controls">
+    <button mat-mini-fab color="primary" (click)="zoomIn()" matTooltip="Zoom In">
+      <mat-icon>add</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" (click)="zoomOut()" matTooltip="Zoom Out">
+      <mat-icon>remove</mat-icon>
+    </button>
+    <button mat-mini-fab color="primary" (click)="resetZoom()" matTooltip="Reset Zoom">
+      <mat-icon>home</mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- Friend Details Tooltip -->
+@if (selectedNode(); as node) {
+  <app-friend-tooltip [friend]="node"></app-friend-tooltip>
+}
+
+<!-- Shared Events Card -->
+@if (selectedLink(); as link) {
+  <app-event-details-card [link]="link"></app-event-details-card>
+}

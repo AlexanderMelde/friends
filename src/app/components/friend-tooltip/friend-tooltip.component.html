@@ -1,0 +1,52 @@
+@if (friend) {
+
+<div class="friend-tooltip">
+  <mat-card>
+    <div class="tooltip-header">
+      <div class="avatar-container">
+        <img [src]="friend.photoUrl" alt="{{ friend.name }}" class="avatar">
+      </div>
+      <div class="friend-info">
+        <div class="friend-name-container">
+          <h2>{{ friend.name }}</h2>
+          <button mat-icon-button (click)="editFriend($event)" class="edit-button">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+        <p class="event-count">
+          <mat-icon class="event-icon">event</mat-icon> 
+          {{ friend.eventCount }} {{ friend.eventCount === 1 ? 'event' : 'events' }}
+        </p>
+        @if (friend.joinDate) {
+          <p class="join-date">
+            <mat-icon class="date-icon">calendar_today</mat-icon>
+            Joined {{ formatDate(friend.joinDate) }}
+          </p>
+        }
+      </div>
+    </div>
+    <mat-card-content>
+      @if (friend.bio) {
+        <p class="bio">{{ friend.bio }}</p>
+      }
+      
+      @if (connectedFriends().length) {
+        <mat-divider class="section-divider"></mat-divider>
+        <app-connected-friends-list
+          [connectedFriends]="connectedFriends()"
+          [currentFriendId]="friend.id">
+        </app-connected-friends-list>
+      }
+      
+      @if (events().length) {
+        <mat-divider class="section-divider"></mat-divider>
+        <app-events-list
+          [events]="events()"
+          title="Recent Events">
+        </app-events-list>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
+
+}

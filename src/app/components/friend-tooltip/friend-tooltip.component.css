@@ -1,0 +1,131 @@
+.friend-tooltip {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  width: 400px;
+  max-width: calc(100% - 32px);
+}
+
+mat-card {
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar-container {
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3F51B5;
+}
+
+.friend-info {
+  flex: 1;
+}
+
+.friend-name-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.friend-name-container h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #212121;
+}
+
+.event-count, .join-date {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.event-icon, .date-icon {
+  font-size: 16px;
+  height: 16px;
+  width: 16px;
+  margin-right: 4px;
+  color: #3F51B5;
+}
+
+.bio {
+  font-size: 14px;
+  margin: 0;
+  color: #333;
+  line-height: 1.4;
+}
+
+.section-divider {
+  margin: 16px 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.section-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  margin-right: 8px;
+  color: #3F51B5;
+}
+
+.edit-button {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.edit-button mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.edit-button:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .friend-tooltip {
+    top: 8px;
+    left: 8px;
+    width: calc(100% - 16px);
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .friend-name-container h2 {
+    font-size: 16px;
+  }
+}

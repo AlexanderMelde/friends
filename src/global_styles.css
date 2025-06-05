@@ -1,0 +1,58 @@
+/* Global styles for the application */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.mat-tooltip {
+  font-size: 14px !important;
+  max-width: 250px !important;
+}
+
+.network-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
+.zoom-controls {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.graph-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .network-controls {
+    bottom: 8px;
+    right: 8px;
+  }
+}
