@@ -27,14 +27,12 @@ export class GraphService {
       });
     });
 
-    // Create nodes for friends who have events
-    return friends
-      .filter(friend => eventCounts.get(friend.id) || 0 > 0)
-      .map(friend => ({
-        ...friend,
-        eventCount: eventCounts.get(friend.id) || 0,
-        radius: this.calculateNodeRadius(eventCounts.get(friend.id) || 0)
-      }));
+    // Create nodes for ALL friends, regardless of event count
+    return friends.map(friend => ({
+      ...friend,
+      eventCount: eventCounts.get(friend.id) || 0,
+      radius: this.calculateNodeRadius(eventCounts.get(friend.id) || 0)
+    }));
   });
 
   readonly links = computed(() => {
@@ -105,7 +103,8 @@ export class GraphService {
   }
 
   private calculateNodeRadius(eventCount: number): number {
-    return Math.max(20, Math.min(40, 20 + eventCount * 2));
+    // Ensure minimum radius for friends without events
+    return Math.max(15, Math.min(40, 15 + eventCount * 2.5));
   }
 
   calculateForces(): d3.Simulation<FriendNode, EventLink> {
