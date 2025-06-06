@@ -41,6 +41,8 @@ export class FriendListItemComponent {
       const avatarImg = friendItem.querySelector('.friend-avatar') as HTMLImageElement;
       if (avatarImg) {
         // Use the existing avatar image as the drag image
+        avatarImg.height = 24;
+        avatarImg.width = 24;
         event.dataTransfer.setDragImage(avatarImg, 12, 12);
       }
       
