@@ -273,7 +273,7 @@
   opacity: 1;
 }
 
-/* Overlay the drop hint icon to prevent layout shifts */
+/* Drop hint styling - only icon for non-empty dropzones */
 .drop-hint {
   position: absolute;
   top: 50%;
@@ -282,54 +282,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  color: #3F51B5;
-  font-size: 12px;
-  font-weight: 500;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 4px;
-  padding: 4px 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 3;
-  pointer-events: none;
-  border: 1px solid rgba(63, 81, 181, 0.2);
-}
-
-.drop-hint mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-
-/* For empty dropzones, show the drop hint text */
-.attendee-avatars.empty-dropzone .drop-hint {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 4px;
-  padding: 4px 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 3;
-  pointer-events: none;
-  border: 1px solid rgba(63, 81, 181, 0.2);
-}
-
-/* Dynamic styling based on whether friend is already attending */
-.attendee-avatars.empty-dropzone .drop-hint:has(mat-icon[fontIcon="check"]) {
-  color: #4CAF50;
-  border-color: rgba(76, 175, 80, 0.2);
-}
-
-/* For non-empty dropzones, show only the icon */
-.attendee-avatars:not(.empty-dropzone) .drop-hint {
   width: 28px;
   height: 28px;
   padding: 0;
@@ -338,15 +290,19 @@
   color: white;
   border: 2px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 3;
+  pointer-events: none;
 }
 
-/* Green styling for checkmark in non-empty dropzones */
-.attendee-avatars:not(.empty-dropzone) .drop-hint:has(mat-icon[fontIcon="check"]) {
+.drop-hint mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Green styling for checkmark */
+.drop-hint:has(mat-icon[fontIcon="check"]) {
   background-color: rgba(76, 175, 80, 0.95);
-}
-
-.attendee-avatars:not(.empty-dropzone) .drop-hint span {
-  display: none;
 }
 
 .edit-button {
