@@ -56,8 +56,8 @@ export class EventEditDialogComponent {
     return !!(
       this.editedEvent.title &&
       this.editedEvent.date &&
-      this.editedEvent.location &&
-      this.editedEvent.attendees.length > 0
+      this.editedEvent.location
+      // Removed attendees requirement - now optional
     );
   }
 
