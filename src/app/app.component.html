@@ -29,14 +29,14 @@
     <app-calendar-sidebar 
       [isOpen]="calendarSidebarOpen" 
       [friendsSidebarOpen]="friendsSidebarOpen"
-      (closeRequested)="closeCalendarSidebar()"
+      (closeRequested)="calendarSidebarOpen = false"
       (addEventRequested)="addEvent()">
     </app-calendar-sidebar>
     
     <app-friends-sidebar 
       [isOpen]="friendsSidebarOpen" 
       [calendarSidebarOpen]="calendarSidebarOpen"
-      (closeRequested)="closeFriendsSidebar()"
+      (closeRequested)="friendsSidebarOpen = false"
       (addFriendRequested)="addFriend()">
     </app-friends-sidebar>
   </div>

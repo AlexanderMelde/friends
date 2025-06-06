@@ -43,20 +43,10 @@ export class AppComponent {
 
   toggleCalendarSidebar(): void {
     this.calendarSidebarOpen = !this.calendarSidebarOpen;
-    // Don't automatically close friends sidebar
-  }
-
-  closeCalendarSidebar(): void {
-    this.calendarSidebarOpen = false;
   }
 
   toggleFriendsSidebar(): void {
     this.friendsSidebarOpen = !this.friendsSidebarOpen;
-    // Don't automatically close calendar sidebar
-  }
-
-  closeFriendsSidebar(): void {
-    this.friendsSidebarOpen = false;
   }
 
   addFriend(): void {
