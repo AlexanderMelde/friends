@@ -15,7 +15,7 @@
         </div>
         <p class="event-count">
           <mat-icon class="event-icon">event</mat-icon> 
-          {{ friend.eventCount }} {{ friend.eventCount === 1 ? 'event' : 'events' }}
+          {{ computedEventCount() }} {{ computedEventCount() === 1 ? 'event' : 'events' }}
         </p>
         @if (friend.joinDate) {
           <p class="join-date">

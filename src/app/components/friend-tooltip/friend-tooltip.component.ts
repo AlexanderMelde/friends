@@ -46,6 +46,15 @@ export class FriendTooltipComponent {
     return this._friendSignal();
   }
 
+  // Computed event count that updates dynamically
+  readonly computedEventCount = computed(() => {
+    const friend = this._friendSignal();
+    if (!friend) return 0;
+    
+    const allEvents = this.dataService.events();
+    return allEvents.filter(event => event.attendees.includes(friend.id)).length;
+  });
+
   readonly events = computed(() => {
     const friend = this._friendSignal();
     if (!friend) return [];
