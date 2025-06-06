@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>{{ isNew ? 'Add' : 'Edit' }} Event</h2>
+<mat-dialog-content>
+  <div class="form-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput [(ngModel)]="editedEvent.title" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="editedEvent.date" required>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Location</mat-label>
+      <input matInput [(ngModel)]="editedEvent.location" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Type</mat-label>
+      <input matInput [(ngModel)]="editedEvent.type">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="editedEvent.description" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Attendees</mat-label>
+      <mat-select [(ngModel)]="editedEvent.attendees" multiple>
+        <mat-option *ngFor="let friend of availableFriends" [value]="friend.id">
+          {{friend.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button color="primary" (click)="onSave()" [disabled]="!isValid">Save</button>
+</mat-dialog-actions>

@@ -1,0 +1,34 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 300px;
+  padding: 16px 0;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-dialog-content {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+mat-dialog-actions {
+  padding: 16px 0 0 0;
+  margin: 0;
+}
+
+/* Ensure form fields don't overflow */
+.form-container mat-form-field {
+  max-width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-container {
+    min-width: 280px;
+    padding: 8px 0;
+  }
+}
