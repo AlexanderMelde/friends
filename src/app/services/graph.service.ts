@@ -122,15 +122,100 @@ export class GraphService {
     const nodes = this.nodes();
     const links = this.links();
     
-    return d3.forceSimulation<FriendNode>(nodes)
+    // Identify connected and isolated nodes
+    const connectedNodeIds = new Set<string>();
+    links.forEach(link => {
+      const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
+      const targetId = typeof link.target === 'string' ? link.target : link.target.id;
+      connectedNodeIds.add(sourceId);
+      connectedNodeIds.add(targetId);
+    });
+    
+    const connectedNodes = nodes.filter(node => connectedNodeIds.has(node.id));
+    const isolatedNodes = nodes.filter(node => !connectedNodeIds.has(node.id));
+    
+    const simulation = d3.forceSimulation<FriendNode>(nodes)
       .force('link', d3.forceLink<FriendNode, EventLink>(links)
         .id(d => d.id)
-        .distance(d => 150 - d.value * 10)
-        .strength(d => Math.min(0.7, 0.1 + d.value * 0.1)))
+        .distance(d => 120 - d.value * 8) // Slightly closer links
+        .strength(d => Math.min(0.8, 0.2 + d.value * 0.1)))
       .force('charge', d3.forceManyBody()
-        .strength(d => -100 - (d as FriendNode).radius * 10))
+        .strength(d => {
+          // Reduce repulsion for isolated nodes
+          const isIsolated = !connectedNodeIds.has(d.id);
+          const baseStrength = isIsolated ? -60 : -120;
+          return baseStrength - (d as FriendNode).radius * 8;
+        }))
       .force('center', d3.forceCenter(0, 0))
-      .force('collision', d3.forceCollide<FriendNode>().radius(d => d.radius + 5));
+      .force('collision', d3.forceCollide<FriendNode>()
+        .radius(d => d.radius + 3) // Slightly tighter collision
+        .strength(0.8));
+
+    // Add a weak attraction force to pull isolated nodes toward the center of connected nodes
+    if (isolatedNodes.length > 0 && connectedNodes.length > 0) {
+      simulation.force('isolatedAttraction', () => {
+        // Calculate center of mass of connected nodes
+        let centerX = 0, centerY = 0;
+        connectedNodes.forEach(node => {
+          centerX += node.x || 0;
+          centerY += node.y || 0;
+        });
+        centerX /= connectedNodes.length;
+        centerY /= connectedNodes.length;
+        
+        // Apply weak attraction to isolated nodes toward the connected center
+        isolatedNodes.forEach(node => {
+          if (node.x !== undefined && node.y !== undefined) {
+            const dx = centerX - node.x;
+            const dy = centerY - node.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+              // Weak attraction force (much weaker than repulsion)
+              const force = 0.02;
+              const fx = (dx / distance) * force;
+              const fy = (dy / distance) * force;
+              
+              node.vx = (node.vx || 0) + fx;
+              node.vy = (node.vy || 0) + fy;
+            }
+          }
+        });
+      });
+    }
+
+    // Add a clustering force to keep isolated nodes together
+    if (isolatedNodes.length > 1) {
+      simulation.force('isolatedClustering', () => {
+        for (let i = 0; i < isolatedNodes.length; i++) {
+          for (let j = i + 1; j < isolatedNodes.length; j++) {
+            const nodeA = isolatedNodes[i];
+            const nodeB = isolatedNodes[j];
+            
+            if (nodeA.x !== undefined && nodeA.y !== undefined && 
+                nodeB.x !== undefined && nodeB.y !== undefined) {
+              const dx = nodeB.x - nodeA.x;
+              const dy = nodeB.y - nodeA.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              
+              // Weak attraction between isolated nodes
+              if (distance > 0 && distance < 200) {
+                const force = 0.01;
+                const fx = (dx / distance) * force;
+                const fy = (dy / distance) * force;
+                
+                nodeA.vx = (nodeA.vx || 0) + fx;
+                nodeA.vy = (nodeA.vy || 0) + fy;
+                nodeB.vx = (nodeB.vx || 0) - fx;
+                nodeB.vy = (nodeB.vy || 0) - fy;
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    return simulation;
   }
 
   selectNode(node: FriendNode | null) {
