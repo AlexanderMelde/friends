@@ -36,6 +36,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   private zoomBehavior!: d3.ZoomBehavior<SVGSVGElement, unknown>;
   private simulation!: d3.Simulation<FriendNode, EventLink>;
   private isInitialized = false;
+  private resizeObserver!: ResizeObserver;
   
   private nodeElements!: d3.Selection<SVGGElement, FriendNode, SVGGElement, unknown>;
   private linkElements!: d3.Selection<SVGLineElement, EventLink, SVGGElement, unknown>;
@@ -63,6 +64,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
     // Use setTimeout to ensure the container is fully rendered and sized
     setTimeout(() => {
       this.initializeGraph();
+      this.setupResizeObserver();
       this.isInitialized = true;
       
       // Trigger initial graph update if data is already available
@@ -76,6 +78,36 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   ngOnDestroy(): void {
     if (this.simulation) {
       this.simulation.stop();
+    }
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
+
+  private setupResizeObserver(): void {
+    this.resizeObserver = new ResizeObserver(() => {
+      if (this.isInitialized) {
+        this.updateSVGDimensions();
+      }
+    });
+    this.resizeObserver.observe(this.graphContainer.nativeElement);
+  }
+
+  private updateSVGDimensions(): void {
+    const element = this.graphContainer.nativeElement;
+    const rect = element.getBoundingClientRect();
+    const width = rect.width || element.clientWidth || 800;
+    const height = rect.height || element.clientHeight || 600;
+
+    this.svg
+      .attr('viewBox', [-width / 2, -height / 2, width, height]);
+
+    // Restart simulation with new center force
+    if (this.simulation) {
+      this.simulation
+        .force('center', d3.forceCenter(0, 0))
+        .alpha(0.3)
+        .restart();
     }
   }
 
@@ -93,7 +125,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       .attr('width', '100%')
       .attr('height', '100%')
       .attr('viewBox', [-width / 2, -height / 2, width, height])
-      .attr('style', 'max-width: 100%; height: auto;');
+      .style('display', 'block');
 
     this.zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.1, 4])
