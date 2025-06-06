@@ -23,8 +23,16 @@
   transition: margin-right 0.3s ease;
 }
 
-.content-container.sidebar-open {
+.content-container.calendar-sidebar-open {
   margin-right: 400px;
+}
+
+.content-container.friends-sidebar-open {
+  margin-right: 400px;
+}
+
+.content-container.both-sidebars-open {
+  margin-right: 800px;
 }
 
 mat-toolbar {
@@ -33,8 +41,16 @@ mat-toolbar {
 }
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+  .content-container.both-sidebars-open {
+    margin-right: 100%;
+  }
+}
+
 @media (max-width: 768px) {
-  .content-container.sidebar-open {
+  .content-container.calendar-sidebar-open,
+  .content-container.friends-sidebar-open,
+  .content-container.both-sidebars-open {
     margin-right: 100%;
   }
 }

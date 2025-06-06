@@ -1,0 +1,37 @@
+<div class="sidebar" 
+     [class.open]="isOpen"
+     [class.calendar-open]="calendarSidebarOpen">
+  <div class="sidebar-header">
+    <h2 class="sidebar-title">
+      <mat-icon class="title-icon">people</mat-icon>
+      Friends
+    </h2>
+    <div class="header-actions">
+      <button mat-icon-button (click)="addFriend()" class="add-button" matTooltip="Add Friend">
+        <mat-icon>person_add</mat-icon>
+      </button>
+      <button mat-icon-button (click)="close()" class="close-button" matTooltip="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  
+  <div class="sidebar-content">
+    <ng-container *ngIf="sortedFriends().length > 0; else noFriends">
+      <div class="friends-list">
+        <app-friend-list-item 
+          *ngFor="let friend of sortedFriends()"
+          [friend]="friend"
+          (friendSelected)="selectFriend($event)">
+        </app-friend-list-item>
+      </div>
+    </ng-container>
+    
+    <ng-template #noFriends>
+      <div class="no-friends">
+        <mat-icon style="font-size: 48px; color: #ccc; margin-bottom: 16px;">people_outline</mat-icon>
+        <p>No friends to display</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

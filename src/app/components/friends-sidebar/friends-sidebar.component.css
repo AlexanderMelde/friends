@@ -8,7 +8,7 @@
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
   transform: translateX(100%);
   transition: transform 0.3s ease;
-  z-index: 50;
+  z-index: 40;
   display: flex;
   flex-direction: column;
   border-left: 1px solid #e0e0e0;
@@ -18,7 +18,7 @@
   transform: translateX(0);
 }
 
-.sidebar.friends-open {
+.sidebar.calendar-open {
   right: 400px;
 }
 
@@ -28,7 +28,7 @@
   justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid #e0e0e0;
-  background-color: #3F51B5;
+  background-color: #4CAF50;
   color: white;
   flex-shrink: 0;
 }
@@ -71,48 +71,12 @@
   padding: 16px 20px;
 }
 
-.year-group {
-  margin-bottom: 24px;
-}
-
-.year-header {
-  font-size: 20px;
-  font-weight: 600;
-  color: #3F51B5;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #3F51B5;
-}
-
-.month-group {
-  margin-bottom: 20px;
-}
-
-.month-header {
-  font-size: 16px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 12px;
+.friends-list {
   display: flex;
-  align-items: center;
-  background-color: #f5f5f5;
-  padding: 8px 12px;
-  border-radius: 4px;
+  flex-direction: column;
 }
 
-.month-icon {
-  font-size: 18px;
-  height: 18px;
-  width: 18px;
-  margin-right: 8px;
-  color: #3F51B5;
-}
-
-.events-for-month {
-  margin-left: 12px;
-}
-
-.no-events {
+.no-friends {
   text-align: center;
   color: #666;
   font-style: italic;
@@ -121,7 +85,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
-  .sidebar.friends-open {
+  .sidebar.calendar-open {
     right: 0;
   }
 }
@@ -135,7 +99,7 @@
     right: 0;
   }
   
-  .sidebar.friends-open {
+  .sidebar.calendar-open {
     right: 0;
   }
   

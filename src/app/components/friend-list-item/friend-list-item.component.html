@@ -1,0 +1,10 @@
+<div class="friend-item" (click)="selectFriend($event)">
+  <img [src]="friend.photoUrl" [alt]="friend.name" class="friend-avatar">
+  <div class="friend-details">
+    <span class="friend-name">{{ friend.name }}</span>
+    <span class="friend-stats">
+      <span class="event-count">{{ friend.eventCount }}</span> 
+      {{ friend.eventCount === 1 ? 'event' : 'events' }}
+    </span>
+  </div>
+</div>

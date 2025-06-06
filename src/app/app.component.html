@@ -2,8 +2,11 @@
   <mat-toolbar color="primary">
     <span>{{ title }}</span>
     <span class="toolbar-spacer"></span>
-    <button mat-icon-button (click)="toggleSidebar()" matTooltip="Calendar">
+    <button mat-icon-button (click)="toggleCalendarSidebar()" matTooltip="Calendar">
       <mat-icon>event_note</mat-icon>
+    </button>
+    <button mat-icon-button (click)="toggleFriendsSidebar()" matTooltip="Friends">
+      <mat-icon>people</mat-icon>
     </button>
     <button mat-icon-button (click)="addFriend()" matTooltip="Add Friend">
       <mat-icon>person_add</mat-icon>
@@ -16,14 +19,23 @@
   <app-filter-controls></app-filter-controls>
   
   <div class="main-content">
-    <div class="content-container" [class.sidebar-open]="sidebarOpen">
+    <div class="content-container" 
+         [class.calendar-sidebar-open]="calendarSidebarOpen"
+         [class.friends-sidebar-open]="friendsSidebarOpen"
+         [class.both-sidebars-open]="calendarSidebarOpen && friendsSidebarOpen">
       <app-graph-visualization></app-graph-visualization>
     </div>
     
     <app-calendar-sidebar 
-      [isOpen]="sidebarOpen" 
-      (closeRequested)="closeSidebar()"
+      [isOpen]="calendarSidebarOpen" 
+      (closeRequested)="closeCalendarSidebar()"
       (addEventRequested)="addEvent()">
     </app-calendar-sidebar>
+    
+    <app-friends-sidebar 
+      [isOpen]="friendsSidebarOpen" 
+      (closeRequested)="closeFriendsSidebar()"
+      (addFriendRequested)="addFriend()">
+    </app-friends-sidebar>
   </div>
 </div>

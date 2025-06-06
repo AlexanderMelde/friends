@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
 import { FilterControlsComponent } from './components/filter-controls/filter-controls.component';
 import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
+import { FriendsSidebarComponent } from './components/friends-sidebar/friends-sidebar.component';
 import { FriendDialogComponent } from './components/friend-dialog/friend-dialog.component';
 import { EventEditDialogComponent } from './components/event-edit-dialog/event-edit-dialog.component';
 import { DataService } from './services/data.service';
@@ -24,26 +25,36 @@ import { Event } from './models/event.model';
     MatTooltipModule,
     GraphVisualizationComponent,
     FilterControlsComponent,
-    CalendarSidebarComponent
+    CalendarSidebarComponent,
+    FriendsSidebarComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'Social Network Visualization';
-  sidebarOpen = false;
+  calendarSidebarOpen = false;
+  friendsSidebarOpen = false;
 
   constructor(
     private dialog: MatDialog,
     private dataService: DataService
   ) {}
 
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
+  toggleCalendarSidebar(): void {
+    this.calendarSidebarOpen = !this.calendarSidebarOpen;
   }
 
-  closeSidebar(): void {
-    this.sidebarOpen = false;
+  closeCalendarSidebar(): void {
+    this.calendarSidebarOpen = false;
+  }
+
+  toggleFriendsSidebar(): void {
+    this.friendsSidebarOpen = !this.friendsSidebarOpen;
+  }
+
+  closeFriendsSidebar(): void {
+    this.friendsSidebarOpen = false;
   }
 
   addFriend(): void {
