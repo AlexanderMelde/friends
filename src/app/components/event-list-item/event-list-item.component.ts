@@ -25,7 +25,7 @@ export class EventListItemComponent {
   private dataService = inject(DataService);
 
   // Computed property to get attendees for this event
-  readonly attendees = computed(() => {
+  attendees = computed(() => {
     const friends = this.dataService.friends();
     return friends.filter(friend => this.event.attendees.includes(friend.id));
   });
