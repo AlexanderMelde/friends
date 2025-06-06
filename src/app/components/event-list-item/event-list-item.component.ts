@@ -222,14 +222,14 @@ export class EventListItemComponent {
       event.dataTransfer.setData('application/attendee', JSON.stringify(attendeeData));
       event.dataTransfer.effectAllowed = 'move';
       
+      // Create drag image first, then notify drag service
+      this.createSimpleDragImage(event, attendee.name, '#f44336', 32);
+      
       // Use setTimeout to delay the drag service notification slightly
       // This ensures the drag operation starts properly before we hide the avatar
       setTimeout(() => {
         this.dragService.startDrag(attendee, 'attendee', this.event.id);
-      }, 50);
-      
-      // Create a simple circular drag image immediately
-      this.createSimpleDragImage(event, attendee.name, '#f44336', 32);
+      }, 0);
     }
   }
 
@@ -260,12 +260,29 @@ export class EventListItemComponent {
       const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
       ctx.fillText(initials, size / 2, size / 2);
       
-      // Create drag image immediately
-      const dragImage = new Image();
-      dragImage.src = canvas.toDataURL();
+      // Convert canvas to blob and create object URL for better reliability
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const dragImage = new Image();
+          dragImage.onload = () => {
+            event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
+            URL.revokeObjectURL(url); // Clean up
+          };
+          dragImage.src = url;
+        }
+      });
       
-      // Set the drag image immediately (synchronously)
-      event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
+      // Fallback: also try the immediate approach
+      try {
+        const dataUrl = canvas.toDataURL();
+        const fallbackImage = new Image();
+        fallbackImage.src = dataUrl;
+        event.dataTransfer!.setDragImage(fallbackImage, size / 2, size / 2);
+      } catch (e) {
+        // If both fail, the browser will use default drag image
+        console.warn('Could not set custom drag image');
+      }
     }
   }
 }

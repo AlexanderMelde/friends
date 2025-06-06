@@ -36,11 +36,13 @@ export class FriendListItemComponent {
       event.dataTransfer.setData('application/json', JSON.stringify(this.friend));
       event.dataTransfer.effectAllowed = 'copy';
       
-      // Notify drag service that dragging has started
-      this.dragService.startDrag(this.friend, 'friend');
-      
-      // Create a simple circular drag image immediately
+      // Create drag image first, then notify drag service
       this.createSimpleDragImage(event, this.friend.name, '#3F51B5', 48);
+      
+      // Use setTimeout to ensure drag image is set before starting drag service
+      setTimeout(() => {
+        this.dragService.startDrag(this.friend, 'friend');
+      }, 0);
     }
   }
 
@@ -70,12 +72,29 @@ export class FriendListItemComponent {
       const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
       ctx.fillText(initials, size / 2, size / 2);
       
-      // Create drag image immediately
-      const dragImage = new Image();
-      dragImage.src = canvas.toDataURL();
+      // Convert canvas to blob and create object URL for better reliability
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const dragImage = new Image();
+          dragImage.onload = () => {
+            event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
+            URL.revokeObjectURL(url); // Clean up
+          };
+          dragImage.src = url;
+        }
+      });
       
-      // Set the drag image immediately (synchronously)
-      event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
+      // Fallback: also try the immediate approach
+      try {
+        const dataUrl = canvas.toDataURL();
+        const fallbackImage = new Image();
+        fallbackImage.src = dataUrl;
+        event.dataTransfer!.setDragImage(fallbackImage, size / 2, size / 2);
+      } catch (e) {
+        // If both fail, the browser will use default drag image
+        console.warn('Could not set custom drag image');
+      }
     }
   }
 }
