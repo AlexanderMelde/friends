@@ -1,18 +1,4 @@
-<div class="filter-controls">
-  <mat-form-field appearance="outline">
-    <mat-label>Filter by Event Type</mat-label>
-    <mat-select [(ngModel)]="selectedType" (selectionChange)="applyFilter()">
-      <mat-option *ngFor="let type of eventTypes()" [value]="type.value">
-        {{ type.label }} ({{ type.count }})
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  
-  <button mat-stroked-button 
-    color="accent" 
-    (click)="clearFilter()"
-    [disabled]="!selectedType">
-    <mat-icon>clear</mat-icon>
-    Clear Filter
-  </button>
+<!-- Filter controls have been moved to the calendar sidebar -->
+<div class="filter-controls" style="display: none;">
+  <!-- This component is now empty as the filter has been moved to the calendar sidebar -->
 </div>

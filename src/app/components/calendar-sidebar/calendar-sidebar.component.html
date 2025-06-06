@@ -17,6 +17,27 @@
   </div>
   
   <div class="sidebar-content">
+    <!-- Event Filter Section -->
+    <div class="filter-section">
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Filter by Event Type</mat-label>
+        <mat-select [(ngModel)]="selectedType" (selectionChange)="applyFilter()">
+          <mat-option *ngFor="let type of eventTypes()" [value]="type.value">
+            {{ type.label }} ({{ type.count }})
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-icon-button 
+        color="primary" 
+        (click)="clearFilter()"
+        [disabled]="!selectedType"
+        matTooltip="Clear Filter"
+        class="clear-filter-button">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    
     <ng-container *ngIf="groupedEvents().length > 0; else noEvents">
       <div *ngFor="let yearGroup of groupedEvents()" class="year-group">
         <h3 class="year-header">{{ yearGroup.year }}</h3>

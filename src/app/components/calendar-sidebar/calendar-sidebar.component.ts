@@ -1,8 +1,11 @@
-import { Component, Input, Output, EventEmitter, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
@@ -20,10 +23,25 @@ interface YearGroup {
   months: MonthGroup[];
 }
 
+interface EventTypeOption {
+  value: string;
+  label: string;
+  count: number;
+}
+
 @Component({
   selector: 'app-calendar-sidebar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, EventListItemComponent],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    MatIconModule, 
+    MatButtonModule, 
+    MatTooltipModule, 
+    MatFormFieldModule,
+    MatSelectModule,
+    EventListItemComponent
+  ],
   templateUrl: './calendar-sidebar.component.html',
   styleUrls: ['./calendar-sidebar.component.css']
 })
@@ -36,6 +54,37 @@ export class CalendarSidebarComponent {
   private dataService = inject(DataService);
   private graphService = inject(GraphService);
   private dialog = inject(MatDialog);
+
+  selectedType: string = '';
+
+  readonly eventTypes = computed(() => {
+    const events = this.dataService.events();
+    
+    // Count events by type
+    const typeCounts = new Map<string, number>();
+    events.forEach(event => {
+      const type = event.type || 'Uncategorized';
+      typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+    });
+    
+    // Convert to array of options
+    const options: EventTypeOption[] = Array.from(typeCounts.entries())
+      .map(([value, count]) => ({
+        value,
+        label: value,
+        count
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    
+    // Add "All" option
+    options.unshift({
+      value: '',
+      label: 'All Events',
+      count: events.length
+    });
+    
+    return options;
+  });
 
   readonly groupedEvents = computed(() => {
     const events = this.dataService.events();
@@ -92,6 +141,13 @@ export class CalendarSidebarComponent {
     return result;
   });
 
+  constructor() {
+    // Effect to sync selectedType with the graph service filter
+    effect(() => {
+      this.selectedType = this.graphService.filter();
+    });
+  }
+
   close(): void {
     this.closeRequested.emit();
   }
@@ -110,5 +166,14 @@ export class CalendarSidebarComponent {
         this.dataService.updateEvent(result);
       }
     });
+  }
+
+  applyFilter(): void {
+    this.graphService.setFilter(this.selectedType);
+  }
+
+  clearFilter(): void {
+    this.selectedType = '';
+    this.graphService.setFilter('');
   }
 }

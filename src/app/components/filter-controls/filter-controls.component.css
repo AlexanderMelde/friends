@@ -1,30 +1,3 @@
 .filter-controls {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  background-color: white;
-  border-bottom: 1px solid #e0e0e0;
-  gap: 16px;
-}
-
-mat-form-field {
-  flex: 1;
-  max-width: 300px;
-}
-
-button {
-  height: 36px;
-}
-
-@media (max-width: 768px) {
-  .filter-controls {
-    flex-direction: column;
-    padding: 8px;
-    gap: 8px;
-    align-items: stretch;
-  }
-  
-  mat-form-field {
-    max-width: none;
-  }
+  display: none; /* Hide the filter controls as they've been moved to the calendar sidebar */
 }

@@ -71,6 +71,42 @@
   padding: 16px 20px;
 }
 
+.filter-section {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-field ::ng-deep .mat-mdc-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.filter-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.clear-filter-button {
+  margin-bottom: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.clear-filter-button:not([disabled]):hover {
+  opacity: 1;
+}
+
+.clear-filter-button[disabled] {
+  opacity: 0.3;
+}
+
 .year-group {
   margin-bottom: 24px;
 }
