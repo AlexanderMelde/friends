@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter, effect } from '@angular/core';
+import { Component, Input, Output, EventEmitter, effect, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Event } from '../../models/event.model';
+import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-event-list-item',
@@ -19,7 +21,16 @@ export class EventListItemComponent {
   
   selectedType: string = '';
 
-  constructor(private graphService: GraphService) {
+  private graphService = inject(GraphService);
+  private dataService = inject(DataService);
+
+  // Computed property to get attendees for this event
+  readonly attendees = computed(() => {
+    const friends = this.dataService.friends();
+    return friends.filter(friend => this.event.attendees.includes(friend.id));
+  });
+
+  constructor() {
     // Use effect to react to filter signal changes
     effect(() => {
       this.selectedType = this.graphService.filter();
@@ -49,6 +60,18 @@ export class EventListItemComponent {
       this.graphService.setFilter('');
     } else {
       this.graphService.setFilter(type);
+    }
+  }
+
+  selectAttendee(attendee: Friend, e: MouseEvent): void {
+    e.stopPropagation();
+    
+    // Find the corresponding node in the graph nodes
+    const nodes = this.graphService.nodes();
+    const node = nodes.find(n => n.id === attendee.id);
+    
+    if (node) {
+      this.graphService.selectNode(node);
     }
   }
 

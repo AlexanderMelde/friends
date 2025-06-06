@@ -11,11 +11,21 @@
       <mat-icon class="location-icon">place</mat-icon>
       {{ event.location }}
     </div>
-    <div class="event-type" 
-         *ngIf="event.type" 
-         (click)="filterByType(event.type, $event)"
-         [class.active]="isTypeSelected(event.type)">
-      {{ event.type }}
+    <div class="event-meta">
+      <div class="event-type" 
+           *ngIf="event.type" 
+           (click)="filterByType(event.type, $event)"
+           [class.active]="isTypeSelected(event.type)">
+        {{ event.type }}
+      </div>
+      <div class="attendee-avatars" *ngIf="attendees().length > 0">
+        <img *ngFor="let attendee of attendees()" 
+             [src]="attendee.photoUrl" 
+             [alt]="attendee.name"
+             [title]="attendee.name"
+             class="attendee-avatar"
+             (click)="selectAttendee(attendee, $event)">
+      </div>
     </div>
   </div>
 </div>

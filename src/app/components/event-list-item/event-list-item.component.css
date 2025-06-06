@@ -43,6 +43,14 @@
   white-space: nowrap;
 }
 
+.event-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
 .event-type {
   font-size: 12px;
   color: #666;
@@ -52,7 +60,7 @@
   display: inline-block;
   cursor: pointer;
   transition: all 0.2s ease;
-  max-width: 100%;
+  flex-shrink: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -65,6 +73,31 @@
 .event-type.active {
   background-color: #3F51B5;
   color: white;
+}
+
+.attendee-avatars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.attendee-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #3F51B5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.attendee-avatar:hover {
+  transform: scale(1.1);
+  border-width: 2px;
+  z-index: 1;
+  position: relative;
 }
 
 .edit-button {
