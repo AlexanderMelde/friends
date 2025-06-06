@@ -22,7 +22,8 @@
         <app-friend-list-item 
           *ngFor="let friend of sortedFriends()"
           [friend]="friend"
-          (friendSelected)="selectFriend($event)">
+          (friendSelected)="selectFriend($event)"
+          (editFriendRequested)="editFriend($event)">
         </app-friend-list-item>
       </div>
     </ng-container>

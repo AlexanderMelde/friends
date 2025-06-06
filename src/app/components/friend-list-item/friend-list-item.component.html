@@ -7,4 +7,7 @@
       {{ friend.eventCount === 1 ? 'event' : 'events' }}
     </span>
   </div>
+  <button mat-icon-button (click)="editFriend($event)" class="edit-button" matTooltip="Edit Friend">
+    <mat-icon>edit</mat-icon>
+  </button>
 </div>

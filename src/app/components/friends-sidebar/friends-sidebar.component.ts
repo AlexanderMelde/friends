@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { Friend, FriendNode } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { FriendListItemComponent } from '../friend-list-item/friend-list-item.component';
+import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
 
 @Component({
   selector: 'app-friends-sidebar',
@@ -23,6 +25,7 @@ export class FriendsSidebarComponent {
 
   private dataService = inject(DataService);
   private graphService = inject(GraphService);
+  private dialog = inject(MatDialog);
 
   readonly sortedFriends = computed(() => {
     const friends = this.dataService.friendsWithEventCount();
@@ -66,5 +69,17 @@ export class FriendsSidebarComponent {
     if (node) {
       this.graphService.selectNode(node);
     }
+  }
+
+  editFriend(friend: Friend & { eventCount: number }): void {
+    const dialogRef = this.dialog.open(FriendDialogComponent, {
+      data: { friend: friend, events: this.dataService.events(), isEdit: true }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dataService.updateFriend(result.friend, result.selectedEvents);
+      }
+    });
   }
 }

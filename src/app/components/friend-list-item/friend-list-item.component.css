@@ -57,3 +57,41 @@
   color: #3F51B5;
   font-weight: 500;
 }
+
+.edit-button {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-left: 8px;
+}
+
+.edit-button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.edit-button .mat-mdc-button-touch-target {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.edit-button:hover {
+  opacity: 1;
+}
