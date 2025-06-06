@@ -206,6 +206,17 @@
   margin-top: 2px;
 }
 
+/* Semi-transparent avatar styling */
+.semi-transparent-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #3F51B5;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
 /* Move placeholder styling */
 .move-placeholder {
   color: #2196F3;

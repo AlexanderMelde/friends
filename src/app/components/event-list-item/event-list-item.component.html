@@ -35,7 +35,13 @@
                class="drag-placeholder"
                [class.move-placeholder]="dragAction() === 'move'"
                [class.delete-placeholder]="dragAction() === 'delete'">
-            <mat-icon>{{ dragAction() === 'move' ? 'swap_horiz' : 'delete' }}</mat-icon>
+            <!-- Show semi-transparent avatar when hovering over source drop zone -->
+            <img *ngIf="isDragOver && isDragSource()"
+                 [src]="attendee.photoUrl" 
+                 [alt]="attendee.name"
+                 class="semi-transparent-avatar">
+            <!-- Show icon when not hovering over source -->
+            <mat-icon *ngIf="!(isDragOver && isDragSource())">{{ dragAction() === 'move' ? 'swap_horiz' : 'delete' }}</mat-icon>
             <span class="placeholder-text">
               {{ dragAction() === 'move' ? 'Moving...' : 'Removing...' }}
             </span>
