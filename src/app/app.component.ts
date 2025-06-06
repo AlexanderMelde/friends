@@ -41,6 +41,12 @@ export class AppComponent {
   private dataService = inject(DataService);
   private dragService = inject(DragService);
 
+  constructor() {
+    // Add global drop event listener to handle drops outside of valid zones
+    document.addEventListener('drop', this.onGlobalDrop.bind(this));
+    document.addEventListener('dragover', this.onGlobalDragOver.bind(this));
+  }
+
   toggleCalendarSidebar(): void {
     this.calendarSidebarOpen = !this.calendarSidebarOpen;
   }
@@ -95,5 +101,35 @@ export class AppComponent {
         this.dragService.setDropTarget(null);
       }
     }
+  }
+
+  private onGlobalDragOver(event: DragEvent): void {
+    // Prevent default to allow drop
+    event.preventDefault();
+  }
+
+  private onGlobalDrop(event: DragEvent): void {
+    // Only handle attendee drags
+    if (this.dragService.dragType() === 'attendee') {
+      const draggedFriend = this.dragService.draggedFriend();
+      const draggedFromEventId = this.dragService.draggedFromEventId();
+      const currentDropTarget = this.dragService.currentDropTarget();
+
+      // If no drop target was set, this means the drop happened outside any valid zone
+      if (!currentDropTarget && draggedFriend && draggedFromEventId) {
+        // Find the source event and remove the attendee
+        const sourceEvent = this.dataService.events().find(e => e.id === draggedFromEventId);
+        if (sourceEvent) {
+          const updatedEvent: Event = {
+            ...sourceEvent,
+            attendees: sourceEvent.attendees.filter(id => id !== draggedFriend.id)
+          };
+          this.dataService.updateEvent(updatedEvent);
+        }
+      }
+    }
+
+    // Prevent default behavior
+    event.preventDefault();
   }
 }
