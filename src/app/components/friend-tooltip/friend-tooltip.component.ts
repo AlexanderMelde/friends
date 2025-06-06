@@ -35,15 +35,12 @@ interface ConnectedFriend {
 })
 export class FriendTooltipComponent {
   @Input() friend: FriendNode | null = null;
-  
-  private _events = signal<Event[]>([]);
-  private _connectedFriends = signal<ConnectedFriend[]>([]);
 
   readonly events = computed(() => {
     if (!this.friend) return [];
     
     const filter = this.graphService.filter();
-    const events = this._events();
+    const events = this.dataService.getEventsForFriend(this.friend.id);
     
     return events
       .filter(event => !filter || event.type === filter)
@@ -74,15 +71,7 @@ export class FriendTooltipComponent {
     private dataService: DataService,
     private graphService: GraphService,
     private dialog: MatDialog
-  ) {
-    effect(() => {
-      if (this.friend) {
-        this._events.set(this.dataService.getEventsForFriend(this.friend.id));
-      } else {
-        this._events.set([]);
-      }
-    });
-  }
+  ) {}
   
   formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('en-US', {
