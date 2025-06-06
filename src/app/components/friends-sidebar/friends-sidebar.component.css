@@ -19,7 +19,8 @@
 }
 
 .sidebar.calendar-open {
-  right: 400px;
+  /* Friends sidebar stays at right: 0 when calendar is open */
+  /* Calendar will move to right: 400px to make room */
 }
 
 .sidebar-header {
@@ -86,7 +87,8 @@
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .sidebar.calendar-open {
-    right: 0;
+    right: 0; /* Stack on smaller screens */
+    z-index: 50; /* Ensure friends is on top when stacked */
   }
 }
 
@@ -101,6 +103,7 @@
   
   .sidebar.calendar-open {
     right: 0;
+    z-index: 50;
   }
   
   .sidebar-content {

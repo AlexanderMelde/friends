@@ -20,20 +20,22 @@
   
   <div class="main-content">
     <div class="content-container" 
-         [class.calendar-sidebar-open]="calendarSidebarOpen"
-         [class.friends-sidebar-open]="friendsSidebarOpen"
+         [class.calendar-sidebar-open]="calendarSidebarOpen && !friendsSidebarOpen"
+         [class.friends-sidebar-open]="friendsSidebarOpen && !calendarSidebarOpen"
          [class.both-sidebars-open]="calendarSidebarOpen && friendsSidebarOpen">
       <app-graph-visualization></app-graph-visualization>
     </div>
     
     <app-calendar-sidebar 
       [isOpen]="calendarSidebarOpen" 
+      [friendsSidebarOpen]="friendsSidebarOpen"
       (closeRequested)="closeCalendarSidebar()"
       (addEventRequested)="addEvent()">
     </app-calendar-sidebar>
     
     <app-friends-sidebar 
       [isOpen]="friendsSidebarOpen" 
+      [calendarSidebarOpen]="calendarSidebarOpen"
       (closeRequested)="closeFriendsSidebar()"
       (addFriendRequested)="addFriend()">
     </app-friends-sidebar>
