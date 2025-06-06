@@ -51,6 +51,21 @@ export class EventEditDialogComponent {
     this.isNew = data.isNew;
   }
 
+  onKeyDown(event: KeyboardEvent): void {
+    // Check if Enter key is pressed and form is valid
+    if (event.key === 'Enter' && this.isValid) {
+      // Prevent default behavior to avoid triggering other actions
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Check if the target is not a textarea (allow Enter in description field)
+      const target = event.target as HTMLElement;
+      if (target.tagName.toLowerCase() !== 'textarea') {
+        this.onSave();
+      }
+    }
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
