@@ -87,14 +87,13 @@ export class GraphService {
   readonly filter = this._filter.asReadonly();
 
   constructor(private dataService: DataService) {
-    // Effect to handle selection updates
+    // Effect to handle selection updates - only clear link when node is explicitly set to null
     effect(() => {
       const node = this._selectedNode();
       const link = this._selectedLink();
       
-      if (node === null) {
-        this._selectedLink.set(null);
-      } else if (link) {
+      // Only clear the link if a different node is selected (not when node is null)
+      if (node !== null && link) {
         const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
         const targetId = typeof link.target === 'string' ? link.target : link.target.id;
         
@@ -126,24 +125,16 @@ export class GraphService {
 
   selectNode(node: FriendNode | null) {
     this._selectedNode.set(node);
+    // When explicitly selecting a node, clear the link selection
+    if (node !== null) {
+      this._selectedLink.set(null);
+    }
   }
   
   selectLink(link: EventLink | null) {
-    if (link === null) {
-      this._selectedLink.set(null);
-      this._selectedNode.set(null);
-      return;
-    }
-
-    const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
-    const targetId = typeof link.target === 'string' ? link.target : link.target.id;
-
-    const selectedNode = this._selectedNode();
-    if (selectedNode && selectedNode.id !== sourceId && selectedNode.id !== targetId) {
-      this._selectedNode.set(null);
-    }
-
     this._selectedLink.set(link);
+    // Don't automatically clear the node when selecting a link
+    // The link can be selected independently of node selection
   }
   
   setFilter(filter: string) {
