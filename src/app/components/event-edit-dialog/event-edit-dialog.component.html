@@ -20,7 +20,15 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Type</mat-label>
-      <input matInput [(ngModel)]="editedEvent.type">
+      <input matInput 
+             [(ngModel)]="editedEvent.type"
+             [matAutocomplete]="typeAutocomplete"
+             placeholder="Enter or select event type">
+      <mat-autocomplete #typeAutocomplete="matAutocomplete">
+        <mat-option *ngFor="let type of eventTypeSuggestions()" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
