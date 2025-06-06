@@ -129,6 +129,9 @@ export class AppComponent {
       }
     }
 
+    // End the drag operation to clean up state
+    this.dragService.endDrag();
+
     // Prevent default behavior
     event.preventDefault();
   }
