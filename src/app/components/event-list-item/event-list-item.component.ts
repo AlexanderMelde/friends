@@ -289,8 +289,24 @@ export class EventListItemComponent {
   }
 
   onAttendeeDragEnd(event: DragEvent): void {
-    // The global drop handler in AppComponent will handle removal if needed
-    // Just notify drag service that dragging has ended
-    this.dragService.endDrag();
+    // Use setTimeout to ensure the drop event has been processed first
+    setTimeout(() => {
+      // Check if the drop target was never set (meaning dropped outside valid zones)
+      const currentDropTarget = this.dragService.currentDropTarget();
+      const draggedFriend = this.dragService.draggedFriend();
+      const draggedFromEventId = this.dragService.draggedFromEventId();
+      
+      // If no drop target and this is the source event, remove the attendee
+      if (!currentDropTarget && draggedFriend && draggedFromEventId === this.event.id) {
+        const updatedEvent: Event = {
+          ...this.event,
+          attendees: this.event.attendees.filter(id => id !== draggedFriend.id)
+        };
+        this.dataService.updateEvent(updatedEvent);
+      }
+      
+      // Always end the drag operation
+      this.dragService.endDrag();
+    }, 0);
   }
 }
