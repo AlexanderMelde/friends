@@ -1,0 +1,73 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 300px;
+  padding: 16px 0;
+}
+
+.photo-url-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.photo-url-container input {
+  flex: 1;
+  min-width: 0;
+}
+
+.random-picture-button {
+  margin-top: -16px;
+  margin-bottom: -16px;
+  flex-shrink: 0;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 100%;
+}
+
+mat-dialog-content {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+mat-dialog-actions {
+  padding: 16px 0 0 0;
+  margin: 0;
+}
+
+/* Ensure form fields don't overflow */
+.form-container mat-form-field {
+  max-width: 100%;
+}
+
+/* Fix for photo URL field layout */
+::ng-deep .photo-url-container .mat-mdc-form-field {
+  flex: 1;
+}
+
+::ng-deep .photo-url-container .mat-mdc-form-field .mat-mdc-form-field-infix {
+  width: 100% !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-container {
+    min-width: 280px;
+    padding: 8px 0;
+  }
+  
+  .photo-url-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  
+  .random-picture-button {
+    margin: 0;
+    align-self: flex-end;
+  }
+}

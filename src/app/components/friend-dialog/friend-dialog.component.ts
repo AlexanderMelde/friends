@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Friend } from '../../models/friend.model';
 import { Event } from '../../models/event.model';
 
@@ -21,75 +22,11 @@ import { Event } from '../../models/event.model';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
-  template: `
-    <h2 mat-dialog-title>{{ isEdit ? 'Edit' : 'Add' }} Friend</h2>
-    <mat-dialog-content>
-      <div class="form-container">
-        <mat-form-field appearance="fill">
-          <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="friend.name" required>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Photo URL</mat-label>
-          <div class="photo-url-container">
-            <input matInput [(ngModel)]="friend.photoUrl" required>
-            <button mat-icon-button 
-                    type="button" 
-                    (click)="getRandomPicture()"
-                    matTooltip="Get Random Picture"
-                    class="random-picture-button">
-              <mat-icon>shuffle</mat-icon>
-            </button>
-          </div>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Bio</mat-label>
-          <textarea matInput [(ngModel)]="friend.bio" rows="3"></textarea>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>Events</mat-label>
-          <mat-select [(ngModel)]="selectedEvents" multiple>
-            <mat-option *ngFor="let event of availableEvents" [value]="event.id">
-              {{event.title}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-button color="primary" (click)="onSave()">Save</button>
-    </mat-dialog-actions>
-  `,
-  styles: [`
-    .form-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-width: 300px;
-      padding: 16px 0;
-    }
-
-    .photo-url-container {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .random-picture-button {
-      margin-top: -16px;
-      margin-bottom: -16px;
-    }
-
-    ::ng-deep .photo-url-container .mat-form-field-infix {
-      width: calc(100% - 40px) !important;
-    }
-  `]
+  templateUrl: './friend-dialog.component.html',
+  styleUrls: ['./friend-dialog.component.css']
 })
 export class FriendDialogComponent {
   friend: Friend;
