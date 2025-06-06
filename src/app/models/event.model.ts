@@ -1,3 +1,5 @@
+import { FriendNode } from './friend.model';
+
 /**
  * Represents an event in the social network
  */
@@ -23,5 +25,3 @@ export interface EventLink extends d3.SimulationLinkDatum<FriendNode> {
   // Value represents the strength of connection (number of shared events)
   value: number;
 }
-
-import { FriendNode } from './friend.model';
