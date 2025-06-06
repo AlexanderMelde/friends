@@ -37,7 +37,7 @@ export class FriendListItemComponent {
       event.dataTransfer.effectAllowed = 'copy';
       
       // Notify drag service that dragging has started
-      this.dragService.startDrag(this.friend);
+      this.dragService.startDrag(this.friend, 'friend');
       
       // Create a circular drag image
       const canvas = document.createElement('canvas');

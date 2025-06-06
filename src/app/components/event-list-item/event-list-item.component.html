@@ -31,7 +31,10 @@
              [alt]="attendee.name"
              [title]="attendee.name"
              class="attendee-avatar"
-             (click)="selectAttendee(attendee, $event)">
+             draggable="true"
+             (click)="selectAttendee(attendee, $event)"
+             (dragstart)="onAttendeeDragStart($event, attendee)"
+             (dragend)="onAttendeeDragEnd($event)">
         <div class="drop-hint" *ngIf="isDragOver">
           <mat-icon>{{ isDraggedFriendAlreadyAttendee() ? 'check' : 'person_add' }}</mat-icon>
         </div>

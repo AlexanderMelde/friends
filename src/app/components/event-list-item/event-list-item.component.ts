@@ -129,5 +129,131 @@ export class EventListItemComponent {
         console.error('Error parsing dropped friend data:', error);
       }
     }
+
+    // Handle attendee being moved from another event
+    const attendeeData = event.dataTransfer?.getData('application/attendee');
+    if (attendeeData) {
+      try {
+        const { friend, sourceEventId } = JSON.parse(attendeeData);
+        
+        // Only proceed if this is a different event
+        if (sourceEventId !== this.event.id) {
+          // Remove from source event
+          const sourceEvent = this.dataService.events().find(e => e.id === sourceEventId);
+          if (sourceEvent) {
+            const updatedSourceEvent: Event = {
+              ...sourceEvent,
+              attendees: sourceEvent.attendees.filter(id => id !== friend.id)
+            };
+            this.dataService.updateEvent(updatedSourceEvent);
+          }
+
+          // Add to this event if not already present
+          if (!this.event.attendees.includes(friend.id)) {
+            const updatedEvent: Event = {
+              ...this.event,
+              attendees: [...this.event.attendees, friend.id]
+            };
+            this.dataService.updateEvent(updatedEvent);
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing dropped attendee data:', error);
+      }
+    }
+  }
+
+  onAttendeeDragStart(event: DragEvent, attendee: Friend): void {
+    event.stopPropagation();
+    
+    if (event.dataTransfer) {
+      // Set attendee data with source event information
+      const attendeeData = {
+        friend: attendee,
+        sourceEventId: this.event.id
+      };
+      
+      event.dataTransfer.setData('application/attendee', JSON.stringify(attendeeData));
+      event.dataTransfer.effectAllowed = 'move';
+      
+      // Notify drag service
+      this.dragService.startDrag(attendee);
+      
+      // Create a circular drag image
+      const canvas = document.createElement('canvas');
+      const size = 32; // Smaller size for attendee avatars
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      
+      if (ctx) {
+        // Create circular clipping path
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+        ctx.clip();
+        
+        // Load and draw the attendee's photo
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          // Draw the image to fill the circle
+          ctx.drawImage(img, 0, 0, size, size);
+          
+          // Add a border
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
+          ctx.strokeStyle = '#f44336'; // Red border to indicate removal
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          
+          // Convert canvas to image and set as drag image
+          const dragImage = new Image();
+          dragImage.src = canvas.toDataURL();
+          dragImage.onload = () => {
+            event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
+          };
+        };
+        
+        // Fallback: if image fails to load, create a simple colored circle
+        img.onerror = () => {
+          ctx.fillStyle = '#f44336';
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
+          ctx.fill();
+          
+          // Add attendee's initials
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const initials = attendee.name.split(' ').map(n => n[0]).join('').toUpperCase();
+          ctx.fillText(initials, size / 2, size / 2);
+          
+          const dragImage = new Image();
+          dragImage.src = canvas.toDataURL();
+          dragImage.onload = () => {
+            event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
+          };
+        };
+        
+        img.src = attendee.photoUrl;
+      }
+    }
+  }
+
+  onAttendeeDragEnd(event: DragEvent): void {
+    // Check if the drop was successful (dropEffect will be 'none' if dropped outside valid zones)
+    if (event.dataTransfer?.dropEffect === 'none') {
+      // Remove attendee from this event if dropped outside any valid drop zone
+      const updatedEvent: Event = {
+        ...this.event,
+        attendees: this.event.attendees.filter(id => id !== this.dragService.draggedFriend()?.id)
+      };
+      this.dataService.updateEvent(updatedEvent);
+    }
+    
+    // Notify drag service that dragging has ended
+    this.dragService.endDrag();
   }
 }
