@@ -34,6 +34,10 @@ export class FriendDialogComponent {
   selectedEvents: string[] = [];
   isEdit: boolean;
 
+  get isValid(): boolean {
+    return !!(this.friend.name && this.friend.photoUrl);
+  }
+
   constructor(
     @Inject(MAT_DIALOG_DATA) data: { friend?: Friend; events: Event[]; isEdit: boolean },
     private dialogRef: MatDialogRef<FriendDialogComponent>
@@ -57,6 +61,21 @@ export class FriendDialogComponent {
     }
   }
 
+  onKeyDown(event: KeyboardEvent): void {
+    // Check if Enter key is pressed and form is valid
+    if (event.key === 'Enter' && this.isValid) {
+      // Prevent default behavior to avoid triggering other actions
+      event.preventDefault();
+      event.stopPropagation();
+      
+      // Check if the target is not a textarea (allow Enter in bio field)
+      const target = event.target as HTMLElement;
+      if (target.tagName.toLowerCase() !== 'textarea') {
+        this.onSave();
+      }
+    }
+  }
+
   getRandomPicture(): void {
     const gender = Math.random() > 0.5 ? 'men' : 'women';
     const number = Math.floor(Math.random() * 99);
@@ -68,9 +87,11 @@ export class FriendDialogComponent {
   }
 
   onSave(): void {
-    this.dialogRef.close({
-      friend: this.friend,
-      selectedEvents: this.selectedEvents
-    });
+    if (this.isValid) {
+      this.dialogRef.close({
+        friend: this.friend,
+        selectedEvents: this.selectedEvents
+      });
+    }
   }
 }
