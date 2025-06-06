@@ -18,8 +18,8 @@
   transform: translateX(0);
 }
 
-.sidebar.friends-open {
-  right: 400px; /* Move calendar sidebar to the left when friends sidebar is open */
+.sidebar.open.friends-open {
+  right: 400px; /* Move calendar sidebar to the left when friends sidebar is open AND calendar is open */
 }
 
 .sidebar-header {
@@ -121,7 +121,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
-  .sidebar.friends-open {
+  .sidebar.open.friends-open {
     right: 0; /* Stack on smaller screens */
     z-index: 60; /* Ensure calendar is on top when stacked */
   }
@@ -136,7 +136,7 @@
     right: 0;
   }
   
-  .sidebar.friends-open {
+  .sidebar.open.friends-open {
     right: 0;
     z-index: 60;
   }
