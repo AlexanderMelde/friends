@@ -135,6 +135,29 @@ export class DataService {
     this.dbReady.set(true);
   }
 
+  async clearAllData(): Promise<void> {
+    try {
+      // Clear IndexedDB
+      await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
+        await Promise.all([
+          this.db.friends.clear(),
+          this.db.events.clear()
+        ]);
+      });
+
+      // Clear signals
+      this.friendsSignal.set([]);
+      this.eventsSignal.set([]);
+
+      // Clear localStorage
+      localStorage.removeItem('friends');
+      localStorage.removeItem('events');
+    } catch (error) {
+      console.error('Failed to clear data:', error);
+      throw error;
+    }
+  }
+
   async addEvent(event: Event): Promise<void> {
     try {
       await this.db.events.add(event);

@@ -431,8 +431,8 @@ export class SettingsDialogComponent {
     localStorage.removeItem('friends');
     localStorage.removeItem('events');
     
-    // Note: In a real implementation, you might want to clear IndexedDB as well
-    // For now, we'll rely on the data service to handle the state
+    // Clear IndexedDB through the data service
+    await this.dataService.clearAllData();
   }
 
   triggerFileInput(inputId: string): void {
