@@ -34,39 +34,6 @@ export class DragService {
     this._dragType.set(null);
     this._draggedFromEventId.set(null);
     this._currentDropTarget.set(null);
-    
-    // Remove all drag highlights from the DOM
-    this.clearAllDragHighlights();
-  }
-
-  private clearAllDragHighlights(): void {
-    // Use setTimeout to ensure this runs after the current event loop
-    // This allows any pending DOM updates to complete first
-    setTimeout(() => {
-      // Remove drag-active class from all attendee-avatars
-      const dragActiveElements = document.querySelectorAll('.attendee-avatars.drag-active');
-      dragActiveElements.forEach(element => {
-        element.classList.remove('drag-active');
-      });
-
-      // Remove drag-hover class from all attendee-avatars
-      const dragHoverElements = document.querySelectorAll('.attendee-avatars.drag-hover');
-      dragHoverElements.forEach(element => {
-        element.classList.remove('drag-hover');
-      });
-
-      // Remove drag-source class from all attendee-avatars
-      const dragSourceElements = document.querySelectorAll('.attendee-avatars.drag-source');
-      dragSourceElements.forEach(element => {
-        element.classList.remove('drag-source');
-      });
-
-      // Remove drop-zone class from all attendee-avatars
-      const dropZoneElements = document.querySelectorAll('.attendee-avatars.drop-zone');
-      dropZoneElements.forEach(element => {
-        element.classList.remove('drop-zone');
-      });
-    }, 0);
   }
 
   // Helper to determine if the current drag will result in a move or delete

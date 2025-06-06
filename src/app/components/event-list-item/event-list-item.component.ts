@@ -114,6 +114,9 @@ export class EventListItemComponent {
   }
 
   onDragOver(event: DragEvent): void {
+    // Only handle if dragging is active
+    if (!this.isDragging()) return;
+    
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = true;
@@ -123,12 +126,22 @@ export class EventListItemComponent {
   }
 
   onDragLeave(event: DragEvent): void {
+    // Only handle if dragging is active
+    if (!this.isDragging()) return;
+    
     event.preventDefault();
     event.stopPropagation();
-    this.isDragOver = false;
     
-    // Clear drop target if leaving this event
-    this.dragService.setDropTarget(null);
+    // Check if we're actually leaving this element (not just moving to a child)
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = event.clientX;
+    const y = event.clientY;
+    
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      this.isDragOver = false;
+      // Clear drop target if leaving this event
+      this.dragService.setDropTarget(null);
+    }
   }
 
   onDrop(event: DragEvent): void {
