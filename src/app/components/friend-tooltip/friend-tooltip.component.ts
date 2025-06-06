@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal, effect } from '@angular/core';
+import { Component, Input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,13 +34,24 @@ interface ConnectedFriend {
   styleUrls: ['./friend-tooltip.component.css']
 })
 export class FriendTooltipComponent {
-  @Input() friend: FriendNode | null = null;
+  // Convert friend input to a signal to make it reactive
+  private _friendSignal = signal<FriendNode | null>(null);
+  
+  @Input() 
+  set friend(value: FriendNode | null) {
+    this._friendSignal.set(value);
+  }
+  
+  get friend(): FriendNode | null {
+    return this._friendSignal();
+  }
 
   readonly events = computed(() => {
-    if (!this.friend) return [];
+    const friend = this._friendSignal();
+    if (!friend) return [];
     
     const filter = this.graphService.filter();
-    const events = this.dataService.getEventsForFriend(this.friend.id);
+    const events = this.dataService.getEventsForFriend(friend.id);
     
     return events
       .filter(event => !filter || event.type === filter)
@@ -48,14 +59,15 @@ export class FriendTooltipComponent {
   });
 
   readonly connectedFriends = computed(() => {
-    if (!this.friend) return [];
+    const friend = this._friendSignal();
+    if (!friend) return [];
     
     const filter = this.graphService.filter();
     const friends = this.dataService.friends();
-    const otherFriends = friends.filter(f => f.id !== this.friend?.id);
+    const otherFriends = friends.filter(f => f.id !== friend.id);
     
     return otherFriends.map(otherFriend => {
-      const sharedEvents = this.dataService.getSharedEvents(this.friend!.id, otherFriend.id);
+      const sharedEvents = this.dataService.getSharedEvents(friend.id, otherFriend.id);
       const filteredEvents = filter ? sharedEvents.filter(e => e.type === filter) : sharedEvents;
       
       return {
@@ -84,10 +96,11 @@ export class FriendTooltipComponent {
   editFriend(event: MouseEvent): void {
     event.stopPropagation();
     
-    if (!this.friend) return;
+    const friend = this._friendSignal();
+    if (!friend) return;
     
     const dialogRef = this.dialog.open(FriendDialogComponent, {
-      data: { friend: this.friend, events: this.dataService.events(), isEdit: true }
+      data: { friend: friend, events: this.dataService.events(), isEdit: true }
     });
 
     dialogRef.afterClosed().subscribe(result => {
