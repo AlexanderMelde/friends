@@ -1,7 +1,8 @@
 <div class="friend-item" 
      (click)="selectFriend($event)"
      draggable="true"
-     (dragstart)="onDragStart($event)">
+     (dragstart)="onDragStart($event)"
+     (dragend)="onDragEnd($event)">
   <img [src]="friend.photoUrl" [alt]="friend.name" class="friend-avatar">
   <div class="friend-details">
     <span class="friend-name">{{ friend.name }}</span>

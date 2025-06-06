@@ -21,6 +21,8 @@
       <div class="attendee-avatars" 
            *ngIf="attendees().length > 0"
            [class.drop-zone]="isDragOver"
+           [class.drag-active]="isDragging()"
+           [class.drag-hover]="isDragOver && isDragging()"
            (dragover)="onDragOver($event)"
            (dragleave)="onDragLeave($event)"
            (drop)="onDrop($event)">
@@ -37,6 +39,8 @@
       <div class="attendee-avatars empty-dropzone" 
            *ngIf="attendees().length === 0"
            [class.drop-zone]="isDragOver"
+           [class.drag-active]="isDragging()"
+           [class.drag-hover]="isDragOver && isDragging()"
            (dragover)="onDragOver($event)"
            (dragleave)="onDragLeave($event)"
            (drop)="onDrop($event)">

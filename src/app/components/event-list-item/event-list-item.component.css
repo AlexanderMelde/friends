@@ -94,6 +94,27 @@
   justify-content: center;
 }
 
+/* Highlight all drop zones when dragging is active */
+.attendee-avatars.drag-active {
+  border: 2px dashed #3F51B5;
+  background-color: rgba(63, 81, 181, 0.05);
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+}
+
+.attendee-avatars.empty-dropzone.drag-active {
+  border: 2px dashed #3F51B5;
+  background-color: rgba(63, 81, 181, 0.05);
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+}
+
+/* Emphasize the specific dropzone on hover */
+.attendee-avatars.drag-hover {
+  border: 2px solid #3F51B5;
+  background-color: rgba(63, 81, 181, 0.1);
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.3);
+  transform: scale(1.02);
+}
+
 .attendee-avatars.drop-zone {
   border: 2px dashed #3F51B5;
   background-color: rgba(63, 81, 181, 0.1);

@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Friend } from '../../models/friend.model';
+import { DragService } from '../../services/drag.service';
 
 @Component({
   selector: 'app-friend-list-item',
@@ -16,6 +17,8 @@ export class FriendListItemComponent {
   @Input() friend!: Friend & { eventCount: number };
   @Output() friendSelected = new EventEmitter<Friend & { eventCount: number }>();
   @Output() editFriendRequested = new EventEmitter<Friend & { eventCount: number }>();
+
+  private dragService = inject(DragService);
 
   selectFriend(event: MouseEvent): void {
     event.stopPropagation();
@@ -32,6 +35,9 @@ export class FriendListItemComponent {
       // Set the friend data as JSON string
       event.dataTransfer.setData('application/json', JSON.stringify(this.friend));
       event.dataTransfer.effectAllowed = 'copy';
+      
+      // Notify drag service that dragging has started
+      this.dragService.startDrag(this.friend);
       
       // Create a circular drag image
       const canvas = document.createElement('canvas');
@@ -94,5 +100,10 @@ export class FriendListItemComponent {
         img.src = this.friend.photoUrl;
       }
     }
+  }
+
+  onDragEnd(event: DragEvent): void {
+    // Notify drag service that dragging has ended
+    this.dragService.endDrag();
   }
 }

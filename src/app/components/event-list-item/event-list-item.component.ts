@@ -6,6 +6,7 @@ import { Event } from '../../models/event.model';
 import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
 import { DataService } from '../../services/data.service';
+import { DragService } from '../../services/drag.service';
 
 @Component({
   selector: 'app-event-list-item',
@@ -24,12 +25,16 @@ export class EventListItemComponent {
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
+  private dragService = inject(DragService);
 
   // Computed property to get attendees for this event
   attendees = computed(() => {
     const friends = this.dataService.friends();
     return friends.filter(friend => this.event.attendees.includes(friend.id));
   });
+
+  // Computed property to check if dragging is active
+  isDragging = computed(() => this.dragService.isDragging());
 
   constructor() {
     // Use effect to react to filter signal changes
