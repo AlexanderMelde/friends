@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -14,7 +14,7 @@ import { GraphService } from '../../services/graph.service';
   templateUrl: './event-details-card.component.html',
   styleUrls: ['./event-details-card.component.css']
 })
-export class EventDetailsCardComponent implements OnInit {
+export class EventDetailsCardComponent {
   @Input() link: EventLink | null = null;
   
   get sourceNode() {
@@ -31,18 +31,18 @@ export class EventDetailsCardComponent implements OnInit {
     }
     return 'Connection Details';
   }
+
+  // Computed property for filtered shared events that updates reactively
+  readonly filteredSharedEvents = computed(() => {
+    if (!this.link) return [];
+    
+    const filter = this.graphService.filter();
+    return filter 
+      ? this.link.sharedEvents.filter(e => e.type === filter)
+      : this.link.sharedEvents;
+  });
   
   constructor(private graphService: GraphService) {}
-  
-  ngOnInit() {
-    // Filter shared events based on selected type
-    if (this.link) {
-      const filter = this.graphService.filter();
-      this.link.sharedEvents = filter 
-        ? this.link.sharedEvents.filter(e => e.type === filter)
-        : this.link.sharedEvents;
-    }
-  }
 
   selectNode(node: FriendNode, event: MouseEvent) {
     event.stopPropagation();
