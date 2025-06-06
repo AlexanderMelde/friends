@@ -118,30 +118,3 @@
   font-style: italic;
   margin-top: 40px;
 }
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .sidebar.open.friends-open {
-    right: 0; /* Stack on smaller screens */
-    z-index: 60; /* Ensure calendar is on top when stacked */
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    max-width: 400px;
-    top: 112px; /* Account for toolbar + filter controls height */
-    height: calc(100vh - 112px);
-    right: 0;
-  }
-  
-  .sidebar.open.friends-open {
-    right: 0;
-    z-index: 60;
-  }
-  
-  .sidebar-content {
-    padding: 12px 16px;
-  }
-}
