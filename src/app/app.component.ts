@@ -5,11 +5,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
 import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
 import { FriendsSidebarComponent } from './components/friends-sidebar/friends-sidebar.component';
 import { FriendDialogComponent } from './components/friend-dialog/friend-dialog.component';
 import { EventEditDialogComponent } from './components/event-edit-dialog/event-edit-dialog.component';
+import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { DataService } from './services/data.service';
 import { DragService } from './services/drag.service';
 import { Event } from './models/event.model';
@@ -23,6 +25,7 @@ import { Event } from './models/event.model';
     MatIconModule, 
     MatButtonModule,
     MatTooltipModule,
+    MatSnackBarModule,
     GraphVisualizationComponent,
     CalendarSidebarComponent,
     FriendsSidebarComponent
@@ -51,6 +54,14 @@ export class AppComponent {
 
   toggleFriendsSidebar(): void {
     this.friendsSidebarOpen = !this.friendsSidebarOpen;
+  }
+
+  openSettings(): void {
+    this.dialog.open(SettingsDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      disableClose: false
+    });
   }
 
   addFriend(): void {

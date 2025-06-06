@@ -1,0 +1,119 @@
+<h2 mat-dialog-title>
+  <mat-icon style="margin-right: 8px; vertical-align: middle;">settings</mat-icon>
+  Settings
+</h2>
+
+<mat-dialog-content>
+  <div class="settings-content">
+    
+    <!-- Export Section -->
+    <div class="settings-section">
+      <h3 class="section-title">
+        <mat-icon class="section-icon">file_download</mat-icon>
+        Export Data
+      </h3>
+      <p class="section-description">
+        Export your social network data for backup or transfer to another device.
+      </p>
+      
+      <div class="export-options">
+        <div class="export-option">
+          <div class="option-info">
+            <h4>Complete Backup (JSON)</h4>
+            <p>Export all friends, events, and application data in JSON format. This preserves all data and relationships.</p>
+          </div>
+          <button mat-raised-button 
+                  color="primary" 
+                  (click)="exportJSON()" 
+                  [disabled]="isExporting">
+            <mat-icon>download</mat-icon>
+            <span *ngIf="!isExporting">Export JSON</span>
+            <span *ngIf="isExporting">Exporting...</span>
+            <mat-spinner *ngIf="isExporting" diameter="16" style="margin-left: 8px;"></mat-spinner>
+          </button>
+        </div>
+        
+        <div class="export-option">
+          <div class="option-info">
+            <h4>Calendar & Contacts (iCal/vCard)</h4>
+            <p>Export events as calendar entries and friends as contact cards. Compatible with most calendar and contact applications.</p>
+          </div>
+          <button mat-raised-button 
+                  color="accent" 
+                  (click)="exportICalVCard()" 
+                  [disabled]="isExporting">
+            <mat-icon>event</mat-icon>
+            <span *ngIf="!isExporting">Export Calendar</span>
+            <span *ngIf="isExporting">Exporting...</span>
+            <mat-spinner *ngIf="isExporting" diameter="16" style="margin-left: 8px;"></mat-spinner>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Import Section -->
+    <div class="settings-section">
+      <h3 class="section-title">
+        <mat-icon class="section-icon">file_upload</mat-icon>
+        Import Data
+      </h3>
+      <p class="section-description">
+        Import previously exported data. <strong>Warning:</strong> This will replace all current data.
+      </p>
+      
+      <div class="import-options">
+        <div class="import-option">
+          <div class="option-info">
+            <h4>Restore from JSON Backup</h4>
+            <p>Import a complete backup file exported from this application.</p>
+          </div>
+          <button mat-raised-button 
+                  color="primary" 
+                  (click)="triggerFileInput('jsonFileInput')" 
+                  [disabled]="isImporting">
+            <mat-icon>upload</mat-icon>
+            <span *ngIf="!isImporting">Import JSON</span>
+            <span *ngIf="isImporting">Importing...</span>
+            <mat-spinner *ngIf="isImporting" diameter="16" style="margin-left: 8px;"></mat-spinner>
+          </button>
+        </div>
+        
+        <div class="import-option">
+          <div class="option-info">
+            <h4>Import Calendar & Contacts</h4>
+            <p>Import events and contacts from iCal/vCard files.</p>
+          </div>
+          <button mat-raised-button 
+                  color="accent" 
+                  (click)="triggerFileInput('icalFileInput')" 
+                  [disabled]="isImporting">
+            <mat-icon>event</mat-icon>
+            <span *ngIf="!isImporting">Import Calendar</span>
+            <span *ngIf="isImporting">Importing...</span>
+            <mat-spinner *ngIf="isImporting" diameter="16" style="margin-left: 8px;"></mat-spinner>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>
+
+<!-- Hidden file inputs -->
+<input type="file" 
+       id="jsonFileInput" 
+       accept=".json" 
+       style="display: none;" 
+       (change)="onFileSelected($event, 'json')">
+
+<input type="file" 
+       id="icalFileInput" 
+       accept=".ics,.vcf,.vcard" 
+       style="display: none;" 
+       (change)="onFileSelected($event, 'ical')">

@@ -1,0 +1,137 @@
+.settings-content {
+  min-width: 500px;
+  max-width: 600px;
+  padding: 16px 0;
+}
+
+.settings-section {
+  margin-bottom: 32px;
+}
+
+.settings-section:last-child {
+  margin-bottom: 16px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.section-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+  margin-right: 12px;
+  color: #3F51B5;
+}
+
+.section-description {
+  margin: 0 0 20px 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.export-options,
+.import-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.export-option,
+.import-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+}
+
+.export-option:hover,
+.import-option:hover {
+  background-color: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.option-info {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.option-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.option-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.export-option button,
+.import-option button {
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.export-option button mat-icon,
+.import-option button mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+mat-divider {
+  margin: 24px 0;
+}
+
+/* Loading spinner styling */
+mat-spinner {
+  display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .settings-content {
+    min-width: 300px;
+    max-width: 400px;
+  }
+  
+  .export-option,
+  .import-option {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .option-info {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .export-option button,
+  .import-option button {
+    min-width: auto;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Warning styling for import section */
+.settings-section:last-child .section-description strong {
+  color: #f44336;
+}

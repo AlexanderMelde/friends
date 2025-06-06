@@ -6,6 +6,7 @@ import { importProvidersFrom } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -14,7 +15,8 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       MatButtonModule,
       MatIconModule,
-      MatToolbarModule
+      MatToolbarModule,
+      MatSnackBarModule
     )
   ]
 }).catch(err => console.error(err));
