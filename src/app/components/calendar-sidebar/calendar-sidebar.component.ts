@@ -9,14 +9,9 @@ import { GraphService } from '../../services/graph.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 
-interface DayGroup {
-  day: string;
-  events: Event[];
-}
-
 interface MonthGroup {
   month: string;
-  days: DayGroup[];
+  events: Event[];
 }
 
 interface YearGroup {
@@ -49,18 +44,13 @@ export class CalendarSidebarComponent {
       new Date(b.date).getTime() - new Date(a.date).getTime()
     );
     
-    // Group by year, month, and day
-    const yearGroups = new Map<string, Map<string, Map<string, Event[]>>>();
+    // Group by year and month only
+    const yearGroups = new Map<string, Map<string, Event[]>>();
     
     sortedEvents.forEach(event => {
       const date = new Date(event.date);
       const year = date.getFullYear().toString();
       const month = date.toLocaleDateString('en-US', { month: 'long' });
-      const day = date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        month: 'short', 
-        day: 'numeric' 
-      });
       
       if (!yearGroups.has(year)) {
         yearGroups.set(year, new Map());
@@ -68,15 +58,10 @@ export class CalendarSidebarComponent {
       
       const yearGroup = yearGroups.get(year)!;
       if (!yearGroup.has(month)) {
-        yearGroup.set(month, new Map());
+        yearGroup.set(month, []);
       }
       
-      const monthGroup = yearGroup.get(month)!;
-      if (!monthGroup.has(day)) {
-        monthGroup.set(day, []);
-      }
-      
-      monthGroup.get(day)!.push(event);
+      yearGroup.get(month)!.push(event);
     });
     
     // Convert to array format
@@ -85,19 +70,13 @@ export class CalendarSidebarComponent {
     yearGroups.forEach((yearGroup, year) => {
       const months: MonthGroup[] = [];
       
-      yearGroup.forEach((monthGroup, month) => {
-        const days: DayGroup[] = [];
-        
-        monthGroup.forEach((dayEvents, day) => {
-          days.push({
-            day,
-            events: dayEvents.sort((a, b) => 
-              new Date(a.date).getTime() - new Date(b.date).getTime()
-            )
-          });
+      yearGroup.forEach((monthEvents, month) => {
+        months.push({
+          month,
+          events: monthEvents.sort((a, b) => 
+            new Date(a.date).getTime() - new Date(b.date).getTime()
+          )
         });
-        
-        months.push({ month, days });
       });
       
       result.push({ year, months });

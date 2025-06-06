@@ -20,16 +20,13 @@
             {{ monthGroup.month }}
           </h4>
           
-          <div *ngFor="let dayGroup of monthGroup.days" class="day-group">
-            <h5 class="day-header">{{ dayGroup.day }}</h5>
-            <div class="events-for-day">
-              <app-event-list-item 
-                *ngFor="let event of dayGroup.events"
-                [event]="event" 
-                [showEditButton]="true"
-                (editEventClicked)="editEvent($event)">
-              </app-event-list-item>
-            </div>
+          <div class="events-for-month">
+            <app-event-list-item 
+              *ngFor="let event of monthGroup.events"
+              [event]="event" 
+              [showEditButton]="true"
+              (editEventClicked)="editEvent($event)">
+            </app-event-list-item>
           </div>
         </div>
       </div>

@@ -91,21 +91,7 @@
   color: #3F51B5;
 }
 
-.day-group {
-  margin-bottom: 16px;
-}
-
-.day-header {
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  margin-bottom: 8px;
-  padding: 4px 8px;
-  background-color: #fafafa;
-  border-left: 3px solid #3F51B5;
-}
-
-.events-for-day {
+.events-for-month {
   margin-left: 12px;
 }
 
