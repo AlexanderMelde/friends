@@ -43,6 +43,7 @@ export class AppComponent {
 
   toggleCalendarSidebar(): void {
     this.calendarSidebarOpen = !this.calendarSidebarOpen;
+    // Don't automatically close friends sidebar
   }
 
   closeCalendarSidebar(): void {
@@ -51,6 +52,7 @@ export class AppComponent {
 
   toggleFriendsSidebar(): void {
     this.friendsSidebarOpen = !this.friendsSidebarOpen;
+    // Don't automatically close calendar sidebar
   }
 
   closeFriendsSidebar(): void {
