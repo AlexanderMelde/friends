@@ -42,9 +42,6 @@
                  class="semi-transparent-avatar">
             <!-- Show icon when not hovering over source -->
             <mat-icon *ngIf="!(isDragOver && isDragSource())">{{ dragAction() === 'move' ? 'swap_horiz' : 'delete' }}</mat-icon>
-            <span class="placeholder-text">
-              {{ dragAction() === 'move' ? 'Moving...' : 'Removing...' }}
-            </span>
           </div>
           
           <!-- Show avatar if it's not being dragged -->
