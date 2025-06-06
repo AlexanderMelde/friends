@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule } from '@angular/material/icon';
 import { Event } from '../../models/event.model';
 import { Friend } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
@@ -26,7 +27,8 @@ import { DataService } from '../../services/data.service';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatIconModule
   ],
   templateUrl: './event-edit-dialog.component.html',
   styleUrls: ['./event-edit-dialog.component.css']
@@ -55,9 +57,8 @@ export class EventEditDialogComponent {
   get isValid(): boolean {
     return !!(
       this.editedEvent.title &&
-      this.editedEvent.date &&
-      this.editedEvent.location
-      // Removed attendees requirement - now optional
+      this.editedEvent.date
+      // Removed location and attendees requirement - now optional
     );
   }
 

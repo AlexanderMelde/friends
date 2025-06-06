@@ -8,14 +8,16 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" [(ngModel)]="editedEvent.date" required>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="editedEvent.date" required readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>event</mat-icon>
+      </mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Location</mat-label>
-      <input matInput [(ngModel)]="editedEvent.location" required>
+      <input matInput [(ngModel)]="editedEvent.location">
     </mat-form-field>
 
     <mat-form-field appearance="fill">
