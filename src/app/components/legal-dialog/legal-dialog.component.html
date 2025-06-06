@@ -1,0 +1,166 @@
+<h2 mat-dialog-title>
+  <mat-icon style="margin-right: 8px; vertical-align: middle;">info</mat-icon>
+  Imprint & Privacy Information
+</h2>
+
+<mat-dialog-content>
+  <mat-tab-group>
+    
+    <!-- Imprint Tab -->
+    <mat-tab label="Imprint">
+      <div class="tab-content">
+        <h3>Application Information</h3>
+        <div class="info-section">
+          <h4>Social Network Visualization</h4>
+          <p><strong>Version:</strong> 1.0.0</p>
+          <p><strong>Purpose:</strong> Interactive visualization and management of social connections and events</p>
+          <p><strong>Technology:</strong> Built with Angular, D3.js, and Angular Material</p>
+        </div>
+
+        <mat-divider style="margin: 24px 0;"></mat-divider>
+
+        <h3>Developer Information</h3>
+        <div class="info-section">
+          <p>This application is a demonstration project showcasing modern web technologies for social network visualization.</p>
+          <p><strong>Framework:</strong> Angular 19</p>
+          <p><strong>Visualization:</strong> D3.js</p>
+          <p><strong>UI Components:</strong> Angular Material</p>
+          <p><strong>Data Storage:</strong> IndexedDB (Dexie) with localStorage fallback</p>
+        </div>
+
+        <mat-divider style="margin: 24px 0;"></mat-divider>
+
+        <h3>Open Source Libraries</h3>
+        <div class="info-section">
+          <ul class="library-list">
+            <li><strong>Angular:</strong> MIT License - Web application framework</li>
+            <li><strong>Angular Material:</strong> MIT License - UI component library</li>
+            <li><strong>D3.js:</strong> BSD 3-Clause License - Data visualization library</li>
+            <li><strong>Dexie:</strong> Apache 2.0 License - IndexedDB wrapper</li>
+            <li><strong>RxJS:</strong> Apache 2.0 License - Reactive programming library</li>
+          </ul>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Privacy Tab -->
+    <mat-tab label="Privacy Policy">
+      <div class="tab-content">
+        <h3>Data Privacy & Security</h3>
+        
+        <div class="privacy-section">
+          <h4><mat-icon class="inline-icon">security</mat-icon> Local Data Storage</h4>
+          <p>All your data is stored locally on your device using browser technologies:</p>
+          <ul>
+            <li><strong>Primary Storage:</strong> IndexedDB for reliable, structured data storage</li>
+            <li><strong>Backup Storage:</strong> localStorage for data persistence and fallback</li>
+            <li><strong>No Server Communication:</strong> Your data never leaves your device</li>
+            <li><strong>No Tracking:</strong> We do not collect, transmit, or analyze your personal data</li>
+          </ul>
+        </div>
+
+        <div class="privacy-section">
+          <h4><mat-icon class="inline-icon">cloud_off</mat-icon> No External Data Transmission</h4>
+          <p>This application operates entirely offline after initial loading:</p>
+          <ul>
+            <li>Friend information and photos are stored locally</li>
+            <li>Event data remains on your device</li>
+            <li>No analytics or telemetry data is collected</li>
+            <li>No cookies are used for tracking purposes</li>
+          </ul>
+        </div>
+
+        <div class="privacy-section">
+          <h4><mat-icon class="inline-icon">person</mat-icon> User Control</h4>
+          <p>You have complete control over your data:</p>
+          <ul>
+            <li><strong>Export:</strong> Download your complete data at any time</li>
+            <li><strong>Import:</strong> Restore data from previous exports</li>
+            <li><strong>Delete:</strong> Clear all data through the settings dialog</li>
+            <li><strong>Modify:</strong> Edit or remove any friends or events</li>
+          </ul>
+        </div>
+
+        <div class="privacy-section">
+          <h4><mat-icon class="inline-icon">photo</mat-icon> Photo URLs</h4>
+          <p>Regarding profile photos:</p>
+          <ul>
+            <li>Photo URLs you provide are stored locally and used only for display</li>
+            <li>The app includes a random photo generator using randomuser.me API</li>
+            <li>External photo URLs are loaded directly by your browser</li>
+            <li>No photo data is processed or stored by our application</li>
+          </ul>
+        </div>
+
+        <div class="privacy-section">
+          <h4><mat-icon class="inline-icon">browser</mat-icon> Browser Data</h4>
+          <p>Standard browser storage mechanisms used:</p>
+          <ul>
+            <li><strong>IndexedDB:</strong> Structured data storage (friends, events)</li>
+            <li><strong>localStorage:</strong> Backup and settings storage</li>
+            <li><strong>sessionStorage:</strong> Not used</li>
+            <li><strong>Cookies:</strong> Not used for data storage</li>
+          </ul>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Terms Tab -->
+    <mat-tab label="Terms of Use">
+      <div class="tab-content">
+        <h3>Terms of Use</h3>
+        
+        <div class="terms-section">
+          <h4>Acceptance of Terms</h4>
+          <p>By using this Social Network Visualization application, you agree to these terms of use. This application is provided as-is for demonstration and personal use purposes.</p>
+        </div>
+
+        <div class="terms-section">
+          <h4>Permitted Use</h4>
+          <ul>
+            <li>Personal, non-commercial use of the application</li>
+            <li>Creating and managing your social network visualizations</li>
+            <li>Exporting and importing your own data</li>
+            <li>Educational and demonstration purposes</li>
+          </ul>
+        </div>
+
+        <div class="terms-section">
+          <h4>Prohibited Use</h4>
+          <ul>
+            <li>Commercial redistribution without permission</li>
+            <li>Attempting to reverse engineer or modify the application</li>
+            <li>Using the application for illegal or harmful purposes</li>
+            <li>Storing sensitive or confidential information</li>
+          </ul>
+        </div>
+
+        <div class="terms-section">
+          <h4>Disclaimer</h4>
+          <p>This application is provided "as is" without warranties of any kind. The developers are not responsible for any data loss, though the application includes backup and export features for your protection.</p>
+        </div>
+
+        <div class="terms-section">
+          <h4>Data Responsibility</h4>
+          <p>You are responsible for:</p>
+          <ul>
+            <li>The accuracy of information you enter</li>
+            <li>Backing up your data using the export features</li>
+            <li>Ensuring you have rights to use any photos you add</li>
+            <li>Complying with applicable privacy laws when storing personal information</li>
+          </ul>
+        </div>
+
+        <div class="terms-section">
+          <h4>Updates and Changes</h4>
+          <p>This application may be updated periodically to improve functionality and security. Continued use after updates constitutes acceptance of any changes to these terms.</p>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

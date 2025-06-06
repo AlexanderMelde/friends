@@ -1,0 +1,126 @@
+.tab-content {
+  padding: 24px 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.info-section,
+.privacy-section,
+.terms-section {
+  margin-bottom: 24px;
+}
+
+.info-section h4,
+.privacy-section h4,
+.terms-section h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.inline-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  margin-right: 8px;
+  color: #3F51B5;
+}
+
+.info-section p,
+.privacy-section p,
+.terms-section p {
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+  color: #555;
+}
+
+.info-section ul,
+.privacy-section ul,
+.terms-section ul {
+  margin: 0 0 12px 0;
+  padding-left: 20px;
+}
+
+.info-section li,
+.privacy-section li,
+.terms-section li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  color: #555;
+}
+
+.library-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.library-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.library-list li:last-child {
+  border-bottom: none;
+}
+
+h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Tab group styling */
+::ng-deep .mat-mdc-tab-group {
+  margin-top: 16px;
+}
+
+::ng-deep .mat-mdc-tab-body-content {
+  overflow: visible;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .tab-content {
+    padding: 16px 0;
+    max-height: 50vh;
+  }
+  
+  .info-section,
+  .privacy-section,
+  .terms-section {
+    margin-bottom: 20px;
+  }
+  
+  h3 {
+    font-size: 16px;
+  }
+  
+  .info-section h4,
+  .privacy-section h4,
+  .terms-section h4 {
+    font-size: 15px;
+  }
+}
+
+/* Scrollbar styling for webkit browsers */
+.tab-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

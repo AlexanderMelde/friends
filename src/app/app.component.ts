@@ -6,12 +6,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
 import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
 import { FriendsSidebarComponent } from './components/friends-sidebar/friends-sidebar.component';
 import { FriendDialogComponent } from './components/friend-dialog/friend-dialog.component';
 import { EventEditDialogComponent } from './components/event-edit-dialog/event-edit-dialog.component';
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
+import { HelpDialogComponent } from './components/help-dialog/help-dialog.component';
+import { LegalDialogComponent } from './components/legal-dialog/legal-dialog.component';
 import { DataService } from './services/data.service';
 import { DragService } from './services/drag.service';
 import { Event } from './models/event.model';
@@ -26,6 +30,8 @@ import { Event } from './models/event.model';
     MatButtonModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatMenuModule,
+    MatDividerModule,
     GraphVisualizationComponent,
     CalendarSidebarComponent,
     FriendsSidebarComponent
@@ -56,11 +62,27 @@ export class AppComponent {
     this.friendsSidebarOpen = !this.friendsSidebarOpen;
   }
 
+  openHelp(): void {
+    this.dialog.open(HelpDialogComponent, {
+      width: '700px',
+      maxWidth: '90vw',
+      maxHeight: '90vh'
+    });
+  }
+
   openSettings(): void {
     this.dialog.open(SettingsDialogComponent, {
       width: '600px',
       maxWidth: '90vw',
       disableClose: false
+    });
+  }
+
+  openLegal(): void {
+    this.dialog.open(LegalDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      maxHeight: '90vh'
     });
   }
 

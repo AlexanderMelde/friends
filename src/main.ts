@@ -7,6 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -16,7 +20,11 @@ bootstrapApplication(AppComponent, {
       MatButtonModule,
       MatIconModule,
       MatToolbarModule,
-      MatSnackBarModule
+      MatSnackBarModule,
+      MatMenuModule,
+      MatDividerModule,
+      MatTabsModule,
+      MatExpansionModule
     )
   ]
 }).catch(err => console.error(err));

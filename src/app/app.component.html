@@ -10,12 +10,26 @@
     <button mat-icon-button (click)="toggleFriendsSidebar()" matTooltip="Friends">
       <mat-icon>people</mat-icon>
     </button>
-    <button mat-icon-button aria-label="Help">
-      <mat-icon>help_outline</mat-icon>
+    
+    <!-- Overflow Menu -->
+    <button mat-icon-button [matMenuTriggerFor]="overflowMenu" matTooltip="More options">
+      <mat-icon>more_vert</mat-icon>
     </button>
-   <button mat-icon-button (click)="openSettings()" matTooltip="Settings">
-      <mat-icon>settings</mat-icon>
-    </button>
+    <mat-menu #overflowMenu="matMenu">
+      <button mat-menu-item (click)="openHelp()">
+        <mat-icon>help_outline</mat-icon>
+        <span>Help</span>
+      </button>
+      <button mat-menu-item (click)="openSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="openLegal()">
+        <mat-icon>info</mat-icon>
+        <span>Imprint & Privacy</span>
+      </button>
+    </mat-menu>
   </mat-toolbar>
   
   <div class="main-content">

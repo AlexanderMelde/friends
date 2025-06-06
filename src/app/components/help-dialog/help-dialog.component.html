@@ -1,0 +1,172 @@
+<h2 mat-dialog-title>
+  <mat-icon style="margin-right: 8px; vertical-align: middle;">help_outline</mat-icon>
+  Help & User Guide
+</h2>
+
+<mat-dialog-content>
+  <div class="help-content">
+    
+    <!-- Quick Start -->
+    <div class="help-section">
+      <h3 class="section-title">
+        <mat-icon class="section-icon">rocket_launch</mat-icon>
+        Quick Start
+      </h3>
+      <p>Welcome to Social Network Visualization! This app helps you visualize and manage your social connections through an interactive network graph.</p>
+      
+      <div class="quick-steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <strong>Add Friends:</strong> Click the people icon in the toolbar or use the Friends sidebar to add new friends to your network.
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <strong>Create Events:</strong> Click the calendar icon or use the Calendar sidebar to create events and invite friends.
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <strong>Explore Connections:</strong> Click on nodes and links in the graph to see detailed information about friends and their shared events.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Detailed Features -->
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon style="margin-right: 8px;">account_circle</mat-icon>
+            Managing Friends
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="feature-content">
+          <ul>
+            <li><strong>Add Friends:</strong> Use the Friends sidebar or click the "+" button to add new friends with photos and bio information.</li>
+            <li><strong>Edit Friends:</strong> Click the edit button next to any friend to update their information.</li>
+            <li><strong>View Details:</strong> Click on any friend node in the graph to see their profile, connected friends, and recent events.</li>
+            <li><strong>Drag & Drop:</strong> Drag friends from the sidebar directly onto events to add them as attendees.</li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon style="margin-right: 8px;">event</mat-icon>
+            Managing Events
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="feature-content">
+          <ul>
+            <li><strong>Create Events:</strong> Use the Calendar sidebar or click the "+" button to create new events with dates, locations, and attendees.</li>
+            <li><strong>Edit Events:</strong> Click the edit button next to any event to modify its details.</li>
+            <li><strong>Add Attendees:</strong> Drag friends from the sidebar onto events, or use the attendee selector in the event dialog.</li>
+            <li><strong>Move Attendees:</strong> Drag attendee avatars between events to move them, or drag outside to remove them.</li>
+            <li><strong>Filter by Type:</strong> Use event type filters to focus on specific kinds of events (Social, Professional, etc.).</li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon style="margin-right: 8px;">hub</mat-icon>
+            Network Visualization
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="feature-content">
+          <ul>
+            <li><strong>Node Size:</strong> Friend nodes grow larger based on the number of events they've attended.</li>
+            <li><strong>Connection Strength:</strong> Links between friends get thicker based on the number of shared events.</li>
+            <li><strong>Interactive Navigation:</strong> Click and drag nodes to reposition them, use zoom controls to navigate.</li>
+            <li><strong>Selection:</strong> Click nodes to see friend details, click links to see shared events between friends.</li>
+            <li><strong>Filtering:</strong> Apply event type filters to see only specific types of connections.</li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon style="margin-right: 8px;">filter_alt</mat-icon>
+            Filtering & Search
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="feature-content">
+          <ul>
+            <li><strong>Event Type Filter:</strong> Use the filter dropdown in the Calendar sidebar to show only specific event types.</li>
+            <li><strong>Visual Filtering:</strong> Click on event type badges to quickly filter the entire visualization.</li>
+            <li><strong>Clear Filters:</strong> Use the clear button to remove all active filters and see the complete network.</li>
+            <li><strong>Dynamic Updates:</strong> Filters update the graph, sidebars, and all statistics in real-time.</li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon style="margin-right: 8px;">import_export</mat-icon>
+            Data Management
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="feature-content">
+          <ul>
+            <li><strong>Backup Data:</strong> Export your complete social network as JSON for backup purposes.</li>
+            <li><strong>Calendar Export:</strong> Export events and contacts in standard iCal/vCard format for use in other applications.</li>
+            <li><strong>Import Data:</strong> Restore from previous backups or import calendar/contact files.</li>
+            <li><strong>Data Persistence:</strong> Your data is automatically saved locally and persists between sessions.</li>
+          </ul>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <mat-divider style="margin: 24px 0;"></mat-divider>
+
+    <!-- Tips & Tricks -->
+    <div class="help-section">
+      <h3 class="section-title">
+        <mat-icon class="section-icon">lightbulb</mat-icon>
+        Tips & Tricks
+      </h3>
+      <div class="tips-grid">
+        <div class="tip">
+          <mat-icon class="tip-icon">touch_app</mat-icon>
+          <div class="tip-content">
+            <strong>Quick Navigation:</strong> Use the zoom controls in the bottom-right corner to navigate large networks efficiently.
+          </div>
+        </div>
+        <div class="tip">
+          <mat-icon class="tip-icon">drag_indicator</mat-icon>
+          <div class="tip-content">
+            <strong>Drag & Drop:</strong> Most elements support drag and drop - try dragging friends to events or between events.
+          </div>
+        </div>
+        <div class="tip">
+          <mat-icon class="tip-icon">keyboard</mat-icon>
+          <div class="tip-content">
+            <strong>Keyboard Shortcuts:</strong> Press Enter in dialogs to quickly save, and use the random photo button for quick friend setup.
+          </div>
+        </div>
+        <div class="tip">
+          <mat-icon class="tip-icon">visibility</mat-icon>
+          <div class="tip-content">
+            <strong>Visual Cues:</strong> Hover over elements to see additional information and interaction hints.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>
