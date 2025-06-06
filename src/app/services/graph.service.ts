@@ -114,8 +114,9 @@ export class GraphService {
   }
 
   private calculateNodeRadius(eventCount: number): number {
-    // Ensure minimum radius for friends without events
-    return Math.max(15, Math.min(40, 15 + eventCount * 2.5));
+    // Increased minimum and maximum radius for better visibility
+    // Base radius is now 25 (was 15), max is 60 (was 40)
+    return Math.max(25, Math.min(60, 25 + eventCount * 3));
   }
 
   calculateForces(): d3.Simulation<FriendNode, EventLink> {
@@ -137,18 +138,18 @@ export class GraphService {
     const simulation = d3.forceSimulation<FriendNode>(nodes)
       .force('link', d3.forceLink<FriendNode, EventLink>(links)
         .id(d => d.id)
-        .distance(d => 120 - d.value * 8) // Slightly closer links
+        .distance(d => 140 - d.value * 8) // Adjusted for larger nodes
         .strength(d => Math.min(0.8, 0.2 + d.value * 0.1)))
       .force('charge', d3.forceManyBody()
         .strength(d => {
-          // Reduce repulsion for isolated nodes
+          // Adjusted repulsion for larger nodes
           const isIsolated = !connectedNodeIds.has(d.id);
-          const baseStrength = isIsolated ? -60 : -120;
-          return baseStrength - (d as FriendNode).radius * 8;
+          const baseStrength = isIsolated ? -80 : -150;
+          return baseStrength - (d as FriendNode).radius * 6;
         }))
       .force('center', d3.forceCenter(0, 0))
       .force('collision', d3.forceCollide<FriendNode>()
-        .radius(d => d.radius + 3) // Slightly tighter collision
+        .radius(d => d.radius + 5) // Increased collision padding
         .strength(0.8));
 
     // Add a weak attraction force to pull isolated nodes toward the center of connected nodes
@@ -199,7 +200,7 @@ export class GraphService {
               const distance = Math.sqrt(dx * dx + dy * dy);
               
               // Weak attraction between isolated nodes
-              if (distance > 0 && distance < 200) {
+              if (distance > 0 && distance < 250) { // Increased clustering distance
                 const force = 0.01;
                 const fx = (dx / distance) * force;
                 const fy = (dy / distance) * force;
