@@ -80,6 +80,23 @@
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+  min-height: 32px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.attendee-avatars.empty-dropzone {
+  border: 2px dashed #e0e0e0;
+  background-color: #fafafa;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.attendee-avatars.drop-zone {
+  border: 2px dashed #3F51B5;
+  background-color: rgba(63, 81, 181, 0.1);
 }
 
 .attendee-avatar {
@@ -98,6 +115,35 @@
   border-width: 2px;
   z-index: 1;
   position: relative;
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #999;
+  font-size: 12px;
+}
+
+.empty-state mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.drop-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #3F51B5;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.drop-hint mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .edit-button {

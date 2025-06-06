@@ -18,13 +18,36 @@
            [class.active]="isTypeSelected(event.type)">
         {{ event.type }}
       </div>
-      <div class="attendee-avatars" *ngIf="attendees().length > 0">
+      <div class="attendee-avatars" 
+           *ngIf="attendees().length > 0"
+           [class.drop-zone]="isDragOver"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)">
         <img *ngFor="let attendee of attendees()" 
              [src]="attendee.photoUrl" 
              [alt]="attendee.name"
              [title]="attendee.name"
              class="attendee-avatar"
              (click)="selectAttendee(attendee, $event)">
+        <div class="drop-hint" *ngIf="isDragOver">
+          <mat-icon>person_add</mat-icon>
+        </div>
+      </div>
+      <div class="attendee-avatars empty-dropzone" 
+           *ngIf="attendees().length === 0"
+           [class.drop-zone]="isDragOver"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave($event)"
+           (drop)="onDrop($event)">
+        <div class="empty-state" *ngIf="!isDragOver">
+          <mat-icon>people_outline</mat-icon>
+          <span>No attendees</span>
+        </div>
+        <div class="drop-hint" *ngIf="isDragOver">
+          <mat-icon>person_add</mat-icon>
+          <span>Drop to add attendee</span>
+        </div>
       </div>
     </div>
   </div>

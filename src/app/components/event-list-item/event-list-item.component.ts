@@ -20,6 +20,7 @@ export class EventListItemComponent {
   @Output() editEventClicked = new EventEmitter<Event>();
   
   selectedType: string = '';
+  isDragOver: boolean = false;
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
@@ -77,5 +78,44 @@ export class EventListItemComponent {
 
   isTypeSelected(type: string): boolean {
     return this.selectedType === type;
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+
+    const friendData = event.dataTransfer?.getData('application/json');
+    if (friendData) {
+      try {
+        const friend: Friend = JSON.parse(friendData);
+        
+        // Check if friend is already an attendee
+        if (!this.event.attendees.includes(friend.id)) {
+          // Update the event to include the new attendee
+          const updatedEvent: Event = {
+            ...this.event,
+            attendees: [...this.event.attendees, friend.id]
+          };
+          
+          // Update the event in the data service
+          this.dataService.updateEvent(updatedEvent);
+        }
+      } catch (error) {
+        console.error('Error parsing dropped friend data:', error);
+      }
+    }
   }
 }

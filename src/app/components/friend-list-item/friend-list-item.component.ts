@@ -26,4 +26,19 @@ export class FriendListItemComponent {
     event.stopPropagation();
     this.editFriendRequested.emit(this.friend);
   }
+
+  onDragStart(event: DragEvent): void {
+    if (event.dataTransfer) {
+      // Set the friend data as JSON string
+      event.dataTransfer.setData('application/json', JSON.stringify(this.friend));
+      event.dataTransfer.effectAllowed = 'copy';
+      
+      // Create a custom drag image using the friend's avatar
+      const dragImage = new Image();
+      dragImage.src = this.friend.photoUrl;
+      dragImage.width = 48;
+      dragImage.height = 48;
+      event.dataTransfer.setDragImage(dragImage, 24, 24);
+    }
+  }
 }

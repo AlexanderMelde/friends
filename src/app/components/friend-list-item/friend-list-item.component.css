@@ -7,6 +7,7 @@
   min-width: 0;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  user-select: none;
 }
 
 .friend-item:hover {
@@ -17,6 +18,14 @@
   border-bottom: none;
 }
 
+.friend-item[draggable="true"] {
+  cursor: grab;
+}
+
+.friend-item[draggable="true"]:active {
+  cursor: grabbing;
+}
+
 .friend-avatar {
   width: 48px;
   height: 48px;
@@ -25,6 +34,7 @@
   object-fit: cover;
   border: 2px solid #3F51B5;
   flex-shrink: 0;
+  pointer-events: none;
 }
 
 .friend-details {
@@ -33,6 +43,7 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .friend-name {
