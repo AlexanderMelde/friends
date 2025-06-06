@@ -85,10 +85,9 @@
   border-radius: 4px;
   transition: all 0.2s ease;
   position: relative;
-  /* Add fixed margin to prevent layout shift */
-  margin: 2px;
-  /* Use box-sizing to include border in dimensions */
+  /* Fixed dimensions to prevent layout shift */
   box-sizing: border-box;
+  border: 2px solid transparent;
 }
 
 .attendee-avatars.empty-dropzone {
@@ -102,28 +101,18 @@
 .attendee-avatars.drag-active {
   border: 2px dashed #3F51B5;
   background-color: rgba(63, 81, 181, 0.05);
-  /* Use outline instead of box-shadow to avoid layout shift */
-  outline: 2px solid rgba(63, 81, 181, 0.2);
-  outline-offset: -2px;
 }
 
 .attendee-avatars.empty-dropzone.drag-active {
   border: 2px dashed #3F51B5;
   background-color: rgba(63, 81, 181, 0.05);
-  /* Use outline instead of box-shadow to avoid layout shift */
-  outline: 2px solid rgba(63, 81, 181, 0.2);
-  outline-offset: -2px;
 }
 
 /* Emphasize the specific dropzone on hover */
 .attendee-avatars.drag-hover {
   border: 2px solid #3F51B5;
   background-color: rgba(63, 81, 181, 0.1);
-  /* Use outline instead of box-shadow and remove transform to prevent layout shift */
-  outline: 3px solid rgba(63, 81, 181, 0.3);
-  outline-offset: -2px;
-  /* Remove transform to prevent layout jumping */
-  /* transform: scale(1.02); */
+  box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.3);
 }
 
 .attendee-avatars.drop-zone {
@@ -163,19 +152,66 @@
   height: 16px;
 }
 
+/* Overlay the drop hint icon to prevent layout shifts */
 .drop-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   color: #3F51B5;
   font-size: 12px;
   font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .drop-hint mat-icon {
   font-size: 16px;
   width: 16px;
   height: 16px;
+}
+
+/* For empty dropzones, show the drop hint text */
+.attendee-avatars.empty-dropzone .drop-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #3F51B5;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* For non-empty dropzones, show only the icon */
+.attendee-avatars:not(.empty-dropzone) .drop-hint {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 50%;
+  background-color: rgba(63, 81, 181, 0.9);
+  color: white;
+}
+
+.attendee-avatars:not(.empty-dropzone) .drop-hint span {
+  display: none;
 }
 
 .edit-button {
