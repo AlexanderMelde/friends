@@ -1,4 +1,4 @@
-import { Component, Input, computed } from '@angular/core';
+import { Component, Input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -6,6 +6,7 @@ import { EventsListComponent } from '../events-list/events-list.component';
 import { FriendNode } from '../../models/friend.model';
 import { EventLink } from '../../models/event.model';
 import { GraphService } from '../../services/graph.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'app-event-details-card',
@@ -15,14 +16,26 @@ import { GraphService } from '../../services/graph.service';
   styleUrls: ['./event-details-card.component.css']
 })
 export class EventDetailsCardComponent {
-  @Input() link: EventLink | null = null;
+  // Convert link input to a signal to make it reactive
+  private _linkSignal = signal<EventLink | null>(null);
+  
+  @Input() 
+  set link(value: EventLink | null) {
+    this._linkSignal.set(value);
+  }
+  
+  get link(): EventLink | null {
+    return this._linkSignal();
+  }
   
   get sourceNode() {
-    return this.link && typeof this.link.source !== 'string' ? this.link.source : null;
+    const link = this._linkSignal();
+    return link && typeof link.source !== 'string' ? link.source : null;
   }
   
   get targetNode() {
-    return this.link && typeof this.link.target !== 'string' ? this.link.target : null;
+    const link = this._linkSignal();
+    return link && typeof link.target !== 'string' ? link.target : null;
   }
   
   get connectionTitle(): string {
@@ -34,15 +47,25 @@ export class EventDetailsCardComponent {
 
   // Computed property for filtered shared events that updates reactively
   readonly filteredSharedEvents = computed(() => {
-    if (!this.link) return [];
+    const link = this._linkSignal();
+    if (!link) return [];
+    
+    const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
+    const targetId = typeof link.target === 'string' ? link.target : link.target.id;
+    
+    // Get fresh shared events from data service
+    const sharedEvents = this.dataService.getSharedEvents(sourceId, targetId);
     
     const filter = this.graphService.filter();
     return filter 
-      ? this.link.sharedEvents.filter(e => e.type === filter)
-      : this.link.sharedEvents;
+      ? sharedEvents.filter(e => e.type === filter)
+      : sharedEvents;
   });
   
-  constructor(private graphService: GraphService) {}
+  constructor(
+    private graphService: GraphService,
+    private dataService: DataService
+  ) {}
 
   selectNode(node: FriendNode, event: MouseEvent) {
     event.stopPropagation();
