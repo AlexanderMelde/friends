@@ -42,6 +42,10 @@ export class AppComponent {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
+
   addFriend(): void {
     const events = this.dataService.events();
     const dialogRef = this.dialog.open(FriendDialogComponent, {

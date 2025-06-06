@@ -18,9 +18,11 @@
   
   <app-filter-controls></app-filter-controls>
   
-  <div class="content-container">
-    <app-graph-visualization></app-graph-visualization>
+  <div class="main-content">
+    <div class="content-container" [class.sidebar-open]="sidebarOpen">
+      <app-graph-visualization></app-graph-visualization>
+    </div>
+    
+    <app-calendar-sidebar [isOpen]="sidebarOpen" (closeRequested)="closeSidebar()"></app-calendar-sidebar>
   </div>
-  
-  <app-calendar-sidebar [isOpen]="sidebarOpen"></app-calendar-sidebar>
 </div>

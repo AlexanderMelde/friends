@@ -1,34 +1,17 @@
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 100;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.sidebar-overlay.open {
-  opacity: 1;
-  visibility: visible;
-}
-
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 64px; /* Account for toolbar height */
   right: 0;
   width: 400px;
-  height: 100vh;
+  height: calc(100vh - 64px); /* Subtract toolbar height */
   background-color: white;
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
   transform: translateX(100%);
   transition: transform 0.3s ease;
-  z-index: 101;
+  z-index: 50;
   display: flex;
   flex-direction: column;
+  border-left: 1px solid #e0e0e0;
 }
 
 .sidebar.open {
@@ -43,6 +26,7 @@
   border-bottom: 1px solid #e0e0e0;
   background-color: #3F51B5;
   color: white;
+  flex-shrink: 0;
 }
 
 .sidebar-title {
@@ -137,6 +121,8 @@
   .sidebar {
     width: 100%;
     max-width: 400px;
+    top: 112px; /* Account for toolbar + filter controls height */
+    height: calc(100vh - 112px);
   }
   
   .sidebar-content {

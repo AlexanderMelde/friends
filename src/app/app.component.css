@@ -9,13 +9,32 @@
   flex: 1 1 auto;
 }
 
+.main-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
 .content-container {
   flex: 1;
   overflow: hidden;
   position: relative;
+  transition: margin-right 0.3s ease;
+}
+
+.content-container.sidebar-open {
+  margin-right: 400px;
 }
 
 mat-toolbar {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 10;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content-container.sidebar-open {
+    margin-right: 100%;
+  }
 }

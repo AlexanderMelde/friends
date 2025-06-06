@@ -1,4 +1,4 @@
-import { Component, Input, computed } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,6 +33,7 @@ interface YearGroup {
 })
 export class CalendarSidebarComponent {
   @Input() isOpen: boolean = false;
+  @Output() closeRequested = new EventEmitter<void>();
 
   readonly groupedEvents = computed(() => {
     const events = this.dataService.events();
@@ -112,7 +113,7 @@ export class CalendarSidebarComponent {
   ) {}
 
   close(): void {
-    this.isOpen = false;
+    this.closeRequested.emit();
   }
 
   editEvent(event: Event): void {
