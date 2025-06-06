@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
-import { FilterControlsComponent } from './components/filter-controls/filter-controls.component';
 import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
 import { FriendsSidebarComponent } from './components/friends-sidebar/friends-sidebar.component';
 import { FriendDialogComponent } from './components/friend-dialog/friend-dialog.component';
@@ -25,7 +24,6 @@ import { Event } from './models/event.model';
     MatButtonModule,
     MatTooltipModule,
     GraphVisualizationComponent,
-    FilterControlsComponent,
     CalendarSidebarComponent,
     FriendsSidebarComponent
   ],
