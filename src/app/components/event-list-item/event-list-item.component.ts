@@ -267,34 +267,24 @@ export class EventListItemComponent {
   }
 
   onAttendeeDragEnd(event: DragEvent): void {
-    // Check if the drop was successful (dropEffect will be 'none' if dropped outside valid zones)
-    if (event.dataTransfer?.dropEffect === 'none') {
-      // Remove attendee from this event if dropped outside any valid drop zone
-      const updatedEvent: Event = {
-        ...this.event,
-        attendees: this.event.attendees.filter(id => id !== this.dragService.draggedFriend()?.id)
-      };
-      this.dataService.updateEvent(updatedEvent);
+    // Get the dragged friend before clearing the drag state
+    const draggedFriend = this.dragService.draggedFriend();
+    const draggedFromEventId = this.dragService.draggedFromEventId();
+    const currentDropTarget = this.dragService.currentDropTarget();
+    
+    // Check if this is the source event for the drag
+    if (draggedFromEventId === this.event.id && draggedFriend) {
+      // If no drop target was set, or if the drop effect is 'none', remove the attendee
+      if (!currentDropTarget || event.dataTransfer?.dropEffect === 'none') {
+        const updatedEvent: Event = {
+          ...this.event,
+          attendees: this.event.attendees.filter(id => id !== draggedFriend.id)
+        };
+        this.dataService.updateEvent(updatedEvent);
+      }
     }
     
     // Notify drag service that dragging has ended
     this.dragService.endDrag();
-  }
-
-  // Add global drag leave handler to detect when leaving the entire document
-  onDocumentDragLeave(event: DragEvent): void {
-    // Only handle if this is an attendee drag from this event
-    if (this.dragService.dragType() === 'attendee' && 
-        this.dragService.draggedFromEventId() === this.event.id) {
-      
-      // Check if we're leaving the document boundaries
-      const rect = document.documentElement.getBoundingClientRect();
-      const x = event.clientX;
-      const y = event.clientY;
-      
-      if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
-        this.dragService.setDropTarget(null);
-      }
-    }
   }
 }
