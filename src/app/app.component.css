@@ -41,7 +41,7 @@ mat-toolbar {
 }
 
 /* Responsive adjustments */
-@media (max-width: 1200px) {
+@media (max-width: 1000px) {
   .content-container.both-sidebars-open {
     margin-right: 100%;
   }
