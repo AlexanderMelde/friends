@@ -152,6 +152,26 @@
   height: 16px;
 }
 
+/* Transparent overlay layer */
+.attendee-avatars::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.attendee-avatars.drag-hover::before {
+  opacity: 1;
+}
+
 /* Overlay the drop hint icon to prevent layout shifts */
 .drop-hint {
   position: absolute;
@@ -165,12 +185,13 @@
   color: #3F51B5;
   font-size: 12px;
   font-weight: 500;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 4px;
   padding: 4px 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 3;
   pointer-events: none;
+  border: 1px solid rgba(63, 81, 181, 0.2);
 }
 
 .drop-hint mat-icon {
@@ -192,22 +213,25 @@
   color: #3F51B5;
   font-size: 12px;
   font-weight: 500;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 4px;
   padding: 4px 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 3;
   pointer-events: none;
+  border: 1px solid rgba(63, 81, 181, 0.2);
 }
 
 /* For non-empty dropzones, show only the icon */
 .attendee-avatars:not(.empty-dropzone) .drop-hint {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border-radius: 50%;
-  background-color: rgba(63, 81, 181, 0.9);
+  background-color: rgba(63, 81, 181, 0.95);
   color: white;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .attendee-avatars:not(.empty-dropzone) .drop-hint span {
