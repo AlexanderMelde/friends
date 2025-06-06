@@ -47,11 +47,23 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   readonly selectedLink = computed(() => this.graphService.selectedLink());
   
   constructor(public graphService: GraphService) {
+    // Effect for data changes (nodes/links)
     effect(() => {
       // Only update graph if initialized and we have nodes (data is loaded)
       const nodes = this.nodes();
       if (this.isInitialized && nodes.length > 0) {
         this.updateGraph();
+      }
+    });
+
+    // Separate effect for selection changes
+    effect(() => {
+      const selectedNode = this.selectedNode();
+      const selectedLink = this.selectedLink();
+      
+      // Only update highlighting if graph is initialized and we have elements
+      if (this.isInitialized && this.nodeElements && this.linkElements) {
+        this.highlightSelection();
       }
     });
   }
@@ -214,6 +226,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
         .attr('transform', d => `translate(${d.x}, ${d.y})`);
     });
 
+    // Apply highlighting after graph is updated
     this.highlightSelection();
   }
 
