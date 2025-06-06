@@ -24,12 +24,15 @@
         </div>
       </div>
       
-      <mat-divider></mat-divider>
-      
-      <app-events-list
-        [events]="filteredSharedEvents()"
-        title="Shared Events">
-      </app-events-list>
+      <!-- Only show divider and events list when there are shared events -->
+      <ng-container *ngIf="filteredSharedEvents().length > 0">
+        <mat-divider></mat-divider>
+        
+        <app-events-list
+          [events]="filteredSharedEvents()"
+          title="Shared Events">
+        </app-events-list>
+      </ng-container>
     </mat-card-content>
   </mat-card>
 </div>
