@@ -8,13 +8,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { DataService } from '../../services/data.service';
 import { Friend } from '../../models/friend.model';
-import { Event } from '../../models/event.model';
+import { Event as AppEvent } from '../../models/event.model';
 
 interface AppData {
   version: string;
   exportDate: string;
   friends: Friend[];
-  events: Event[];
+  events: AppEvent[];
 }
 
 @Component({
@@ -113,7 +113,7 @@ export class SettingsDialogComponent {
     }
   }
 
-  private generateICalContent(events: Event[], friends: Friend[]): string {
+  private generateICalContent(events: AppEvent[], friends: Friend[]): string {
     const friendsMap = new Map(friends.map(f => [f.id, f]));
     
     let ical = 'BEGIN:VCALENDAR\n';
@@ -201,7 +201,7 @@ export class SettingsDialogComponent {
     return text.replace(/[\\,;]/g, '\\$&').replace(/\n/g, '\\n');
   }
 
-  onFileSelected(event: Event, fileType: 'json' | 'ical'): void {
+  onFileSelected(event: any, fileType: 'json' | 'ical'): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     
@@ -302,15 +302,15 @@ export class SettingsDialogComponent {
     }
   }
 
-  private parseICalVCard(content: string): { events: Event[], friends: Friend[] } {
-    const events: Event[] = [];
+  private parseICalVCard(content: string): { events: AppEvent[], friends: Friend[] } {
+    const events: AppEvent[] = [];
     const friends: Friend[] = [];
     
     // Split content into iCal and vCard sections
     const lines = content.split('\n').map(line => line.trim());
     
     let currentSection: 'none' | 'vevent' | 'vcard' = 'none';
-    let currentEvent: Partial<Event> = {};
+    let currentEvent: Partial<AppEvent> = {};
     let currentFriend: Partial<Friend> = {};
     
     for (const line of lines) {
@@ -322,7 +322,7 @@ export class SettingsDialogComponent {
         };
       } else if (line === 'END:VEVENT') {
         if (currentEvent.title && currentEvent.date) {
-          events.push(currentEvent as Event);
+          events.push(currentEvent as AppEvent);
         }
         currentSection = 'none';
         currentEvent = {};
@@ -348,7 +348,7 @@ export class SettingsDialogComponent {
     return { events, friends };
   }
 
-  private parseICalLine(line: string, event: Partial<Event>): void {
+  private parseICalLine(line: string, event: Partial<AppEvent>): void {
     const [key, ...valueParts] = line.split(':');
     const value = valueParts.join(':');
     
