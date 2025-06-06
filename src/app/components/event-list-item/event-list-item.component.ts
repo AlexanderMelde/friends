@@ -267,29 +267,8 @@ export class EventListItemComponent {
   }
 
   onAttendeeDragEnd(event: DragEvent): void {
-    // Get the dragged friend and source event before clearing the drag state
-    const draggedFriend = this.dragService.draggedFriend();
-    const draggedFromEventId = this.dragService.draggedFromEventId();
-    const currentDropTarget = this.dragService.currentDropTarget();
-    
-    // Only handle removal if this is the source event for the drag
-    if (draggedFromEventId === this.event.id && draggedFriend) {
-      // Check if the drop was unsuccessful:
-      // 1. No drop target was set (dropped outside any valid zone)
-      // 2. Browser indicates unsuccessful drop with dropEffect 'none'
-      const wasDroppedOutside = !currentDropTarget || event.dataTransfer?.dropEffect === 'none';
-      
-      if (wasDroppedOutside) {
-        // Remove attendee from this event
-        const updatedEvent: Event = {
-          ...this.event,
-          attendees: this.event.attendees.filter(id => id !== draggedFriend.id)
-        };
-        this.dataService.updateEvent(updatedEvent);
-      }
-    }
-    
-    // Always notify drag service that dragging has ended
+    // The global drop handler in AppComponent will handle removal if needed
+    // Just notify drag service that dragging has ended
     this.dragService.endDrag();
   }
 }
