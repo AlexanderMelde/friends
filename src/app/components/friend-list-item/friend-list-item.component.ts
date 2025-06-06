@@ -38,12 +38,10 @@ export class FriendListItemComponent {
       
       // Find the avatar image element within the friend item and use it as the drag image
       const friendItem = event.currentTarget as HTMLElement;
-      const avatarImg = friendItem.querySelector('.friend-avatar')?.cloneNode(true) as HTMLImageElement;
+      const avatarImg = friendItem.querySelector('.friend-avatar') as HTMLImageElement;
       if (avatarImg) {
         // Use the existing avatar image as the drag image
-        avatarImg.style.height = "24px";
-        avatarImg.style.width = "24px";
-        event.dataTransfer.setDragImage(avatarImg, 12, 12);
+        event.dataTransfer.setDragImage(avatarImg, 24, 24);
       }
       
       // Use setTimeout to ensure drag image is set before starting drag service
