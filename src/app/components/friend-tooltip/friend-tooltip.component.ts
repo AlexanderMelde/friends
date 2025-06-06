@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,9 +46,27 @@ export class FriendTooltipComponent {
     return this._friendSignal();
   }
 
+  // Computed property that gets the latest friend data from the data service
+  readonly currentFriend = computed(() => {
+    const selectedFriend = this._friendSignal();
+    if (!selectedFriend) return null;
+    
+    // Get the latest friend data from the data service
+    const allFriends = this.dataService.friends();
+    const latestFriendData = allFriends.find(f => f.id === selectedFriend.id);
+    
+    if (!latestFriendData) return selectedFriend;
+    
+    // Merge the latest data with the node properties
+    return {
+      ...selectedFriend,
+      ...latestFriendData
+    };
+  });
+
   // Computed event count that updates dynamically
   readonly computedEventCount = computed(() => {
-    const friend = this._friendSignal();
+    const friend = this.currentFriend();
     if (!friend) return 0;
     
     const allEvents = this.dataService.events();
@@ -56,7 +74,7 @@ export class FriendTooltipComponent {
   });
 
   readonly events = computed(() => {
-    const friend = this._friendSignal();
+    const friend = this.currentFriend();
     if (!friend) return [];
     
     const filter = this.graphService.filter();
@@ -68,7 +86,7 @@ export class FriendTooltipComponent {
   });
 
   readonly connectedFriends = computed(() => {
-    const friend = this._friendSignal();
+    const friend = this.currentFriend();
     if (!friend) return [];
     
     const filter = this.graphService.filter();
@@ -105,7 +123,7 @@ export class FriendTooltipComponent {
   editFriend(event: MouseEvent): void {
     event.stopPropagation();
     
-    const friend = this._friendSignal();
+    const friend = this.currentFriend();
     if (!friend) return;
     
     const dialogRef = this.dialog.open(FriendDialogComponent, {
