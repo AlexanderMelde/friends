@@ -144,10 +144,12 @@
   position: relative;
 }
 
-/* Hide the avatar being dragged */
+/* Hide the avatar being dragged - but only after drag has started properly */
 .attendee-avatar.being-dragged {
-  opacity: 0;
+  opacity: 0.3;
+  transform: scale(0.8);
   pointer-events: none;
+  transition: opacity 0.1s ease, transform 0.1s ease;
 }
 
 /* Draggable attendee avatar styling */

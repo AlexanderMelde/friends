@@ -197,8 +197,11 @@ export class EventListItemComponent {
       event.dataTransfer.setData('application/attendee', JSON.stringify(attendeeData));
       event.dataTransfer.effectAllowed = 'move';
       
-      // Notify drag service with event ID
-      this.dragService.startDrag(attendee, 'attendee', this.event.id);
+      // Use setTimeout to delay the drag service notification slightly
+      // This ensures the drag operation starts properly before we hide the avatar
+      setTimeout(() => {
+        this.dragService.startDrag(attendee, 'attendee', this.event.id);
+      }, 50);
       
       // Create a circular drag image
       const canvas = document.createElement('canvas');
