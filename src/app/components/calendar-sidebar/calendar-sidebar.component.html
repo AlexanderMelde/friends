@@ -4,9 +4,14 @@
       <mat-icon class="title-icon">event_note</mat-icon>
       Calendar Agenda
     </h2>
-    <button mat-icon-button (click)="close()" class="close-button">
-      <mat-icon>close</mat-icon>
-    </button>
+    <div class="header-actions">
+      <button mat-icon-button (click)="addEvent()" class="add-button" matTooltip="Add Event">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button mat-icon-button (click)="close()" class="close-button" matTooltip="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
   
   <div class="sidebar-content">

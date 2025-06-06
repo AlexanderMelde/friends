@@ -5,9 +5,6 @@
     <button mat-icon-button (click)="toggleSidebar()" matTooltip="Calendar Agenda">
       <mat-icon>event_note</mat-icon>
     </button>
-    <button mat-icon-button (click)="addEvent()" matTooltip="Add Event">
-      <mat-icon>event_add</mat-icon>
-    </button>
     <button mat-icon-button (click)="addFriend()" matTooltip="Add Friend">
       <mat-icon>person_add</mat-icon>
     </button>
@@ -23,6 +20,10 @@
       <app-graph-visualization></app-graph-visualization>
     </div>
     
-    <app-calendar-sidebar [isOpen]="sidebarOpen" (closeRequested)="closeSidebar()"></app-calendar-sidebar>
+    <app-calendar-sidebar 
+      [isOpen]="sidebarOpen" 
+      (closeRequested)="closeSidebar()"
+      (addEventRequested)="addEvent()">
+    </app-calendar-sidebar>
   </div>
 </div>

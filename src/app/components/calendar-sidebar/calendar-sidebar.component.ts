@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, computed } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
@@ -22,13 +23,14 @@ interface YearGroup {
 @Component({
   selector: 'app-calendar-sidebar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, EventListItemComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, EventListItemComponent],
   templateUrl: './calendar-sidebar.component.html',
   styleUrls: ['./calendar-sidebar.component.css']
 })
 export class CalendarSidebarComponent {
   @Input() isOpen: boolean = false;
   @Output() closeRequested = new EventEmitter<void>();
+  @Output() addEventRequested = new EventEmitter<void>();
 
   readonly groupedEvents = computed(() => {
     const events = this.dataService.events();
@@ -93,6 +95,10 @@ export class CalendarSidebarComponent {
 
   close(): void {
     this.closeRequested.emit();
+  }
+
+  addEvent(): void {
+    this.addEventRequested.emit();
   }
 
   editEvent(event: Event): void {
