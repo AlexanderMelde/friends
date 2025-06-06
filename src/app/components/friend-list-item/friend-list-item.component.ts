@@ -39,8 +39,8 @@ export class FriendListItemComponent {
       // Notify drag service that dragging has started
       this.dragService.startDrag(this.friend, 'friend');
       
-      // Create a circular drag image using the shared method
-      this.createCircularDragImage(event, this.friend.photoUrl, this.friend.name, '#3F51B5');
+      // Create a simple circular drag image immediately
+      this.createSimpleDragImage(event, this.friend.name, '#3F51B5', 48);
     }
   }
 
@@ -49,65 +49,33 @@ export class FriendListItemComponent {
     this.dragService.endDrag();
   }
 
-  private createCircularDragImage(event: DragEvent, photoUrl: string, name: string, borderColor: string): void {
+  private createSimpleDragImage(event: DragEvent, name: string, borderColor: string, size: number): void {
     const canvas = document.createElement('canvas');
-    const size = 48; // Size of the drag image
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d');
     
     if (ctx) {
-      // Create circular clipping path
+      // Fill with a solid color background
+      ctx.fillStyle = borderColor;
       ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
-      ctx.clip();
+      ctx.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
+      ctx.fill();
       
-      // Load and draw the photo
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        // Draw the image to fill the circle
-        ctx.drawImage(img, 0, 0, size, size);
-        
-        // Add a border
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
-        ctx.strokeStyle = borderColor;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        
-        // Convert canvas to image and set as drag image
-        const dragImage = new Image();
-        dragImage.src = canvas.toDataURL();
-        dragImage.onload = () => {
-          event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
-        };
-      };
+      // Add initials
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+      ctx.fillText(initials, size / 2, size / 2);
       
-      // Fallback: if image fails to load, create a simple colored circle
-      img.onerror = () => {
-        ctx.fillStyle = borderColor;
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // Add initials
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 16px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-        ctx.fillText(initials, size / 2, size / 2);
-        
-        const dragImage = new Image();
-        dragImage.src = canvas.toDataURL();
-        dragImage.onload = () => {
-          event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
-        };
-      };
+      // Create drag image immediately
+      const dragImage = new Image();
+      dragImage.src = canvas.toDataURL();
       
-      img.src = photoUrl;
+      // Set the drag image immediately (synchronously)
+      event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
     }
   }
 }
