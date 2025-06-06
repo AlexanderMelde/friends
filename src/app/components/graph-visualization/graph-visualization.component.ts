@@ -45,7 +45,13 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
   readonly selectedLink = computed(() => this.graphService.selectedLink());
   
   constructor(public graphService: GraphService) {
-    effect(() => this.updateGraph());
+    effect(() => {
+      // Only update graph if we have nodes (data is loaded)
+      const nodes = this.nodes();
+      if (nodes.length > 0) {
+        this.updateGraph();
+      }
+    });
   }
 
   ngOnInit(): void {

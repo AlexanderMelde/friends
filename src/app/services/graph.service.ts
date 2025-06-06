@@ -13,10 +13,16 @@ export class GraphService {
   private _filter = signal<string>('');
   
   readonly nodes = computed(() => {
+    // Wait for data to be loaded before computing nodes
     const friends = this.dataService.friendsWithEventCount();
     const events = this.dataService.events();
-    const filter = this._filter();
     
+    // Return empty array if data is not yet loaded
+    if (!friends.length && !events.length) {
+      return [];
+    }
+    
+    const filter = this._filter();
     const filteredEvents = filter ? events.filter(e => e.type === filter) : events;
     
     // Create a map of friend IDs to their event counts
@@ -38,8 +44,13 @@ export class GraphService {
   readonly links = computed(() => {
     const nodes = this.nodes();
     const events = this.dataService.events();
-    const filter = this._filter();
     
+    // Return empty array if no nodes or events
+    if (!nodes.length || !events.length) {
+      return [];
+    }
+    
+    const filter = this._filter();
     const filteredEvents = filter ? events.filter(e => e.type === filter) : events;
     
     // Create a map for quick node lookups
