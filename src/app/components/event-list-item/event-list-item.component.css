@@ -144,14 +144,6 @@
   position: relative;
 }
 
-/* Hide the avatar being dragged - but only after drag has started properly */
-.attendee-avatar.being-dragged {
-  opacity: 0.3;
-  transform: scale(0.8);
-  pointer-events: none;
-  transition: opacity 0.1s ease, transform 0.1s ease;
-}
-
 /* Draggable attendee avatar styling */
 .attendee-avatar[draggable="true"] {
   cursor: grab;
@@ -167,33 +159,51 @@
   box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.3);
 }
 
-/* Drag placeholder styling */
+/* Drag placeholder styling - now sized to match avatar */
 .drag-placeholder {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
+  justify-content: center;
+  gap: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 10px;
   font-weight: 500;
   transition: all 0.2s ease;
   border: 1px solid;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  position: relative;
 }
 
 .drag-placeholder mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
 }
 
 .placeholder-text {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  display: none; /* Hide text in circular placeholder */
+}
+
+/* Show text on hover */
+.drag-placeholder:hover .placeholder-text {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: 2px;
 }
 
 /* Move placeholder styling */

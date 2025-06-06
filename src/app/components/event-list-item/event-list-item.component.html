@@ -28,28 +28,30 @@
            (dragleave)="onDragLeave($event)"
            (drop)="onDrop($event)">
         
-        <!-- Show placeholder when dragging from this event -->
-        <div *ngIf="isDragSource() && dragService.draggedFriend() as draggedFriend" 
-             class="drag-placeholder"
-             [class.move-placeholder]="dragAction() === 'move'"
-             [class.delete-placeholder]="dragAction() === 'delete'">
-          <mat-icon>{{ dragAction() === 'move' ? 'swap_horiz' : 'delete' }}</mat-icon>
-          <span class="placeholder-text">
-            {{ dragAction() === 'move' ? 'Moving...' : 'Removing...' }}
-          </span>
-        </div>
-        
-        <!-- Regular attendee avatars (hide the one being dragged) -->
-        <img *ngFor="let attendee of attendees()" 
-             [src]="attendee.photoUrl" 
-             [alt]="attendee.name"
-             [title]="attendee.name"
-             class="attendee-avatar"
-             [class.being-dragged]="isDragSource() && dragService.draggedFriend()?.id === attendee.id"
-             draggable="true"
-             (click)="selectAttendee(attendee, $event)"
-             (dragstart)="onAttendeeDragStart($event, attendee)"
-             (dragend)="onAttendeeDragEnd($event)">
+        <!-- Regular attendee avatars with conditional placeholder -->
+        <ng-container *ngFor="let attendee of attendees()">
+          <!-- Show placeholder if this is the dragged attendee -->
+          <div *ngIf="isDragSource() && dragService.draggedFriend()?.id === attendee.id" 
+               class="drag-placeholder"
+               [class.move-placeholder]="dragAction() === 'move'"
+               [class.delete-placeholder]="dragAction() === 'delete'">
+            <mat-icon>{{ dragAction() === 'move' ? 'swap_horiz' : 'delete' }}</mat-icon>
+            <span class="placeholder-text">
+              {{ dragAction() === 'move' ? 'Moving...' : 'Removing...' }}
+            </span>
+          </div>
+          
+          <!-- Show avatar if it's not being dragged -->
+          <img *ngIf="!(isDragSource() && dragService.draggedFriend()?.id === attendee.id)"
+               [src]="attendee.photoUrl" 
+               [alt]="attendee.name"
+               [title]="attendee.name"
+               class="attendee-avatar"
+               draggable="true"
+               (click)="selectAttendee(attendee, $event)"
+               (dragstart)="onAttendeeDragStart($event, attendee)"
+               (dragend)="onAttendeeDragEnd($event)">
+        </ng-container>
         
         <div class="drop-hint" *ngIf="isDragOver && !isDragSource()">
           <mat-icon>{{ isDraggedFriendAlreadyAttendee() ? 'check' : 'person_add' }}</mat-icon>
