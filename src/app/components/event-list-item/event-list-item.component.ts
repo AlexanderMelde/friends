@@ -204,6 +204,9 @@ export class EventListItemComponent {
         console.error('Error parsing dropped attendee data:', error);
       }
     }
+
+    // End the drag operation here - this is where the drag completes successfully
+    this.dragService.endDrag();
   }
 
   onAttendeeDragStart(event: DragEvent, attendee: Friend): void {
