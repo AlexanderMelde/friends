@@ -143,7 +143,7 @@ export class GraphService {
       .force('charge', d3.forceManyBody()
         .strength(d => {
           // Adjusted repulsion for larger nodes
-          const isIsolated = !connectedNodeIds.has(d.id);
+          const isIsolated = !connectedNodeIds.has((d as FriendNode).id);
           const baseStrength = isIsolated ? -80 : -150;
           return baseStrength - (d as FriendNode).radius * 6;
         }))
@@ -158,17 +158,17 @@ export class GraphService {
         // Calculate center of mass of connected nodes
         let centerX = 0, centerY = 0;
         connectedNodes.forEach(node => {
-          centerX += node.x || 0;
-          centerY += node.y || 0;
+          centerX += (node as FriendNode).x || 0;
+          centerY += (node as FriendNode).y || 0;
         });
         centerX /= connectedNodes.length;
         centerY /= connectedNodes.length;
         
         // Apply weak attraction to isolated nodes toward the connected center
         isolatedNodes.forEach(node => {
-          if (node.x !== undefined && node.y !== undefined) {
-            const dx = centerX - node.x;
-            const dy = centerY - node.y;
+          if ((node as FriendNode).x !== undefined && (node as FriendNode).y !== undefined) {
+            const dx = centerX - (node as FriendNode).x!;
+            const dy = centerY - (node as FriendNode).y!;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance > 0) {
@@ -177,8 +177,8 @@ export class GraphService {
               const fx = (dx / distance) * force;
               const fy = (dy / distance) * force;
               
-              node.vx = (node.vx || 0) + fx;
-              node.vy = (node.vy || 0) + fy;
+              (node as FriendNode).vx = ((node as FriendNode).vx || 0) + fx;
+              (node as FriendNode).vy = ((node as FriendNode).vy || 0) + fy;
             }
           }
         });
@@ -193,10 +193,10 @@ export class GraphService {
             const nodeA = isolatedNodes[i];
             const nodeB = isolatedNodes[j];
             
-            if (nodeA.x !== undefined && nodeA.y !== undefined && 
-                nodeB.x !== undefined && nodeB.y !== undefined) {
-              const dx = nodeB.x - nodeA.x;
-              const dy = nodeB.y - nodeA.y;
+            if ((nodeA as FriendNode).x !== undefined && (nodeA as FriendNode).y !== undefined && 
+                (nodeB as FriendNode).x !== undefined && (nodeB as FriendNode).y !== undefined) {
+              const dx = (nodeB as FriendNode).x! - (nodeA as FriendNode).x!;
+              const dy = (nodeB as FriendNode).y! - (nodeA as FriendNode).y!;
               const distance = Math.sqrt(dx * dx + dy * dy);
               
               // Weak attraction between isolated nodes
@@ -205,10 +205,10 @@ export class GraphService {
                 const fx = (dx / distance) * force;
                 const fy = (dy / distance) * force;
                 
-                nodeA.vx = (nodeA.vx || 0) + fx;
-                nodeA.vy = (nodeA.vy || 0) + fy;
-                nodeB.vx = (nodeB.vx || 0) - fx;
-                nodeB.vy = (nodeB.vy || 0) - fy;
+                (nodeA as FriendNode).vx = ((nodeA as FriendNode).vx || 0) + fx;
+                (nodeA as FriendNode).vy = ((nodeA as FriendNode).vy || 0) + fy;
+                (nodeB as FriendNode).vx = ((nodeB as FriendNode).vx || 0) - fx;
+                (nodeB as FriendNode).vy = ((nodeB as FriendNode).vy || 0) - fy;
               }
             }
           }
