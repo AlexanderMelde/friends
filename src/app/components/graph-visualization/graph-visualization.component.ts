@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,13 +28,14 @@ import { EventDetailsCardComponent } from '../event-details-card/event-details-c
   templateUrl: './graph-visualization.component.html',
   styleUrls: ['./graph-visualization.component.css']
 })
-export class GraphVisualizationComponent implements OnInit, OnDestroy {
+export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('graphContainer', { static: true }) graphContainer!: ElementRef;
   
   private svg!: d3.Selection<SVGSVGElement, unknown, null, undefined>;
   private g!: d3.Selection<SVGGElement, unknown, null, undefined>;
   private zoomBehavior!: d3.ZoomBehavior<SVGSVGElement, unknown>;
   private simulation!: d3.Simulation<FriendNode, EventLink>;
+  private isInitialized = false;
   
   private nodeElements!: d3.Selection<SVGGElement, FriendNode, SVGGElement, unknown>;
   private linkElements!: d3.Selection<SVGLineElement, EventLink, SVGGElement, unknown>;
@@ -46,16 +47,30 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
   
   constructor(public graphService: GraphService) {
     effect(() => {
-      // Only update graph if we have nodes (data is loaded)
+      // Only update graph if initialized and we have nodes (data is loaded)
       const nodes = this.nodes();
-      if (nodes.length > 0) {
+      if (this.isInitialized && nodes.length > 0) {
         this.updateGraph();
       }
     });
   }
 
   ngOnInit(): void {
-    this.initializeGraph();
+    // Don't initialize here - wait for AfterViewInit
+  }
+
+  ngAfterViewInit(): void {
+    // Use setTimeout to ensure the container is fully rendered and sized
+    setTimeout(() => {
+      this.initializeGraph();
+      this.isInitialized = true;
+      
+      // Trigger initial graph update if data is already available
+      const nodes = this.nodes();
+      if (nodes.length > 0) {
+        this.updateGraph();
+      }
+    }, 100);
   }
 
   ngOnDestroy(): void {
@@ -66,8 +81,12 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
 
   private initializeGraph(): void {
     const element = this.graphContainer.nativeElement;
-    const width = element.clientWidth;
-    const height = element.clientHeight;
+    const rect = element.getBoundingClientRect();
+    const width = rect.width || element.clientWidth || 800;
+    const height = rect.height || element.clientHeight || 600;
+
+    // Clear any existing SVG
+    d3.select(element).selectAll('svg').remove();
 
     this.svg = d3.select(element)
       .append('svg')
@@ -95,7 +114,7 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
 
   private updateGraph(): void {
     const nodes = this.nodes();
-    if (!nodes.length) return;
+    if (!nodes.length || !this.isInitialized) return;
 
     const links = this.links();
     this.simulation = this.graphService.calculateForces();
