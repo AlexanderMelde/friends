@@ -60,6 +60,15 @@ export class EventListItemComponent {
     effect(() => {
       this.selectedType = this.graphService.filter();
     });
+
+    // Effect to clear local drag state when dragging ends
+    effect(() => {
+      const isDragging = this.isDragging();
+      if (!isDragging) {
+        // Clear local drag over state when dragging ends
+        this.isDragOver = false;
+      }
+    });
   }
 
   formatDate(date: Date): string {
