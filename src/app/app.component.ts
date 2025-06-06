@@ -40,7 +40,7 @@ import { Event } from './models/event.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Social Network Visualization';
+  title = 'Friends!';
   calendarSidebarOpen = false;
   friendsSidebarOpen = false;
 
