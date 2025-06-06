@@ -3,9 +3,7 @@
   <mat-toolbar color="primary">
     <span>{{ title }}</span>
     <span class="toolbar-spacer"></span>
-    <button mat-icon-button (click)="openSettings()" matTooltip="Settings">
-      <mat-icon>settings</mat-icon>
-    </button>
+
     <button mat-icon-button (click)="toggleCalendarSidebar()" matTooltip="Calendar">
       <mat-icon>event_note</mat-icon>
     </button>
@@ -14,6 +12,9 @@
     </button>
     <button mat-icon-button aria-label="Help">
       <mat-icon>help_outline</mat-icon>
+    </button>
+   <button mat-icon-button (click)="openSettings()" matTooltip="Settings">
+      <mat-icon>settings</mat-icon>
     </button>
   </mat-toolbar>
   
