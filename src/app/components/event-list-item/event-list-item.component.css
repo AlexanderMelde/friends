@@ -115,6 +115,12 @@
   box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.3);
 }
 
+/* Special styling for drag source */
+.attendee-avatars.drag-source {
+  border: 2px solid #f44336;
+  background-color: rgba(244, 67, 54, 0.05);
+}
+
 .attendee-avatars.drop-zone {
   border: 2px dashed #3F51B5;
   background-color: rgba(63, 81, 181, 0.1);
@@ -138,6 +144,12 @@
   position: relative;
 }
 
+/* Hide the avatar being dragged */
+.attendee-avatar.being-dragged {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Draggable attendee avatar styling */
 .attendee-avatar[draggable="true"] {
   cursor: grab;
@@ -151,6 +163,57 @@
 .attendee-avatar:hover[draggable="true"] {
   border-color: #f44336;
   box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.3);
+}
+
+/* Drag placeholder styling */
+.drag-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.drag-placeholder mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.placeholder-text {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Move placeholder styling */
+.move-placeholder {
+  color: #2196F3;
+  border-color: #2196F3;
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+.move-placeholder mat-icon {
+  color: #2196F3;
+}
+
+/* Delete placeholder styling */
+.delete-placeholder {
+  color: #f44336;
+  border-color: #f44336;
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.delete-placeholder mat-icon {
+  color: #f44336;
 }
 
 .empty-state {

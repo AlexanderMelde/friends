@@ -1,4 +1,5 @@
-<div class="app-container">
+<div class="app-container" 
+     (document:dragleave)="onDocumentDragLeave($event)">
   <mat-toolbar color="primary">
     <span>{{ title }}</span>
     <span class="toolbar-spacer"></span>

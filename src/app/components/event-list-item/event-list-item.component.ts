@@ -43,6 +43,18 @@ export class EventListItemComponent {
     return this.event.attendees.includes(draggedFriend.id);
   });
 
+  // Computed property to check if this event is the source of the drag
+  isDragSource = computed(() => {
+    const draggedFromEventId = this.dragService.draggedFromEventId();
+    return draggedFromEventId === this.event.id;
+  });
+
+  // Computed property to get the drag action for this event
+  dragAction = computed(() => {
+    if (!this.isDragSource()) return 'none';
+    return this.dragService.getDropAction();
+  });
+
   constructor() {
     // Use effect to react to filter signal changes
     effect(() => {
@@ -96,18 +108,27 @@ export class EventListItemComponent {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = true;
+    
+    // Update drop target in drag service
+    this.dragService.setDropTarget(this.event.id);
   }
 
   onDragLeave(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
+    
+    // Clear drop target if leaving this event
+    this.dragService.setDropTarget(null);
   }
 
   onDrop(event: DragEvent): void {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
+
+    // Clear drop target
+    this.dragService.setDropTarget(null);
 
     const friendData = event.dataTransfer?.getData('application/json');
     if (friendData) {
@@ -176,8 +197,8 @@ export class EventListItemComponent {
       event.dataTransfer.setData('application/attendee', JSON.stringify(attendeeData));
       event.dataTransfer.effectAllowed = 'move';
       
-      // Notify drag service
-      this.dragService.startDrag(attendee);
+      // Notify drag service with event ID
+      this.dragService.startDrag(attendee, 'attendee', this.event.id);
       
       // Create a circular drag image
       const canvas = document.createElement('canvas');
@@ -255,5 +276,22 @@ export class EventListItemComponent {
     
     // Notify drag service that dragging has ended
     this.dragService.endDrag();
+  }
+
+  // Add global drag leave handler to detect when leaving the entire document
+  onDocumentDragLeave(event: DragEvent): void {
+    // Only handle if this is an attendee drag from this event
+    if (this.dragService.dragType() === 'attendee' && 
+        this.dragService.draggedFromEventId() === this.event.id) {
+      
+      // Check if we're leaving the document boundaries
+      const rect = document.documentElement.getBoundingClientRect();
+      const x = event.clientX;
+      const y = event.clientY;
+      
+      if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
+        this.dragService.setDropTarget(null);
+      }
+    }
   }
 }

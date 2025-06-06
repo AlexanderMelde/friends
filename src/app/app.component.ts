@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { FriendsSidebarComponent } from './components/friends-sidebar/friends-si
 import { FriendDialogComponent } from './components/friend-dialog/friend-dialog.component';
 import { EventEditDialogComponent } from './components/event-edit-dialog/event-edit-dialog.component';
 import { DataService } from './services/data.service';
+import { DragService } from './services/drag.service';
 import { Event } from './models/event.model';
 
 @Component({
@@ -36,10 +37,9 @@ export class AppComponent {
   calendarSidebarOpen = false;
   friendsSidebarOpen = false;
 
-  constructor(
-    private dialog: MatDialog,
-    private dataService: DataService
-  ) {}
+  private dialog = inject(MatDialog);
+  private dataService = inject(DataService);
+  private dragService = inject(DragService);
 
   toggleCalendarSidebar(): void {
     this.calendarSidebarOpen = !this.calendarSidebarOpen;
@@ -81,5 +81,19 @@ export class AppComponent {
         this.dataService.addEvent(result);
       }
     });
+  }
+
+  onDocumentDragLeave(event: DragEvent): void {
+    // Only handle attendee drags
+    if (this.dragService.dragType() === 'attendee') {
+      // Check if we're leaving the document boundaries
+      const rect = document.documentElement.getBoundingClientRect();
+      const x = event.clientX;
+      const y = event.clientY;
+      
+      if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
+        this.dragService.setDropTarget(null);
+      }
+    }
   }
 }
