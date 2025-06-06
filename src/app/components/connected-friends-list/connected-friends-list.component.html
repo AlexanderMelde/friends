@@ -1,0 +1,18 @@
+<div class="connected-friends">
+  <h3 class="section-title">
+    <mat-icon class="section-icon">people</mat-icon>
+    Connected Friends
+  </h3>
+  <div class="friends-list">
+    <div *ngFor="let connection of connectedFriends" 
+         class="friend-item" 
+         (click)="selectFriend(connection, $event)"
+         [style.cursor]="'pointer'">
+      <img [src]="connection.friend.photoUrl" [alt]="connection.friend.name" class="friend-avatar">
+      <div class="friend-details">
+        <span class="friend-name">{{ connection.friend.name }}</span>
+        <span class="shared-events">{{ connection.sharedEventCount }} shared {{ connection.sharedEventCount === 1 ? 'event' : 'events' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
