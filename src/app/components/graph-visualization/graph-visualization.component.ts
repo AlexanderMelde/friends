@@ -94,6 +94,7 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
     const links = this.links();
     this.simulation = this.graphService.calculateForces();
     
+    // Update links with proper event handling
     this.linkElements = this.linkElements
       .data(links, (d: any) => `${d.source.id}-${d.target.id}`)
       .join(
@@ -101,19 +102,24 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
           .attr('stroke', '#999')
           .attr('stroke-opacity', 0.8)
           .attr('stroke-width', d => Math.max(1, Math.min(8, d.value)))
+          .style('cursor', 'pointer')
+          .style('pointer-events', 'all')
           .on('mouseover', (event, d) => this.onLinkMouseOver(event, d))
-          .on('mouseout', () => this.onLinkMouseOut())
+          .on('mouseout', (event, d) => this.onLinkMouseOut(event, d))
           .on('click', (event, d) => this.onLinkClick(event, d))
       );
 
+    // Update nodes with proper event handling
     this.nodeElements = this.nodeElements
       .data(nodes, (d: any) => d.id)
       .join(
         enter => {
           const nodeGroup = enter.append('g')
             .attr('class', 'node')
+            .style('cursor', 'pointer')
+            .style('pointer-events', 'all')
             .on('mouseover', (event, d) => this.onNodeMouseOver(event, d))
-            .on('mouseout', () => this.onNodeMouseOut())
+            .on('mouseout', (event, d) => this.onNodeMouseOut(event, d))
             .on('click', (event, d) => this.onNodeClick(event, d))
             .call(this.drag());
 
@@ -241,7 +247,7 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
       .attr('stroke-width', 3);
   }
 
-  private onNodeMouseOut(): void {
+  private onNodeMouseOut(event: MouseEvent, node: FriendNode): void {
     if (!this.selectedNode()) {
       this.nodeElements.select('circle')
         .attr('stroke', '#3F51B5')
@@ -265,15 +271,16 @@ export class GraphVisualizationComponent implements OnInit, OnDestroy {
     const linkSelection = d3.select(event.currentTarget as SVGLineElement);
     linkSelection
       .attr('stroke', '#009688')
-      .attr('stroke-width', d => Math.max(2, Math.min(10, link.value + 2)))
+      .attr('stroke-width', Math.max(2, Math.min(10, link.value + 2)))
       .attr('stroke-opacity', 1);
   }
 
-  private onLinkMouseOut(): void {
-    if (!this.selectedLink()) {
-      this.linkElements
+  private onLinkMouseOut(event: MouseEvent, link: EventLink): void {
+    if (!this.selectedLink() || !this.areLinksEqual(link, this.selectedLink()!)) {
+      const linkSelection = d3.select(event.currentTarget as SVGLineElement);
+      linkSelection
         .attr('stroke', '#999')
-        .attr('stroke-width', d => Math.max(1, Math.min(8, d.value)))
+        .attr('stroke-width', Math.max(1, Math.min(8, link.value)))
         .attr('stroke-opacity', 0.8);
     } else {
       this.highlightSelection();
