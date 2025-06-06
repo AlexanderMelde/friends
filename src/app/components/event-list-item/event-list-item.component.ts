@@ -36,6 +36,13 @@ export class EventListItemComponent {
   // Computed property to check if dragging is active
   isDragging = computed(() => this.dragService.isDragging());
 
+  // Computed property to check if the dragged friend is already an attendee
+  isDraggedFriendAlreadyAttendee = computed(() => {
+    const draggedFriend = this.dragService.draggedFriend();
+    if (!draggedFriend) return false;
+    return this.event.attendees.includes(draggedFriend.id);
+  });
+
   constructor() {
     // Use effect to react to filter signal changes
     effect(() => {

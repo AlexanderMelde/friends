@@ -33,7 +33,7 @@
              class="attendee-avatar"
              (click)="selectAttendee(attendee, $event)">
         <div class="drop-hint" *ngIf="isDragOver">
-          <mat-icon>person_add</mat-icon>
+          <mat-icon>{{ isDraggedFriendAlreadyAttendee() ? 'check' : 'person_add' }}</mat-icon>
         </div>
       </div>
       <div class="attendee-avatars empty-dropzone" 
@@ -49,8 +49,8 @@
           <span>No attendees</span>
         </div>
         <div class="drop-hint" *ngIf="isDragOver">
-          <mat-icon>person_add</mat-icon>
-          <span>Drop to add attendee</span>
+          <mat-icon>{{ isDraggedFriendAlreadyAttendee() ? 'check' : 'person_add' }}</mat-icon>
+          <span>{{ isDraggedFriendAlreadyAttendee() ? 'Already attending' : 'Drop to add attendee' }}</span>
         </div>
       </div>
     </div>
