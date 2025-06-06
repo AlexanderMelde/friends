@@ -80,7 +80,10 @@ export class DataService {
   private async loadSampleData() {
     try {
       // Remove eventCount from sample data before storing
-      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(({ eventCount, ...friend }) => friend);
+      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(friend => {
+        const { eventCount, ...friendData } = friend as any;
+        return friendData;
+      });
       
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
         await Promise.all([
@@ -92,6 +95,7 @@ export class DataService {
       this.friendsSignal.set(friendsWithoutEventCount);
       this.eventsSignal.set(SAMPLE_DATA.events);
       
+      // Store clean data without eventCount
       localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
       localStorage.setItem('events', JSON.stringify(SAMPLE_DATA.events));
     } catch (error) {
@@ -107,10 +111,16 @@ export class DataService {
     if (storedFriends) {
       const friends = JSON.parse(storedFriends);
       // Remove eventCount if it exists in stored data
-      const friendsWithoutEventCount = friends.map(({ eventCount, ...friend }: any) => friend);
+      const friendsWithoutEventCount = friends.map((friend: any) => {
+        const { eventCount, ...friendData } = friend;
+        return friendData;
+      });
       this.friendsSignal.set(friendsWithoutEventCount);
     } else {
-      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(({ eventCount, ...friend }) => friend);
+      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(friend => {
+        const { eventCount, ...friendData } = friend as any;
+        return friendData;
+      });
       this.friendsSignal.set(friendsWithoutEventCount);
       localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
     }
@@ -132,7 +142,7 @@ export class DataService {
       // Update signals
       this.eventsSignal.update(events => [...events, event]);
 
-      // Update localStorage in background
+      // Update localStorage in background (events only)
       setTimeout(() => {
         localStorage.setItem('events', JSON.stringify(this.events()));
       }, 0);
@@ -171,7 +181,7 @@ export class DataService {
         )
       );
 
-      // Update localStorage in background
+      // Update localStorage in background (clean data only)
       setTimeout(() => {
         localStorage.setItem('friends', JSON.stringify(this.friends()));
         localStorage.setItem('events', JSON.stringify(this.events()));
@@ -229,7 +239,7 @@ export class DataService {
         })
       );
 
-      // Update localStorage in background
+      // Update localStorage in background (clean data only)
       setTimeout(() => {
         localStorage.setItem('friends', JSON.stringify(this.friends()));
         localStorage.setItem('events', JSON.stringify(this.events()));
@@ -249,7 +259,7 @@ export class DataService {
         events.map(event => event.id === updatedEvent.id ? updatedEvent : event)
       );
 
-      // Update localStorage in background
+      // Update localStorage in background (events only)
       setTimeout(() => {
         localStorage.setItem('events', JSON.stringify(this.events()));
       }, 0);
