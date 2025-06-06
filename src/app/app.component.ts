@@ -49,7 +49,7 @@ export class AppComponent {
   }
 
   addEvent(): void {
-    const friends = this.dataService.friends();
+    const friends = this.dataService.friendsWithEventCount();
     const newEvent: Event = {
       id: crypto.randomUUID(),
       title: '',

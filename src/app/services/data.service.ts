@@ -30,6 +30,17 @@ export class DataService {
   friends = computed(() => this.friendsSignal());
   events = computed(() => this.eventsSignal());
 
+  // Computed property that adds eventCount to friends
+  friendsWithEventCount = computed(() => {
+    const friends = this.friends();
+    const events = this.events();
+    
+    return friends.map(friend => ({
+      ...friend,
+      eventCount: events.filter(event => event.attendees.includes(friend.id)).length
+    }));
+  });
+
   constructor() {
     this.db = new SocialNetworkDB();
     this.initDatabase();
@@ -68,17 +79,20 @@ export class DataService {
 
   private async loadSampleData() {
     try {
+      // Remove eventCount from sample data before storing
+      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(({ eventCount, ...friend }) => friend);
+      
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
         await Promise.all([
-          this.db.friends.bulkAdd(SAMPLE_DATA.friends),
+          this.db.friends.bulkAdd(friendsWithoutEventCount),
           this.db.events.bulkAdd(SAMPLE_DATA.events)
         ]);
       });
       
-      this.friendsSignal.set(SAMPLE_DATA.friends);
+      this.friendsSignal.set(friendsWithoutEventCount);
       this.eventsSignal.set(SAMPLE_DATA.events);
       
-      localStorage.setItem('friends', JSON.stringify(SAMPLE_DATA.friends));
+      localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
       localStorage.setItem('events', JSON.stringify(SAMPLE_DATA.events));
     } catch (error) {
       console.error('Failed to load sample data', error);
@@ -91,10 +105,14 @@ export class DataService {
     const storedEvents = localStorage.getItem('events');
     
     if (storedFriends) {
-      this.friendsSignal.set(JSON.parse(storedFriends));
+      const friends = JSON.parse(storedFriends);
+      // Remove eventCount if it exists in stored data
+      const friendsWithoutEventCount = friends.map(({ eventCount, ...friend }: any) => friend);
+      this.friendsSignal.set(friendsWithoutEventCount);
     } else {
-      this.friendsSignal.set(SAMPLE_DATA.friends);
-      localStorage.setItem('friends', JSON.stringify(SAMPLE_DATA.friends));
+      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(({ eventCount, ...friend }) => friend);
+      this.friendsSignal.set(friendsWithoutEventCount);
+      localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
     }
     
     if (storedEvents) {
@@ -109,33 +127,14 @@ export class DataService {
 
   async addEvent(event: Event): Promise<void> {
     try {
-      await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        await this.db.events.add(event);
-        
-        // Update friends' event counts
-        for (const friendId of event.attendees) {
-          const friend = await this.db.friends.get(friendId);
-          if (friend) {
-            friend.eventCount++;
-            await this.db.friends.put(friend);
-          }
-        }
-      });
+      await this.db.events.add(event);
 
       // Update signals
       this.eventsSignal.update(events => [...events, event]);
-      
-      this.friendsSignal.update(friends => 
-        friends.map(friend => ({
-          ...friend,
-          eventCount: friend.eventCount + (event.attendees.includes(friend.id) ? 1 : 0)
-        }))
-      );
 
       // Update localStorage in background
       setTimeout(() => {
         localStorage.setItem('events', JSON.stringify(this.events()));
-        localStorage.setItem('friends', JSON.stringify(this.friends()));
       }, 0);
     } catch (error) {
       console.error('Failed to add event:', error);
@@ -146,7 +145,9 @@ export class DataService {
   async addFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        await this.db.friends.add(friend);
+        // Remove eventCount before storing
+        const { eventCount, ...friendWithoutEventCount } = friend as any;
+        await this.db.friends.add(friendWithoutEventCount);
         
         // Update events
         for (const eventId of eventIds) {
@@ -159,7 +160,8 @@ export class DataService {
       });
 
       // Update signals
-      this.friendsSignal.update(friends => [...friends, friend]);
+      const { eventCount, ...friendWithoutEventCount } = friend as any;
+      this.friendsSignal.update(friends => [...friends, friendWithoutEventCount]);
       
       this.eventsSignal.update(events => 
         events.map(event => 
@@ -183,10 +185,9 @@ export class DataService {
   async updateFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        await this.db.friends.put({
-          ...friend,
-          eventCount: eventIds.length
-        });
+        // Remove eventCount before storing
+        const { eventCount, ...friendWithoutEventCount } = friend as any;
+        await this.db.friends.put(friendWithoutEventCount);
         
         // Get all events to update
         const events = await this.db.events.toArray();
@@ -206,9 +207,9 @@ export class DataService {
       });
 
       // Update signals
-      const updatedFriend = { ...friend, eventCount: eventIds.length };
+      const { eventCount, ...friendWithoutEventCount } = friend as any;
       this.friendsSignal.update(friends => 
-        friends.map(f => f.id === friend.id ? updatedFriend : f)
+        friends.map(f => f.id === friend.id ? friendWithoutEventCount : f)
       );
       
       this.eventsSignal.update(events => 
@@ -240,59 +241,17 @@ export class DataService {
   }
 
   async updateEvent(updatedEvent: Event): Promise<void> {
-    let originalEvent: Event | undefined;
-    
     try {
-      await this.db.transaction('rw', this.db.events, this.db.friends, async () => {
-        // Get the original event
-        originalEvent = await this.db.events.get(updatedEvent.id);
-        
-        // Update event
-        await this.db.events.put(updatedEvent);
-        
-        // Update friend event counts
-        if (originalEvent) {
-          const currentOriginalEvent = originalEvent; // Capture in new constant
-          const removedFriends = currentOriginalEvent.attendees.filter(id => !updatedEvent.attendees.includes(id));
-          const addedFriends = updatedEvent.attendees.filter(id => !currentOriginalEvent.attendees.includes(id));
-          
-          for (const friendId of [...removedFriends, ...addedFriends]) {
-            const friend = await this.db.friends.get(friendId);
-            if (friend) {
-              friend.eventCount += addedFriends.includes(friendId) ? 1 : -1;
-              await this.db.friends.put(friend);
-            }
-          }
-        }
-      });
+      await this.db.events.put(updatedEvent);
 
       // Update signals
       this.eventsSignal.update(events =>
         events.map(event => event.id === updatedEvent.id ? updatedEvent : event)
       );
-      
-      if (originalEvent !== undefined) {
-        const currentOriginalEvent = originalEvent; // Capture in new constant
-        const removedFriends = currentOriginalEvent.attendees.filter(id => !updatedEvent.attendees.includes(id));
-        const addedFriends = updatedEvent.attendees.filter(id => !currentOriginalEvent.attendees.includes(id));
-        
-        this.friendsSignal.update(friends =>
-          friends.map(friend => {
-            if (removedFriends.includes(friend.id)) {
-              return { ...friend, eventCount: friend.eventCount - 1 };
-            }
-            if (addedFriends.includes(friend.id)) {
-              return { ...friend, eventCount: friend.eventCount + 1 };
-            }
-            return friend;
-          })
-        );
-      }
 
       // Update localStorage in background
       setTimeout(() => {
         localStorage.setItem('events', JSON.stringify(this.events()));
-        localStorage.setItem('friends', JSON.stringify(this.friends()));
       }, 0);
     } catch (error) {
       console.error('Failed to update event:', error);

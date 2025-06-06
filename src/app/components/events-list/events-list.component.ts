@@ -45,7 +45,7 @@ export class EventsListComponent {
     }
     
     const dialogRef = this.dialog.open(EventEditDialogComponent, {
-      data: { event, friends: this.dataService.friends() }
+      data: { event, friends: this.dataService.friendsWithEventCount() }
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -13,7 +13,7 @@ export class GraphService {
   private _filter = signal<string>('');
   
   readonly nodes = computed(() => {
-    const friends = this.dataService.friends();
+    const friends = this.dataService.friendsWithEventCount();
     const events = this.dataService.events();
     const filter = this._filter();
     

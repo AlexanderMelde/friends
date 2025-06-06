@@ -63,7 +63,7 @@ export class FriendTooltipComponent {
     if (!friend) return [];
     
     const filter = this.graphService.filter();
-    const friends = this.dataService.friends();
+    const friends = this.dataService.friendsWithEventCount();
     const otherFriends = friends.filter(f => f.id !== friend.id);
     
     return otherFriends.map(otherFriend => {

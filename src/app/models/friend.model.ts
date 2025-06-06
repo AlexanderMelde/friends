@@ -7,8 +7,7 @@ export interface Friend {
   photoUrl: string;
   bio?: string;
   joinDate?: Date;
-  // Total events this friend has attended
-  eventCount: number;
+  // Note: eventCount is now computed dynamically from events
 }
 
 /**
@@ -20,7 +19,7 @@ export interface FriendNode extends d3.SimulationNodeDatum {
   photoUrl: string;
   bio?: string;
   joinDate?: Date;
-  eventCount: number;
+  eventCount: number; // Computed dynamically
   // Radius for visualization sizing
   radius: number;
   // Position and forces for d3

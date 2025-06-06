@@ -52,7 +52,6 @@ export class FriendDialogComponent {
         name: '',
         photoUrl: '',
         bio: '',
-        eventCount: 0,
         joinDate: new Date()
       };
     }
@@ -69,7 +68,6 @@ export class FriendDialogComponent {
   }
 
   onSave(): void {
-    this.friend.eventCount = this.selectedEvents.length;
     this.dialogRef.close({
       friend: this.friend,
       selectedEvents: this.selectedEvents

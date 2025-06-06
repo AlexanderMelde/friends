@@ -9,64 +9,56 @@ export const SAMPLE_DATA = {
       name: 'Alex Johnson',
       photoUrl: 'https://randomuser.me/api/portraits/women/68.jpg',
       bio: 'Passionate about photography and hiking',
-      joinDate: new Date(2022, 0, 15),
-      eventCount: 8
+      joinDate: new Date(2022, 0, 15)
     },
     {
       id: 'f2',
       name: 'Michael Chen',
       photoUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
       bio: 'Software developer and coffee enthusiast',
-      joinDate: new Date(2022, 1, 3),
-      eventCount: 6
+      joinDate: new Date(2022, 1, 3)
     },
     {
       id: 'f3',
       name: 'Sarah Williams',
       photoUrl: 'https://randomuser.me/api/portraits/women/45.jpg',
       bio: 'Yoga instructor and traveler',
-      joinDate: new Date(2022, 2, 10),
-      eventCount: 5
+      joinDate: new Date(2022, 2, 10)
     },
     {
       id: 'f4',
       name: 'David Kim',
       photoUrl: 'https://randomuser.me/api/portraits/men/22.jpg',
       bio: 'Music producer and vinyl collector',
-      joinDate: new Date(2022, 3, 5),
-      eventCount: 7
+      joinDate: new Date(2022, 3, 5)
     },
     {
       id: 'f5',
       name: 'Emma Rodriguez',
       photoUrl: 'https://randomuser.me/api/portraits/women/28.jpg',
       bio: 'Chef and foodie explorer',
-      joinDate: new Date(2022, 4, 17),
-      eventCount: 4
+      joinDate: new Date(2022, 4, 17)
     },
     {
       id: 'f6',
       name: 'James Wilson',
       photoUrl: 'https://randomuser.me/api/portraits/men/53.jpg',
       bio: 'Graphic designer and art enthusiast',
-      joinDate: new Date(2022, 5, 8),
-      eventCount: 3
+      joinDate: new Date(2022, 5, 8)
     },
     {
       id: 'f7',
       name: 'Olivia Martinez',
       photoUrl: 'https://randomuser.me/api/portraits/women/17.jpg',
       bio: 'Environmental scientist and cyclist',
-      joinDate: new Date(2022, 6, 22),
-      eventCount: 5
+      joinDate: new Date(2022, 6, 22)
     },
     {
       id: 'f8',
       name: 'Ethan Thompson',
       photoUrl: 'https://randomuser.me/api/portraits/men/77.jpg',
       bio: 'Architect and urban explorer',
-      joinDate: new Date(2022, 7, 14),
-      eventCount: 2
+      joinDate: new Date(2022, 7, 14)
     }
   ] as Friend[],
   
