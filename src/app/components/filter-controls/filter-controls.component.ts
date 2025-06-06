@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -64,7 +64,12 @@ export class FilterControlsComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private graphService: GraphService
-  ) {}
+  ) {
+    // Effect to sync selectedType with the graph service filter
+    effect(() => {
+      this.selectedType = this.graphService.filter();
+    });
+  }
 
   ngOnInit(): void {
     // Initialize selected type from current filter
