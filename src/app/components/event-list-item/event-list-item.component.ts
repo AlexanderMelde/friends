@@ -25,7 +25,7 @@ export class EventListItemComponent {
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
-  private dragService = inject(DragService);
+  public dragService = inject(DragService);
 
   // Computed property to get attendees for this event
   attendees = computed(() => {
