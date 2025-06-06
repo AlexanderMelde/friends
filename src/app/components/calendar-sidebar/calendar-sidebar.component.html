@@ -1,0 +1,47 @@
+<div class="sidebar-overlay" [class.open]="isOpen" (click)="close()"></div>
+
+<div class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <h2 class="sidebar-title">
+      <mat-icon class="title-icon">event_note</mat-icon>
+      Calendar Agenda
+    </h2>
+    <button mat-icon-button (click)="close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <div class="sidebar-content">
+    <ng-container *ngIf="groupedEvents().length > 0; else noEvents">
+      <div *ngFor="let yearGroup of groupedEvents()" class="year-group">
+        <h3 class="year-header">{{ yearGroup.year }}</h3>
+        
+        <div *ngFor="let monthGroup of yearGroup.months" class="month-group">
+          <h4 class="month-header">
+            <mat-icon class="month-icon">calendar_month</mat-icon>
+            {{ monthGroup.month }}
+          </h4>
+          
+          <div *ngFor="let dayGroup of monthGroup.days" class="day-group">
+            <h5 class="day-header">{{ dayGroup.day }}</h5>
+            <div class="events-for-day">
+              <app-event-list-item 
+                *ngFor="let event of dayGroup.events"
+                [event]="event" 
+                [showEditButton]="true"
+                (editEventClicked)="editEvent($event)">
+              </app-event-list-item>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    
+    <ng-template #noEvents>
+      <div class="no-events">
+        <mat-icon style="font-size: 48px; color: #ccc; margin-bottom: 16px;">event_busy</mat-icon>
+        <p>No events to display</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

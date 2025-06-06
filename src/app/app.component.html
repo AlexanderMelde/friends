@@ -2,6 +2,9 @@
   <mat-toolbar color="primary">
     <span>{{ title }}</span>
     <span class="toolbar-spacer"></span>
+    <button mat-icon-button (click)="toggleSidebar()" matTooltip="Calendar Agenda">
+      <mat-icon>event_note</mat-icon>
+    </button>
     <button mat-icon-button (click)="addEvent()" matTooltip="Add Event">
       <mat-icon>event_add</mat-icon>
     </button>
@@ -18,4 +21,6 @@
   <div class="content-container">
     <app-graph-visualization></app-graph-visualization>
   </div>
+  
+  <app-calendar-sidebar [isOpen]="sidebarOpen"></app-calendar-sidebar>
 </div>

@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
 import { FilterControlsComponent } from './components/filter-controls/filter-controls.component';
+import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
 import { FriendDialogComponent } from './components/friend-dialog/friend-dialog.component';
 import { EventEditDialogComponent } from './components/event-edit-dialog/event-edit-dialog.component';
 import { DataService } from './services/data.service';
@@ -22,18 +23,24 @@ import { Event } from './models/event.model';
     MatButtonModule,
     MatTooltipModule,
     GraphVisualizationComponent,
-    FilterControlsComponent
+    FilterControlsComponent,
+    CalendarSidebarComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'Social Network Visualization';
+  sidebarOpen = false;
 
   constructor(
     private dialog: MatDialog,
     private dataService: DataService
   ) {}
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
 
   addFriend(): void {
     const events = this.dataService.events();

@@ -7,43 +7,26 @@ import { DataService } from '../../services/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 import { GraphService } from '../../services/graph.service';
+import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 
 @Component({
   selector: 'app-events-list',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, EventListItemComponent],
   templateUrl: './events-list.component.html',
   styleUrls: ['./events-list.component.css']
 })
 export class EventsListComponent {
   @Input() events: Event[] = [];
   @Input() title: string = 'Events';
-  selectedType: string = '';
 
   constructor(
     private dialog: MatDialog,
     private dataService: DataService,
     private graphService: GraphService
-  ) {
-    // Use effect to react to filter signal changes
-    effect(() => {
-      this.selectedType = this.graphService.filter();
-    });
-  }
+  ) {}
 
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  }
-
-  editEvent(event: Event, e?: MouseEvent): void {
-    if (e) {
-      e.stopPropagation();
-    }
-    
+  editEvent(event: Event): void {
     const dialogRef = this.dialog.open(EventEditDialogComponent, {
       data: { event, friends: this.dataService.friendsWithEventCount() }
     });
@@ -53,20 +36,5 @@ export class EventsListComponent {
         this.dataService.updateEvent(result);
       }
     });
-  }
-
-  filterByType(type: string, e: MouseEvent): void {
-    e.stopPropagation();
-    
-    // Toggle filter
-    if (this.selectedType === type) {
-      this.graphService.setFilter('');
-    } else {
-      this.graphService.setFilter(type);
-    }
-  }
-
-  isTypeSelected(type: string): boolean {
-    return this.selectedType === type;
   }
 }

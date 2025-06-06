@@ -1,0 +1,21 @@
+<div class="event-item">
+  <div class="event-date">{{ formatDate(event.date) }}</div>
+  <div class="event-details">
+    <div class="event-title">
+      <span class="event-title-text">{{ event.title }}</span>
+      <button mat-icon-button (click)="editEvent(event, $event)" class="edit-button" *ngIf="showEditButton">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </div>
+    <div class="event-location" *ngIf="event.location">
+      <mat-icon class="location-icon">place</mat-icon>
+      {{ event.location }}
+    </div>
+    <div class="event-type" 
+         *ngIf="event.type" 
+         (click)="filterByType(event.type, $event)"
+         [class.active]="isTypeSelected(event.type)">
+      {{ event.type }}
+    </div>
+  </div>
+</div>
