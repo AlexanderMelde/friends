@@ -222,8 +222,12 @@ export class EventListItemComponent {
       event.dataTransfer.setData('application/attendee', JSON.stringify(attendeeData));
       event.dataTransfer.effectAllowed = 'move';
       
-      // Create drag image first, then notify drag service
-      this.createSimpleDragImage(event, attendee.name, '#f44336', 32);
+      // Find the avatar image element and use it as the drag image
+      const avatarImg = (event.target as HTMLElement).closest('.attendee-avatar') as HTMLImageElement;
+      if (avatarImg) {
+        // Use the existing avatar image as the drag image
+        event.dataTransfer.setDragImage(avatarImg, 12, 12); // Center the 24px image
+      }
       
       // Use setTimeout to delay the drag service notification slightly
       // This ensures the drag operation starts properly before we hide the avatar
@@ -237,52 +241,5 @@ export class EventListItemComponent {
     // The global drop handler in AppComponent will handle removal if needed
     // Just notify drag service that dragging has ended
     this.dragService.endDrag();
-  }
-
-  private createSimpleDragImage(event: DragEvent, name: string, borderColor: string, size: number): void {
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    
-    if (ctx) {
-      // Fill with a solid color background
-      ctx.fillStyle = borderColor;
-      ctx.beginPath();
-      ctx.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Add initials
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 12px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-      ctx.fillText(initials, size / 2, size / 2);
-      
-      // Convert canvas to blob and create object URL for better reliability
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const dragImage = new Image();
-          dragImage.onload = () => {
-            event.dataTransfer!.setDragImage(dragImage, size / 2, size / 2);
-            URL.revokeObjectURL(url); // Clean up
-          };
-          dragImage.src = url;
-        }
-      });
-      
-      // Fallback: also try the immediate approach
-      try {
-        const dataUrl = canvas.toDataURL();
-        const fallbackImage = new Image();
-        fallbackImage.src = dataUrl;
-        event.dataTransfer!.setDragImage(fallbackImage, size / 2, size / 2);
-      } catch (e) {
-        // If both fail, the browser will use default drag image
-        console.warn('Could not set custom drag image');
-      }
-    }
   }
 }
