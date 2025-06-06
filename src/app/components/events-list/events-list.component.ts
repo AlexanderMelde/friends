@@ -22,7 +22,7 @@ import { GraphService } from '../../services/graph.service';
         <div class="event-date">{{ formatDate(event.date) }}</div>
         <div class="event-details">
           <div class="event-title">
-            {{ event.title }}
+            <span class="event-title-text">{{ event.title }}</span>
             <button mat-icon-button (click)="editEvent(event, $event)" class="edit-button">
               <mat-icon>edit</mat-icon>
             </button>
@@ -41,6 +41,8 @@ import { GraphService } from '../../services/graph.service';
     .events-list {
       max-height: 200px;
       overflow-y: auto;
+      overflow-x: hidden;
+      width: 100%;
     }
 
     .section-title {
@@ -58,11 +60,14 @@ import { GraphService } from '../../services/graph.service';
       width: 20px;
       margin-right: 8px;
       color: #3F51B5;
+      flex-shrink: 0;
     }
 
     .event-item {
       display: flex;
       margin-bottom: 12px;
+      width: 100%;
+      min-width: 0;
     }
 
     .event-item:last-child {
@@ -74,10 +79,13 @@ import { GraphService } from '../../services/graph.service';
       color: #666;
       min-width: 80px;
       margin-right: 8px;
+      flex-shrink: 0;
     }
 
     .event-details {
       flex: 1;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .event-title {
@@ -88,6 +96,16 @@ import { GraphService } from '../../services/graph.service';
       display: flex;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .event-title-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .event-type {
@@ -99,6 +117,10 @@ import { GraphService } from '../../services/graph.service';
       display: inline-block;
       cursor: pointer;
       transition: all 0.2s ease;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .event-type:hover {
@@ -116,6 +138,7 @@ import { GraphService } from '../../services/graph.service';
       width: 24px;
       height: 24px;
       line-height: 24px;
+      flex-shrink: 0;
     }
 
     .edit-button mat-icon {
