@@ -25,6 +25,15 @@ export class ConnectedFriendsListComponent {
   selectFriend(connection: ConnectedFriend, event: MouseEvent): void {
     event.stopPropagation();
     
+    // Find the corresponding node in the graph nodes
+    const nodes = this.graphService.nodes();
+    const node = nodes.find(n => n.id === connection.friend.id);
+    
+    if (node) {
+      this.graphService.selectNode(node);
+    }
+    
+    // Also try to select the link between the current friend and the selected friend
     const links = this.graphService.links();
     const link = links.find(l => {
       const sourceId = typeof l.source === 'string' ? l.source : l.source.id;

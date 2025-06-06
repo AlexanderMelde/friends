@@ -69,6 +69,13 @@ export class EventDetailsCardComponent {
 
   selectNode(node: FriendNode, event: MouseEvent) {
     event.stopPropagation();
-    this.graphService.selectNode(node);
+    
+    // Find the corresponding node in the graph nodes to ensure we have the complete node data
+    const nodes = this.graphService.nodes();
+    const graphNode = nodes.find(n => n.id === node.id);
+    
+    if (graphNode) {
+      this.graphService.selectNode(graphNode);
+    }
   }
 }
