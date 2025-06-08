@@ -1,6 +1,6 @@
-<div class="graph-container" #graphContainer (click)="graphService.selectNode(null); graphService.selectLink(null)">
+<div class="graph-container" #graphContainer>
   <!-- Graph visualization area -->
-  <div class="graph-area" [class.mobile-reduced]="isMobileView()">
+  <div class="graph-area" [class.mobile-reduced]="isMobileView()"  (click)="graphService.selectNode(null); graphService.selectLink(null)">
     <!-- D3 will attach the SVG graph here -->
   </div>
 
