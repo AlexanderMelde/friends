@@ -44,10 +44,10 @@ export class AppComponent {
   title = 'Friends!';
   calendarSidebarOpen = false;
   friendsSidebarOpen = false;
+  graphService = inject(GraphService);
 
   private dialog = inject(MatDialog);
   private dataService = inject(DataService);
-  private graphService = inject(GraphService);
   private dragService = inject(DragService);
 
   constructor() {
