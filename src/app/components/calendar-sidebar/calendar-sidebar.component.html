@@ -7,6 +7,9 @@
       Calendar
     </h2>
     <div class="header-actions">
+      <button mat-icon-button (click)="toggleFilters()" class="filter-button" matTooltip="Toggle Filters">
+        <mat-icon>{{ showFilters ? 'filter_list_off' : 'filter_list' }}</mat-icon>
+      </button>
       <button mat-icon-button (click)="addEvent()" class="add-button" matTooltip="Add Event">
         <mat-icon>add</mat-icon>
       </button>
@@ -17,25 +20,77 @@
   </div>
   
   <div class="sidebar-content">
-    <!-- Event Filter Section -->
-    <div class="filter-section">
-      <mat-form-field appearance="outline" class="filter-field">
-        <mat-label>Filter by Event Type</mat-label>
-        <mat-select [(ngModel)]="selectedType" (selectionChange)="applyFilter()">
-          <mat-option *ngFor="let type of eventTypes()" [value]="type.value">
-            {{ type.label }} ({{ type.count }})
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <!-- Filter Section -->
+    <div class="filter-section" [class.expanded]="showFilters">
+      <div class="filter-header" (click)="toggleFilters()">
+        <mat-icon class="filter-icon">filter_list</mat-icon>
+        <span class="filter-title">Filters</span>
+        <mat-icon class="expand-icon" [class.rotated]="showFilters">expand_more</mat-icon>
+      </div>
       
-      <button mat-icon-button 
-        color="primary" 
-        (click)="clearFilter()"
-        [disabled]="!selectedType"
-        matTooltip="Clear Filter"
-        class="clear-filter-button">
-        <mat-icon>clear</mat-icon>
-      </button>
+      <div class="filter-content" [@slideInOut]="showFilters ? 'in' : 'out'">
+        <!-- Event Type Filter -->
+        <div class="filter-row">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Event Type</mat-label>
+            <mat-select [(ngModel)]="selectedType" (selectionChange)="applyFilters()">
+              <mat-option *ngFor="let type of eventTypes()" [value]="type.value">
+                {{ type.label }} ({{ type.count }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <button mat-icon-button 
+            color="primary" 
+            (click)="clearTypeFilter()"
+            [disabled]="!selectedType"
+            matTooltip="Clear Type Filter"
+            class="clear-filter-button">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+
+        <!-- Year Range Filter -->
+        <div class="filter-row">
+          <mat-form-field appearance="outline" class="filter-field year-from">
+            <mat-label>From Year</mat-label>
+            <mat-select [(ngModel)]="selectedFromYear" (selectionChange)="applyFilters()">
+              <mat-option *ngFor="let year of availableYears()" [value]="year">
+                {{ year }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="filter-field year-to">
+            <mat-label>To Year</mat-label>
+            <mat-select [(ngModel)]="selectedToYear" (selectionChange)="applyFilters()">
+              <mat-option *ngFor="let year of availableYears()" [value]="year">
+                {{ year }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <button mat-icon-button 
+            color="primary" 
+            (click)="clearYearFilter()"
+            [disabled]="!selectedFromYear && !selectedToYear"
+            matTooltip="Clear Year Filter"
+            class="clear-filter-button">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+
+        <!-- Clear All Filters -->
+        <div class="filter-actions" *ngIf="hasActiveFilters()">
+          <button mat-stroked-button 
+            color="primary" 
+            (click)="clearAllFilters()"
+            class="clear-all-button">
+            <mat-icon>clear_all</mat-icon>
+            Clear All Filters
+          </button>
+        </div>
+      </div>
     </div>
     
     <ng-container *ngIf="groupedEvents().length > 0; else noEvents">
@@ -64,6 +119,7 @@
       <div class="no-events">
         <mat-icon style="font-size: 48px; color: #ccc; margin-bottom: 16px;">event_busy</mat-icon>
         <p>No events to display</p>
+        <p *ngIf="hasActiveFilters()" class="filter-hint">Try adjusting your filters</p>
       </div>
     </ng-template>
   </div>

@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
@@ -43,7 +44,25 @@ interface EventTypeOption {
     EventListItemComponent
   ],
   templateUrl: './calendar-sidebar.component.html',
-  styleUrls: ['./calendar-sidebar.component.css']
+  styleUrls: ['./calendar-sidebar.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        height: '*',
+        opacity: 1,
+        paddingTop: '16px',
+        paddingBottom: '0px'
+      })),
+      state('out', style({
+        height: '0px',
+        opacity: 0,
+        paddingTop: '0px',
+        paddingBottom: '0px'
+      })),
+      transition('in => out', animate('300ms ease-in-out')),
+      transition('out => in', animate('300ms ease-in-out'))
+    ])
+  ]
 })
 export class CalendarSidebarComponent {
   @Input() isOpen: boolean = false;
@@ -56,6 +75,9 @@ export class CalendarSidebarComponent {
   private dialog = inject(MatDialog);
 
   selectedType: string = '';
+  selectedFromYear: number | null = null;
+  selectedToYear: number | null = null;
+  showFilters: boolean = false;
 
   readonly eventTypes = computed(() => {
     const events = this.dataService.events();
@@ -86,14 +108,44 @@ export class CalendarSidebarComponent {
     return options;
   });
 
+  readonly availableYears = computed(() => {
+    const events = this.dataService.events();
+    const years = new Set<number>();
+    
+    events.forEach(event => {
+      const year = new Date(event.date).getFullYear();
+      years.add(year);
+    });
+    
+    return Array.from(years).sort((a, b) => a - b);
+  });
+
   readonly groupedEvents = computed(() => {
     const events = this.dataService.events();
-    const filter = this.graphService.filter();
+    const graphFilter = this.graphService.filter();
     
-    // Filter events if a filter is active
-    const filteredEvents = filter 
-      ? events.filter(e => e.type === filter)
-      : events;
+    // Apply all filters
+    let filteredEvents = events;
+    
+    // Apply graph service filter (event type from graph)
+    if (graphFilter) {
+      filteredEvents = filteredEvents.filter(e => e.type === graphFilter);
+    }
+    
+    // Apply local event type filter
+    if (this.selectedType) {
+      filteredEvents = filteredEvents.filter(e => e.type === this.selectedType);
+    }
+    
+    // Apply year range filter
+    if (this.selectedFromYear || this.selectedToYear) {
+      filteredEvents = filteredEvents.filter(event => {
+        const eventYear = new Date(event.date).getFullYear();
+        const fromYear = this.selectedFromYear || Number.MIN_SAFE_INTEGER;
+        const toYear = this.selectedToYear || Number.MAX_SAFE_INTEGER;
+        return eventYear >= fromYear && eventYear <= toYear;
+      });
+    }
     
     // Sort events by date (newest first)
     const sortedEvents = [...filteredEvents].sort((a, b) => 
@@ -144,7 +196,10 @@ export class CalendarSidebarComponent {
   constructor() {
     // Effect to sync selectedType with the graph service filter
     effect(() => {
-      this.selectedType = this.graphService.filter();
+      const graphFilter = this.graphService.filter();
+      if (graphFilter !== this.selectedType) {
+        this.selectedType = graphFilter;
+      }
     });
   }
 
@@ -168,12 +223,33 @@ export class CalendarSidebarComponent {
     });
   }
 
-  applyFilter(): void {
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  applyFilters(): void {
+    // Update graph service filter when type filter changes
     this.graphService.setFilter(this.selectedType);
   }
 
-  clearFilter(): void {
+  clearTypeFilter(): void {
     this.selectedType = '';
+    this.applyFilters();
+  }
+
+  clearYearFilter(): void {
+    this.selectedFromYear = null;
+    this.selectedToYear = null;
+  }
+
+  clearAllFilters(): void {
+    this.selectedType = '';
+    this.selectedFromYear = null;
+    this.selectedToYear = null;
     this.graphService.setFilter('');
+  }
+
+  hasActiveFilters(): boolean {
+    return !!(this.selectedType || this.selectedFromYear || this.selectedToYear);
   }
 }
