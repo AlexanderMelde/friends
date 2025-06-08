@@ -31,7 +31,7 @@
 .friend-item {
   display: inline-block;
   align-items: center;
-  padding: 8px 0;
+  margin: 8px 0;
   border-bottom: 1px solid #f0f0f0;
   min-width: 0;
   position: relative;
@@ -56,7 +56,8 @@
   left: 0;
   right: 0;
   width: 100%;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: bold;
   color: white;
   overflow: hidden;
   text-overflow: ellipsis;
