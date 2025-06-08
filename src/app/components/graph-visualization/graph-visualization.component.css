@@ -148,6 +148,18 @@ svg {
   max-width: 280px;
 }
 
+.boltbadge {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 50;
+}
+
+.boltbadge > img {
+  width: 90px;
+  height: 90px; 
+}
+
 /* Mobile tooltip adjustments */
 .mobile-tooltip ::ng-deep .friend-tooltip {
   position: static;
