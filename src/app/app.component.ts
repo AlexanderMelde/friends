@@ -18,6 +18,7 @@ import { HelpDialogComponent } from './components/help-dialog/help-dialog.compon
 import { LegalDialogComponent } from './components/legal-dialog/legal-dialog.component';
 import { DataService } from './services/data.service';
 import { DragService } from './services/drag.service';
+import { GraphService } from './services/graph.service';
 import { Event } from './models/event.model';
 
 @Component({
@@ -46,6 +47,7 @@ export class AppComponent {
 
   private dialog = inject(MatDialog);
   private dataService = inject(DataService);
+  private graphService = inject(GraphService);
   private dragService = inject(DragService);
 
   constructor() {
