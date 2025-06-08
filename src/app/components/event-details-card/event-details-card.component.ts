@@ -53,13 +53,11 @@ export class EventDetailsCardComponent {
     const sourceId = typeof link.source === 'string' ? link.source : link.source.id;
     const targetId = typeof link.target === 'string' ? link.target : link.target.id;
     
-    // Get fresh shared events from data service
-    const sharedEvents = this.dataService.getSharedEvents(sourceId, targetId);
-    
-    const filter = this.graphService.filter();
-    return filter 
-      ? sharedEvents.filter(e => e.type === filter)
-      : sharedEvents;
+    // Use filtered events from graph service to get shared events that match current filters
+    const filteredEvents = this.graphService.filteredEvents();
+    return filteredEvents.filter(event => 
+      event.attendees.includes(sourceId) && event.attendees.includes(targetId)
+    );
   });
   
   constructor(

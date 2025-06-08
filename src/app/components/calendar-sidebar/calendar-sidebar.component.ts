@@ -101,11 +101,12 @@ export class CalendarSidebarComponent {
   }
 
   readonly eventTypes = computed(() => {
-    const events = this.dataService.events();
+    // Use filtered events from graph service to get accurate counts
+    const filteredEvents = this.graphService.filteredEvents();
     
     // Count events by type
     const typeCounts = new Map<string, number>();
-    events.forEach(event => {
+    filteredEvents.forEach(event => {
       const type = event.type || 'Uncategorized';
       typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
     });
@@ -123,7 +124,7 @@ export class CalendarSidebarComponent {
     options.unshift({
       value: '',
       label: 'All Events',
-      count: events.length
+      count: filteredEvents.length
     });
     
     return options;
@@ -152,33 +153,8 @@ export class CalendarSidebarComponent {
   });
 
   readonly groupedEvents = computed(() => {
-    const events = this.dataService.events();
-    const graphFilter = this.graphService.filter();
-    
-    // Apply all filters
-    let filteredEvents = events;
-    
-    // Apply graph service filter (event type from graph)
-    if (graphFilter) {
-      filteredEvents = filteredEvents.filter(e => e.type === graphFilter);
-    }
-    
-    // Apply local event type filter
-    if (this.selectedType) {
-      filteredEvents = filteredEvents.filter(e => e.type === this.selectedType);
-    }
-    
-    // Apply year range filter - now reactive to signal changes
-    const fromYear = this._selectedFromYear();
-    const toYear = this._selectedToYear();
-    if (fromYear || toYear) {
-      filteredEvents = filteredEvents.filter(event => {
-        const eventYear = new Date(event.date).getFullYear();
-        const filterFromYear = fromYear || this.minYear();
-        const filterToYear = toYear || this.maxYear();
-        return eventYear >= filterFromYear && eventYear <= filterToYear;
-      });
-    }
+    // Use filtered events from graph service instead of applying filters locally
+    const filteredEvents = this.graphService.filteredEvents();
     
     // Sort events by date (newest first)
     const sortedEvents = [...filteredEvents].sort((a, b) => 
@@ -235,14 +211,44 @@ export class CalendarSidebarComponent {
       }
     });
 
+    // Effect to sync year filters with graph service
+    effect(() => {
+      const fromYear = this.graphService.yearFromFilter();
+      const toYear = this.graphService.yearToFilter();
+      
+      if (fromYear !== this._selectedFromYear()) {
+        this._selectedFromYear.set(fromYear);
+      }
+      if (toYear !== this._selectedToYear()) {
+        this._selectedToYear.set(toYear);
+      }
+    });
+
     // Effect to initialize year range when data is available
     effect(() => {
       const years = this.availableYears();
       if (years.length > 0 && !this.isInitialized) {
-        // Initialize to full range
+        // Initialize to full range (no filter)
         this._selectedFromYear.set(this.minYear());
         this._selectedToYear.set(this.maxYear());
         this.isInitialized = true;
+      }
+    });
+
+    // Effect to update graph service when local year filters change
+    effect(() => {
+      const fromYear = this._selectedFromYear();
+      const toYear = this._selectedToYear();
+      const minYear = this.minYear();
+      const maxYear = this.maxYear();
+      
+      // Only set filter if it's different from full range
+      if (this.isInitialized) {
+        const isFullRange = fromYear === minYear && toYear === maxYear;
+        this.graphService.setYearFilter(
+          isFullRange ? null : fromYear,
+          isFullRange ? null : toYear
+        );
       }
     });
   }

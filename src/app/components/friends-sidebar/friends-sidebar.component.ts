@@ -29,11 +29,8 @@ export class FriendsSidebarComponent {
 
   readonly sortedFriends = computed(() => {
     const friends = this.dataService.friendsWithEventCount();
-    const filter = this.graphService.filter();
-    
-    // Calculate event counts based on current filter
-    const events = this.dataService.events();
-    const filteredEvents = filter ? events.filter(e => e.type === filter) : events;
+    // Use filtered events from graph service to get accurate counts
+    const filteredEvents = this.graphService.filteredEvents();
     
     return friends.map(friend => {
       const eventCount = filteredEvents.filter(event => 

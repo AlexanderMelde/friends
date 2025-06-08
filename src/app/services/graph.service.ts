@@ -11,6 +11,35 @@ export class GraphService {
   private _selectedNode = signal<FriendNode | null>(null);
   private _selectedLink = signal<EventLink | null>(null);
   private _filter = signal<string>('');
+  private _yearFromFilter = signal<number | null>(null);
+  private _yearToFilter = signal<number | null>(null);
+  
+  // Computed property for filtered events based on both type and year filters
+  readonly filteredEvents = computed(() => {
+    const events = this.dataService.events();
+    const typeFilter = this._filter();
+    const fromYear = this._yearFromFilter();
+    const toYear = this._yearToFilter();
+    
+    let filtered = events;
+    
+    // Apply type filter
+    if (typeFilter) {
+      filtered = filtered.filter(e => e.type === typeFilter);
+    }
+    
+    // Apply year range filter
+    if (fromYear !== null || toYear !== null) {
+      filtered = filtered.filter(event => {
+        const eventYear = new Date(event.date).getFullYear();
+        const minYear = fromYear || Number.MIN_SAFE_INTEGER;
+        const maxYear = toYear || Number.MAX_SAFE_INTEGER;
+        return eventYear >= minYear && eventYear <= maxYear;
+      });
+    }
+    
+    return filtered;
+  });
   
   readonly nodes = computed(() => {
     // Wait for data to be loaded before computing nodes
@@ -22,8 +51,8 @@ export class GraphService {
       return [];
     }
     
-    const filter = this._filter();
-    const filteredEvents = filter ? events.filter(e => e.type === filter) : events;
+    // Use filtered events instead of applying filters here
+    const filteredEvents = this.filteredEvents();
     
     // Create a map of friend IDs to their event counts
     const eventCounts = new Map<string, number>();
@@ -50,8 +79,8 @@ export class GraphService {
       return [];
     }
     
-    const filter = this._filter();
-    const filteredEvents = filter ? events.filter(e => e.type === filter) : events;
+    // Use filtered events instead of applying filters here
+    const filteredEvents = this.filteredEvents();
     
     // Create a map for quick node lookups
     const nodeMap = new Map(nodes.map(node => [node.id, node]));
@@ -94,6 +123,8 @@ export class GraphService {
   readonly selectedNode = this._selectedNode.asReadonly();
   readonly selectedLink = this._selectedLink.asReadonly();
   readonly filter = this._filter.asReadonly();
+  readonly yearFromFilter = this._yearFromFilter.asReadonly();
+  readonly yearToFilter = this._yearToFilter.asReadonly();
 
   constructor(private dataService: DataService) {
     // Effect to handle selection updates - only clear link when node is explicitly set to null
@@ -235,6 +266,20 @@ export class GraphService {
   
   setFilter(filter: string) {
     this._filter.set(filter);
+  }
+
+  setYearFilter(fromYear: number | null, toYear: number | null) {
+    this._yearFromFilter.set(fromYear);
+    this._yearToFilter.set(toYear);
+  }
+
+  clearYearFilter() {
+    this._yearFromFilter.set(null);
+    this._yearToFilter.set(null);
+  }
+
+  hasYearFilter(): boolean {
+    return this._yearFromFilter() !== null || this._yearToFilter() !== null;
   }
 
   private areLinksEqual(link1: EventLink, link2: EventLink): boolean {

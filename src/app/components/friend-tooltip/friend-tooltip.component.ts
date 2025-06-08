@@ -64,42 +64,44 @@ export class FriendTooltipComponent {
     };
   });
 
-  // Computed event count that updates dynamically
+  // Computed event count that updates dynamically based on filtered events
   readonly computedEventCount = computed(() => {
     const friend = this.currentFriend();
     if (!friend) return 0;
     
-    const allEvents = this.dataService.events();
-    return allEvents.filter(event => event.attendees.includes(friend.id)).length;
+    // Use filtered events from graph service
+    const filteredEvents = this.graphService.filteredEvents();
+    return filteredEvents.filter(event => event.attendees.includes(friend.id)).length;
   });
 
   readonly events = computed(() => {
     const friend = this.currentFriend();
     if (!friend) return [];
     
-    const filter = this.graphService.filter();
-    const events = this.dataService.getEventsForFriend(friend.id);
+    // Use filtered events from graph service
+    const filteredEvents = this.graphService.filteredEvents();
+    const friendEvents = filteredEvents.filter(event => event.attendees.includes(friend.id));
     
-    return events
-      .filter(event => !filter || event.type === filter)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return friendEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
 
   readonly connectedFriends = computed(() => {
     const friend = this.currentFriend();
     if (!friend) return [];
     
-    const filter = this.graphService.filter();
+    // Use filtered events from graph service
+    const filteredEvents = this.graphService.filteredEvents();
     const friends = this.dataService.friendsWithEventCount();
     const otherFriends = friends.filter(f => f.id !== friend.id);
     
     return otherFriends.map(otherFriend => {
-      const sharedEvents = this.dataService.getSharedEvents(friend.id, otherFriend.id);
-      const filteredEvents = filter ? sharedEvents.filter(e => e.type === filter) : sharedEvents;
+      const sharedEvents = filteredEvents.filter(event => 
+        event.attendees.includes(friend.id) && event.attendees.includes(otherFriend.id)
+      );
       
       return {
         friend: otherFriend,
-        sharedEventCount: filteredEvents.length
+        sharedEventCount: sharedEvents.length
       };
     })
     .filter(connection => connection.sharedEventCount > 0)
