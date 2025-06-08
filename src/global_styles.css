@@ -176,11 +176,6 @@ button:focus-visible,
   }
 }
 
-/* Dark mode support preparation */
-@media (prefers-color-scheme: dark) {
-  /* Dark mode styles can be added here when implemented */
-}
-
 /* Print styles */
 @media print {
   .mat-toolbar,
