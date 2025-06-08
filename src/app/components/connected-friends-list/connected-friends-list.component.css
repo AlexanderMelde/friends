@@ -61,6 +61,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  bottom: 16px;
+  bottom: 4px;
   text-align: center;
 }
