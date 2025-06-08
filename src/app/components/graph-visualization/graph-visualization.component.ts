@@ -70,16 +70,24 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       }
     });
 
-    // Effect to manage tab selection based on what's selected
+    // Effect to auto-switch tabs only when something is newly selected (not when manually changing tabs)
     effect(() => {
       const selectedNode = this.selectedNode();
       const selectedLink = this.selectedLink();
       
-      // Auto-switch to appropriate tab when something is selected
-      if (selectedNode && !selectedLink) {
-        this.selectedTabIndex.set(0); // Friend Details tab
-      } else if (selectedLink) {
-        this.selectedTabIndex.set(1); // Event Details tab
+      // Only auto-switch if we're on mobile and something was just selected
+      if (this.isMobileView()) {
+        if (selectedNode && !selectedLink) {
+          // Only switch to friend tab if not already there
+          if (this.selectedTabIndex() !== 0) {
+            this.selectedTabIndex.set(0);
+          }
+        } else if (selectedLink) {
+          // Only switch to event tab if not already there
+          if (this.selectedTabIndex() !== 1) {
+            this.selectedTabIndex.set(1);
+          }
+        }
       }
     });
   }
@@ -116,6 +124,11 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
     return window.innerWidth <= 800;
   }
 
+  onTabChange(index: number): void {
+    // Allow manual tab switching without auto-switching back
+    this.selectedTabIndex.set(index);
+  }
+
   private setupResizeObserver(): void {
     this.resizeObserver = new ResizeObserver(() => {
       if (this.isInitialized) {
@@ -127,7 +140,8 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
 
   private updateSVGDimensions(): void {
     const element = this.graphContainer.nativeElement;
-    const rect = element.getBoundingClientRect();
+    const graphArea = element.querySelector('.graph-area');
+    const rect = graphArea ? graphArea.getBoundingClientRect() : element.getBoundingClientRect();
     const width = rect.width || element.clientWidth || 800;
     const height = rect.height || element.clientHeight || 600;
 
@@ -145,14 +159,16 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
 
   private initializeGraph(): void {
     const element = this.graphContainer.nativeElement;
-    const rect = element.getBoundingClientRect();
-    const width = rect.width || element.clientWidth || 800;
-    const height = rect.height || element.clientHeight || 600;
+    const graphArea = element.querySelector('.graph-area');
+    const container = graphArea || element;
+    const rect = container.getBoundingClientRect();
+    const width = rect.width || container.clientWidth || 800;
+    const height = rect.height || container.clientHeight || 600;
 
     // Clear any existing SVG
-    d3.select(element).selectAll('svg').remove();
+    d3.select(container).selectAll('svg').remove();
 
-    this.svg = d3.select(element)
+    this.svg = d3.select(container)
       .append('svg')
       .attr('width', '100%')
       .attr('height', '100%')

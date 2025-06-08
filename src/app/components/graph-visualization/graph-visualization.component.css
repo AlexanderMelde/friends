@@ -13,6 +13,7 @@
   width: 100%;
   position: relative;
   overflow: hidden;
+  min-height: 300px; /* Ensure minimum height for graph visibility */
 }
 
 svg {
@@ -62,6 +63,7 @@ svg {
   background-color: white;
   border-top: 1px solid #e0e0e0;
   overflow: hidden;
+  min-height: 200px; /* Ensure minimum height for tabs */
 }
 
 .details-tabs {
@@ -162,10 +164,12 @@ svg {
 @media (max-width: 800px) {
   .graph-area.mobile-reduced {
     flex: 0 0 50%;
+    min-height: 250px; /* Ensure graph is visible on mobile */
   }
   
   .mobile-tabs {
     flex: 0 0 50%;
+    min-height: 250px; /* Ensure tabs are visible on mobile */
   }
   
   .network-controls {
@@ -200,6 +204,14 @@ svg {
 
 /* Small mobile devices */
 @media (max-width: 480px) {
+  .graph-area.mobile-reduced {
+    min-height: 200px;
+  }
+  
+  .mobile-tabs {
+    min-height: 200px;
+  }
+  
   .tab-content {
     padding: 8px;
   }
@@ -227,10 +239,12 @@ svg {
 @media (max-width: 800px) and (orientation: landscape) {
   .graph-area.mobile-reduced {
     flex: 0 0 60%;
+    min-height: 180px;
   }
   
   .mobile-tabs {
     flex: 0 0 40%;
+    min-height: 120px;
   }
   
   .network-controls {
