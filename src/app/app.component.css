@@ -153,10 +153,6 @@ mat-toolbar {
     z-index: 1001; /* Above overlay */
   }
 
-  .boltbadge > img {
-    width: 70px;
-    height: 70px;
-  }
 }
 
 /* Tablet adjustments */
