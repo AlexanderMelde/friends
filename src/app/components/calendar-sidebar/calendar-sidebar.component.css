@@ -54,14 +54,12 @@
   gap: 4px;
 }
 
-.filter-button,
 .add-button,
 .close-button {
   color: white;
   transition: background-color 0.2s ease;
 }
 
-.filter-button:hover,
 .add-button:hover,
 .close-button:hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -146,11 +144,6 @@
   min-width: 0;
 }
 
-.filter-field.year-from,
-.filter-field.year-to {
-  flex: 0 0 80px;
-}
-
 .filter-field ::ng-deep .mat-mdc-form-field-wrapper {
   padding-bottom: 0;
 }
@@ -172,6 +165,69 @@
 
 .clear-filter-button[disabled] {
   opacity: 0.3;
+}
+
+/* Year Range Filter Styles */
+.year-filter-section {
+  margin-bottom: 16px;
+}
+
+.year-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.year-filter-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.year-range-container {
+  padding: 8px 0;
+}
+
+.year-range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.year-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #3F51B5;
+  background-color: rgba(63, 81, 181, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.year-range-slider {
+  width: 100%;
+  margin: 16px 0;
+}
+
+.year-range-slider ::ng-deep .mat-mdc-slider {
+  --mdc-slider-active-track-color: #3F51B5;
+  --mdc-slider-inactive-track-color: #e0e0e0;
+  --mdc-slider-handle-color: #3F51B5;
+  --mdc-slider-with-tick-marks-inactive-container-color: #e0e0e0;
+  --mdc-slider-with-tick-marks-active-container-color: #3F51B5;
+}
+
+.year-range-info {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.year-info-text {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
 }
 
 .filter-actions {
@@ -254,13 +310,17 @@
     gap: 12px;
   }
   
-  .filter-field.year-from,
-  .filter-field.year-to {
-    flex: 1;
-  }
-  
   .clear-filter-button {
     align-self: flex-end;
     margin-bottom: 0;
+  }
+  
+  .year-range-labels {
+    margin-bottom: 12px;
+  }
+  
+  .year-label {
+    font-size: 13px;
+    padding: 3px 6px;
   }
 }

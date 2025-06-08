@@ -7,9 +7,6 @@
       Calendar
     </h2>
     <div class="header-actions">
-      <button mat-icon-button (click)="toggleFilters()" class="filter-button" matTooltip="Toggle Filters">
-        <mat-icon>{{ showFilters ? 'filter_list_off' : 'filter_list' }}</mat-icon>
-      </button>
       <button mat-icon-button (click)="addEvent()" class="add-button" matTooltip="Add Event">
         <mat-icon>add</mat-icon>
       </button>
@@ -51,33 +48,48 @@
         </div>
 
         <!-- Year Range Filter -->
-        <div class="filter-row">
-          <mat-form-field appearance="outline" class="filter-field year-from">
-            <mat-label>From Year</mat-label>
-            <mat-select [(ngModel)]="selectedFromYear" (selectionChange)="applyFilters()">
-              <mat-option *ngFor="let year of availableYears()" [value]="year">
-                {{ year }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+        <div class="year-filter-section" *ngIf="availableYears().length > 1">
+          <div class="year-filter-header">
+            <span class="year-filter-label">Year Range</span>
+            <button mat-icon-button 
+              color="primary" 
+              (click)="clearYearFilter()"
+              [disabled]="!hasYearFilter()"
+              matTooltip="Clear Year Filter"
+              class="clear-filter-button">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </div>
           
-          <mat-form-field appearance="outline" class="filter-field year-to">
-            <mat-label>To Year</mat-label>
-            <mat-select [(ngModel)]="selectedToYear" (selectionChange)="applyFilters()">
-              <mat-option *ngFor="let year of availableYears()" [value]="year">
-                {{ year }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          
-          <button mat-icon-button 
-            color="primary" 
-            (click)="clearYearFilter()"
-            [disabled]="!selectedFromYear && !selectedToYear"
-            matTooltip="Clear Year Filter"
-            class="clear-filter-button">
-            <mat-icon>clear</mat-icon>
-          </button>
+          <div class="year-range-container">
+            <div class="year-range-labels">
+              <span class="year-label">{{ getDisplayFromYear() }}</span>
+              <span class="year-label">{{ getDisplayToYear() }}</span>
+            </div>
+            
+            <mat-slider 
+              class="year-range-slider"
+              [min]="minYear()"
+              [max]="maxYear()"
+              [step]="1"
+              [discrete]="true"
+              [showTickMarks]="availableYears().length <= 10">
+              <input matSliderStartThumb 
+                     [(ngModel)]="selectedFromYear" 
+                     (ngModelChange)="onYearRangeChange()"
+                     [value]="selectedFromYear || minYear()">
+              <input matSliderEndThumb 
+                     [(ngModel)]="selectedToYear" 
+                     (ngModelChange)="onYearRangeChange()"
+                     [value]="selectedToYear || maxYear()">
+            </mat-slider>
+            
+            <div class="year-range-info">
+              <span class="year-info-text">
+                {{ getYearRangeText() }}
+              </span>
+            </div>
+          </div>
         </div>
 
         <!-- Clear All Filters -->
