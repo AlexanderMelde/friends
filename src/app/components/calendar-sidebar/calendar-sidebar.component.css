@@ -317,9 +317,6 @@
   position: relative;
 }
 
-:host(.mobile-sidebar) .sidebar-title {
-  font-size: 16px;
-}
 
 :host(.mobile-sidebar) .title-icon {
   font-size: 28px;
