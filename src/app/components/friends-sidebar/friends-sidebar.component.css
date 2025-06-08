@@ -215,15 +215,3 @@
     border-bottom: 2px solid;
   }
 }
-
-/* Dark mode support (if implemented) */
-@media (prefers-color-scheme: dark) {
-  :host(.mobile-sidebar) .sidebar {
-    background-color: #1e1e1e;
-    color: white;
-  }
-
-  :host(.mobile-sidebar) .sidebar-header {
-    background-color: #2d5a32;
-  }
-}
