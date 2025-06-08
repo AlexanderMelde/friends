@@ -209,6 +209,12 @@ svg {
     bottom: calc(50vh + 16px);
     right: 16px;
   }
+
+  .boltbadge > img {
+    width: 60px;
+    height: 60px;
+  }
+
 }
 
 /* Responsive adjustments */
