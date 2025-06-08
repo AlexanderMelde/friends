@@ -80,6 +80,7 @@ export class CalendarSidebarComponent {
   selectedFromYear: number | null = null;
   selectedToYear: number | null = null;
   showFilters: boolean = false;
+  private isInitialized = false;
 
   readonly eventTypes = computed(() => {
     const events = this.dataService.events();
@@ -213,6 +214,17 @@ export class CalendarSidebarComponent {
         this.selectedType = graphFilter;
       }
     });
+
+    // Effect to initialize year range when data is available
+    effect(() => {
+      const years = this.availableYears();
+      if (years.length > 0 && !this.isInitialized) {
+        // Initialize to full range
+        this.selectedFromYear = this.minYear();
+        this.selectedToYear = this.maxYear();
+        this.isInitialized = true;
+      }
+    });
   }
 
   close(): void {
@@ -250,23 +262,29 @@ export class CalendarSidebarComponent {
   }
 
   clearYearFilter(): void {
-    this.selectedFromYear = null;
-    this.selectedToYear = null;
+    // Reset to full range instead of null
+    this.selectedFromYear = this.minYear();
+    this.selectedToYear = this.maxYear();
   }
 
   clearAllFilters(): void {
     this.selectedType = '';
-    this.selectedFromYear = null;
-    this.selectedToYear = null;
+    this.selectedFromYear = this.minYear();
+    this.selectedToYear = this.maxYear();
     this.graphService.setFilter('');
   }
 
   hasActiveFilters(): boolean {
-    return !!(this.selectedType || this.selectedFromYear || this.selectedToYear);
+    const hasTypeFilter = !!this.selectedType;
+    const hasYearFilter = this.hasYearFilter();
+    return hasTypeFilter || hasYearFilter;
   }
 
   hasYearFilter(): boolean {
-    return !!(this.selectedFromYear || this.selectedToYear);
+    // Check if the current selection is different from the full range
+    const currentFromYear = this.selectedFromYear || this.minYear();
+    const currentToYear = this.selectedToYear || this.maxYear();
+    return currentFromYear !== this.minYear() || currentToYear !== this.maxYear();
   }
 
   onYearRangeChange(): void {
