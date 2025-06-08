@@ -10,30 +10,5 @@
   </head>
   <body>
     <app-root>Loading...</app-root>
-    <!-- Custom Bolt.new Badge Configuration -->
-<style>
-  .bolt-badge {
-    transition: all 0.3s ease;
-  }
-  @keyframes badgeIntro {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  .bolt-badge-intro {
-    animation: badgeIntro 1s ease-out 1s both;
-  }
-  .bolt-badge-intro.animated {
-    animation: none;
-  }
-</style>
-<div class="fixed bottom-4 left-4 z-50">
-  <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer" 
-     class="block transition-all duration-300 hover:shadow-2xl">
-    <img src="assets/black_circle_360x360.png" 
-         alt="Built with Bolt.new badge" 
-         class="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-lg  bolt-badge-intro"
-         onanimationend="this.classList.add('animated')" />
-  </a>
-</div>
   </body>
 </html>
