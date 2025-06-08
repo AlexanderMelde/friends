@@ -102,13 +102,24 @@ export class CalendarSidebarComponent {
   }
 
   readonly eventTypes = computed(() => {
-    // Use all events for type counting, but filtered events for counts
     const allEvents = this.dataService.events();
-    const filteredEvents = this.graphService.filteredEvents();
+    const fromYear = this.graphService.yearFromFilter();
+    const toYear = this.graphService.yearToFilter();
     
-    // Count events by type from all events
+    // Apply year filter to get events for counting
+    let eventsForCounting = allEvents;
+    if (fromYear !== null || toYear !== null) {
+      eventsForCounting = allEvents.filter(event => {
+        const eventYear = new Date(event.date).getFullYear();
+        const minYear = fromYear || Number.MIN_SAFE_INTEGER;
+        const maxYear = toYear || Number.MAX_SAFE_INTEGER;
+        return eventYear >= minYear && eventYear <= maxYear;
+      });
+    }
+    
+    // Count events by type from year-filtered events
     const typeCounts = new Map<string, number>();
-    allEvents.forEach(event => {
+    eventsForCounting.forEach(event => {
       const type = event.type || 'Uncategorized';
       typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
     });
@@ -122,11 +133,11 @@ export class CalendarSidebarComponent {
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
     
-    // Add "All" option with total count
+    // Add "All" option with year-filtered count
     options.unshift({
       value: '',
       label: 'All Events',
-      count: allEvents.length
+      count: eventsForCounting.length
     });
     
     return options;
