@@ -35,7 +35,8 @@
   <!-- Mobile tab system (shown when < 800px) -->
   <div class="mobile-tabs" *ngIf="isMobileView()">
     <mat-tab-group 
-      [(selectedIndex)]="selectedTabIndex"
+      [selectedIndex]="selectedTabIndex()"
+      (selectedIndexChange)="selectedTabIndex.set($event)"
       animationDuration="300ms"
       class="details-tabs">
       

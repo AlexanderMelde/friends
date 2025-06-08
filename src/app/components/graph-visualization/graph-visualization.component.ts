@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -47,6 +47,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   readonly links = computed(() => this.graphService.links());
   readonly selectedNode = computed(() => this.graphService.selectedNode());
   readonly selectedLink = computed(() => this.graphService.selectedLink());
+  readonly selectedTabIndex = signal(0);
   
   constructor(public graphService: GraphService) {
     // Effect for data changes (nodes/links)
@@ -66,6 +67,19 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       // Only update highlighting if graph is initialized and we have elements
       if (this.isInitialized && this.nodeElements && this.linkElements) {
         this.highlightSelection();
+      }
+    });
+
+    // Effect to manage tab selection based on what's selected
+    effect(() => {
+      const selectedNode = this.selectedNode();
+      const selectedLink = this.selectedLink();
+      
+      // Auto-switch to appropriate tab when something is selected
+      if (selectedNode && !selectedLink) {
+        this.selectedTabIndex.set(0); // Friend Details tab
+      } else if (selectedLink) {
+        this.selectedTabIndex.set(1); // Event Details tab
       }
     });
   }
