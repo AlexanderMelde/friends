@@ -207,7 +207,6 @@
 
 .year-range-slider {
   width: 100%;
-  margin: 16px 0;
 }
 
 .year-range-slider ::ng-deep .mat-mdc-slider {
