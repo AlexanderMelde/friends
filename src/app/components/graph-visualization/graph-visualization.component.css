@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: column;
   container-type: inline-size;
+  container-name: graph-container;
 }
 
 .graph-area {
@@ -185,7 +186,7 @@ svg {
 }
 
 /* Mobile-specific adjustments */
-@media (max-width: 800px) {
+@container container-graph (max-width: 800px) {
   .graph-area.mobile-reduced {
     flex: 0 0 50vh;
     min-height: 250px; /* Ensure graph is visible on mobile */
@@ -203,7 +204,7 @@ svg {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@container container-graph (max-width: 800px) {
   .network-controls.mobile-adjusted {
     bottom: calc(50vh + 8px);
     right: 8px;
@@ -227,7 +228,7 @@ svg {
 }
 
 /* Small mobile devices */
-@media (max-width: 480px) {
+@container container-graph (max-width: 480px) {
   .graph-area.mobile-reduced {
     min-height: 200px;
   }
@@ -260,23 +261,25 @@ svg {
 }
 
 /* Landscape mobile orientation */
-@media (max-width: 800px) and (orientation: landscape) {
-  .graph-area.mobile-reduced {
-    flex: 0 0 60vh;
-    min-height: 180px;
-  }
-  
-  .mobile-tabs {
-    height: 40vh;
-    min-height: 120px;
-  }
-  
-  .network-controls.mobile-adjusted {
-    bottom: calc(40vh + 8px);
+@container container-graph (max-width: 800px) {
+  @media (orientation: landscape) {
+    .graph-area.mobile-reduced {
+      flex: 0 0 60vh;
+      min-height: 180px;
+    }
+    
+    .mobile-tabs {
+      height: 40vh;
+      min-height: 120px;
+    }
+    
+    .network-controls.mobile-adjusted {
+      bottom: calc(40vh + 8px);
+    }
   }
 }
 
-/* High DPI displays */
+/* High DPI displays */ 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .zoom-controls button {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -314,7 +317,7 @@ svg {
 }
 
 /* Touch interaction improvements */
-@media (max-width: 800px) {
+@container container-graph (max-width: 800px) {
   .mobile-tabs {
     touch-action: pan-y;
   }
@@ -331,7 +334,7 @@ svg {
 }
 
 /* Tab header styling for mobile */
-@media (max-width: 800px) {
+@container container-graph (max-width: 800px) {
   .details-tabs ::ng-deep .mat-mdc-tab-header {
     border-bottom: 1px solid #e0e0e0;
     background-color: #fafafa;
