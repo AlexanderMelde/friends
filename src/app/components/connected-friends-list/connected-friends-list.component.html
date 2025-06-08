@@ -8,7 +8,7 @@
          class="friend-item" 
          (click)="selectFriend(connection, $event)"
          [style.cursor]="'pointer'">
-      <img [src]="connection.friend.photoUrl" [alt]="connection.friend.name" class="friend-avatar" [matTooltip]="connection.friend.name + ', ' + connection.sharedEventCount + 'shared ' + (connection.sharedEventCount === 1) ? 'event' : 'events'" >
+      <img [src]="connection.friend.photoUrl" [alt]="connection.friend.name" class="friend-avatar" [matTooltip]="connection.friend.name + ', ' + connection.sharedEventCount + 'shared ' + ((connection.sharedEventCount === 1) ? 'event' : 'events')" >
       <div class="shared-events"> {{ connection.sharedEventCount  }}  </div>
     </div>
   </div>
