@@ -96,6 +96,10 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
+  isMobileView(): boolean {
+    return window.innerWidth <= 800;
+  }
+
   private setupResizeObserver(): void {
     this.resizeObserver = new ResizeObserver(() => {
       if (this.isInitialized) {
