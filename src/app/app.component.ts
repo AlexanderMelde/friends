@@ -19,6 +19,7 @@ import { LegalDialogComponent } from './components/legal-dialog/legal-dialog.com
 import { DataService } from './services/data.service';
 import { DragService } from './services/drag.service';
 import { GraphService } from './services/graph.service';
+import { MobileDialogService } from './services/mobile-dialog.service';
 import { Event } from './models/event.model';
 
 @Component({
@@ -49,6 +50,7 @@ export class AppComponent {
   private dialog = inject(MatDialog);
   private dataService = inject(DataService);
   private dragService = inject(DragService);
+  private mobileDialogService = inject(MobileDialogService);
 
   constructor() {
     // Add global drop event listener to handle drops outside of valid zones
@@ -144,40 +146,81 @@ export class AppComponent {
   }
 
   openHelp(): void {
-    this.dialog.open(HelpDialogComponent, {
-      width: '700px',
-      maxWidth: '90vw',
-      maxHeight: '90vh'
-    });
+    if (this.isMobileView()) {
+      this.mobileDialogService.openHelp();
+    } else {
+      this.dialog.open(HelpDialogComponent, {
+        width: '700px',
+        maxWidth: '90vw',
+        maxHeight: '90vh'
+      });
+    }
   }
 
   openSettings(): void {
-    this.dialog.open(SettingsDialogComponent, {
-      width: '600px',
-      maxWidth: '90vw',
-      disableClose: false
-    });
+    if (this.isMobileView()) {
+      this.mobileDialogService.openSettings();
+    } else {
+      this.dialog.open(SettingsDialogComponent, {
+        width: '600px',
+        maxWidth: '90vw',
+        disableClose: false
+      });
+    }
   }
 
   openLegal(): void {
-    this.dialog.open(LegalDialogComponent, {
-      width: '600px',
-      maxWidth: '90vw',
-      maxHeight: '90vh'
-    });
+    if (this.isMobileView()) {
+      this.mobileDialogService.openWithContent(
+        'Legal Information',
+        LegalDialogComponent,
+        { showBackButton: true }
+      );
+    } else {
+      this.dialog.open(LegalDialogComponent, {
+        width: '600px',
+        maxWidth: '90vw',
+        maxHeight: '90vh'
+      });
+    }
   }
 
   addFriend(): void {
     const events = this.dataService.events();
-    const dialogRef = this.dialog.open(FriendDialogComponent, {
-      data: { events, isEdit: false }
-    });
+    
+    if (this.isMobileView()) {
+      this.mobileDialogService.openWithContent(
+        'Add Friend',
+        FriendDialogComponent,
+        {
+          data: { events, isEdit: false },
+          showBackButton: true,
+          headerActions: [
+            {
+              icon: 'save',
+              label: 'Save Friend',
+              action: () => {
+                // This will be handled by the dialog component
+              }
+            }
+          ]
+        }
+      ).afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.addFriend(result.friend, result.selectedEvents);
+        }
+      });
+    } else {
+      const dialogRef = this.dialog.open(FriendDialogComponent, {
+        data: { events, isEdit: false }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.dataService.addFriend(result.friend, result.selectedEvents);
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.addFriend(result.friend, result.selectedEvents);
+        }
+      });
+    }
   }
 
   addEvent(): void {
@@ -190,15 +233,39 @@ export class AppComponent {
       attendees: []
     };
 
-    const dialogRef = this.dialog.open(EventEditDialogComponent, {
-      data: { event: newEvent, friends, isNew: true }
-    });
+    if (this.isMobileView()) {
+      this.mobileDialogService.openWithContent(
+        'Add Event',
+        EventEditDialogComponent,
+        {
+          data: { event: newEvent, friends, isNew: true },
+          showBackButton: true,
+          headerActions: [
+            {
+              icon: 'save',
+              label: 'Save Event',
+              action: () => {
+                // This will be handled by the dialog component
+              }
+            }
+          ]
+        }
+      ).afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.addEvent(result);
+        }
+      });
+    } else {
+      const dialogRef = this.dialog.open(EventEditDialogComponent, {
+        data: { event: newEvent, friends, isNew: true }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.dataService.addEvent(result);
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.addEvent(result);
+        }
+      });
+    }
   }
 
   onDocumentDragLeave(event: DragEvent): void {
