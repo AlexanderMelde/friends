@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -102,7 +102,8 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: MobileDialogData,
-    private dialogRef: MatDialogRef<MobileDialogComponent>
+    private dialogRef: MatDialogRef<MobileDialogComponent>,
+    private injector: Injector
   ) {
     // Set default values
     this.data = {
@@ -148,30 +149,39 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
       // Clear any existing component
       this.dynamicComponentContainer.clear();
 
-      // Create the component
-      this.componentRef = this.dynamicComponentContainer.createComponent(this.data.component);
-
-      // Pass data to the component if it has a data property
-      if (this.componentRef.instance && this.data.data) {
-        // For dialog components that expect MAT_DIALOG_DATA
-        if ('data' in this.componentRef.instance) {
-          this.componentRef.instance.data = this.data.data;
-        }
-        
-        // For components with specific properties
-        Object.keys(this.data.data).forEach(key => {
-          if (key in this.componentRef!.instance) {
-            this.componentRef!.instance[key] = this.data.data[key];
+      // Create a custom injector that provides MAT_DIALOG_DATA and MatDialogRef
+      const customInjector = Injector.create({
+        providers: [
+          {
+            provide: MAT_DIALOG_DATA,
+            useValue: this.data.data || {}
+          },
+          {
+            provide: MatDialogRef,
+            useValue: {
+              close: (result?: any) => this.closeDialog(result),
+              afterClosed: () => this.dialogRef.afterClosed(),
+              beforeClosed: () => this.dialogRef.beforeClosed(),
+              backdropClick: () => this.dialogRef.backdropClick(),
+              keydownEvents: () => this.dialogRef.keydownEvents(),
+              updatePosition: () => this.dialogRef.updatePosition(),
+              updateSize: () => this.dialogRef.updateSize(),
+              addPanelClass: (classes: string | string[]) => this.dialogRef.addPanelClass(classes),
+              removePanelClass: (classes: string | string[]) => this.dialogRef.removePanelClass(classes),
+              getState: () => this.dialogRef.getState(),
+              disableClose: this.dialogRef.disableClose,
+              id: this.dialogRef.id
+            }
           }
-        });
-      }
+        ],
+        parent: this.injector
+      });
 
-      // Handle dialog result if the component has afterClosed or similar
-      if (this.componentRef.instance && typeof this.componentRef.instance.afterClosed === 'function') {
-        this.componentRef.instance.afterClosed().subscribe((result: any) => {
-          this.closeDialog(result);
-        });
-      }
+      // Create the component with the custom injector
+      this.componentRef = this.dynamicComponentContainer.createComponent(
+        this.data.component,
+        { injector: customInjector }
+      );
 
       // Trigger change detection
       this.componentRef.changeDetectorRef.detectChanges();
