@@ -215,10 +215,7 @@ svg {
     height: 60px;
   }
 
-}
-
 /* Responsive adjustments */
-@container container-graph (max-width: 800px) {
   .network-controls.mobile-adjusted {
     bottom: calc(50vh + 8px);
     right: 8px;
