@@ -6,12 +6,12 @@
   width: 400px;
   max-width: calc(100% - 32px);
   max-height: calc(100% - 64px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 mat-card {
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .tooltip-header {
