@@ -36,24 +36,66 @@
     <div class="content-container" 
          [class.calendar-sidebar-open]="calendarSidebarOpen && !friendsSidebarOpen"
          [class.friends-sidebar-open]="friendsSidebarOpen && !calendarSidebarOpen"
-         [class.both-sidebars-open]="calendarSidebarOpen && friendsSidebarOpen">
+         [class.both-sidebars-open]="calendarSidebarOpen && friendsSidebarOpen"
+         [class.overlay-active]="isOverlayActive()">
       <app-graph-visualization></app-graph-visualization>
     </div>
     
+    <!-- Desktop Sidebars -->
     <app-calendar-sidebar 
       [isOpen]="calendarSidebarOpen" 
       [friendsSidebarOpen]="friendsSidebarOpen"
       (closeRequested)="calendarSidebarOpen = false"
-      (addEventRequested)="addEvent()">
+      (addEventRequested)="addEvent()"
+      class="desktop-sidebar">
     </app-calendar-sidebar>
     
     <app-friends-sidebar 
       [isOpen]="friendsSidebarOpen" 
       [calendarSidebarOpen]="calendarSidebarOpen"
       (closeRequested)="friendsSidebarOpen = false"
-      (addFriendRequested)="addFriend()">
+      (addFriendRequested)="addFriend()"
+      class="desktop-sidebar">
     </app-friends-sidebar>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" 
+         [class.active]="isOverlayActive()"
+         (click)="onOverlayBackdropClick($event)">
+      <div class="overlay-content" 
+           [class.slide-in]="isOverlayActive()"
+           (click)="$event.stopPropagation()">
+        
+        <!-- Calendar Overlay Content -->
+        <div *ngIf="calendarSidebarOpen" class="overlay-sidebar">
+          <app-calendar-sidebar 
+            [isOpen]="true" 
+            [friendsSidebarOpen]="false"
+            (closeRequested)="calendarSidebarOpen = false"
+            (addEventRequested)="addEvent()"
+            class="mobile-sidebar">
+          </app-calendar-sidebar>
+        </div>
+
+        <!-- Friends Overlay Content -->
+        <div *ngIf="friendsSidebarOpen" class="overlay-sidebar">
+          <app-friends-sidebar 
+            [isOpen]="true" 
+            [calendarSidebarOpen]="false"
+            (closeRequested)="friendsSidebarOpen = false"
+            (addFriendRequested)="addFriend()"
+            class="mobile-sidebar">
+          </app-friends-sidebar>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Mobile Overlay Backdrop -->
+  <div class="overlay-backdrop" 
+       [class.active]="isOverlayActive()"
+       (click)="closeAllSidebars()"></div>
+
   <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer" 
      class="boltbadge">
     <img src="https://storage.bolt.army/black_circle_360x360.png" 

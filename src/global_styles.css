@@ -49,10 +49,148 @@ html, body {
   overflow: hidden;
 }
 
+/* Mobile Overlay Global Styles */
+body.overlay-active {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+/* Prevent scrolling on mobile when overlay is active */
+@media (max-width: 800px) {
+  body.overlay-active {
+    touch-action: none;
+    -webkit-overflow-scrolling: none;
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .network-controls {
     bottom: 8px;
     right: 8px;
+  }
+
+  .zoom-controls {
+    gap: 4px;
+  }
+  
+  .zoom-controls button {
+    transform: scale(0.9);
+  }
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 800px) {
+  /* Improve touch targets */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improve text readability on mobile */
+  .mat-toolbar {
+    font-size: 18px;
+  }
+
+  /* Adjust dialog sizes for mobile */
+  .mat-mdc-dialog-container {
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+  }
+
+  /* Improve form field spacing on mobile */
+  .mat-mdc-form-field {
+    margin-bottom: 16px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .mat-toolbar {
+    padding: 0 8px;
+    font-size: 16px;
+  }
+
+  .mat-toolbar button {
+    margin: 0 2px;
+  }
+
+  /* Adjust network controls for small screens */
+  .network-controls {
+    bottom: 4px;
+    right: 4px;
+  }
+
+  .zoom-controls button {
+    transform: scale(0.8);
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 800px) and (orientation: landscape) {
+  .mat-toolbar {
+    height: 48px;
+    min-height: 48px;
+  }
+
+  .network-controls {
+    bottom: 8px;
+    right: 8px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .mat-icon {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus improvements for keyboard navigation */
+button:focus-visible,
+.mat-mdc-button:focus-visible {
+  outline: 2px solid #3F51B5;
+  outline-offset: 2px;
+}
+
+/* Improve contrast for better accessibility */
+@media (prefers-contrast: high) {
+  .mat-toolbar {
+    border-bottom: 2px solid;
+  }
+
+  button {
+    border: 1px solid;
+  }
+}
+
+/* Dark mode support preparation */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here when implemented */
+}
+
+/* Print styles */
+@media print {
+  .mat-toolbar,
+  .network-controls,
+  .mobile-overlay,
+  .overlay-backdrop {
+    display: none !important;
+  }
+
+  .content-container {
+    margin: 0 !important;
   }
 }

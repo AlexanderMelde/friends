@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,12 +54,91 @@ export class AppComponent {
     document.addEventListener('dragover', this.onGlobalDragOver.bind(this));
   }
 
+  // Check if mobile overlay should be active
+  isOverlayActive(): boolean {
+    return this.isMobileView() && (this.calendarSidebarOpen || this.friendsSidebarOpen);
+  }
+
+  // Check if current viewport is mobile
+  private isMobileView(): boolean {
+    return window.innerWidth <= 800;
+  }
+
+  // Handle window resize to close overlays when switching to desktop
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any) {
+    // Close sidebars when switching from mobile to desktop to prevent layout issues
+    if (!this.isMobileView() && this.isOverlayActive()) {
+      this.closeAllSidebars();
+    }
+  }
+
+  // Handle escape key to close overlays
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent) {
+    if (this.isOverlayActive()) {
+      this.closeAllSidebars();
+      event.preventDefault();
+    }
+  }
+
+  // Prevent body scroll when overlay is active
+  @HostListener('document:touchmove', ['$event'])
+  onTouchMove(event: TouchEvent) {
+    if (this.isOverlayActive()) {
+      event.preventDefault();
+    }
+  }
+
   toggleCalendarSidebar(): void {
-    this.calendarSidebarOpen = !this.calendarSidebarOpen;
+    if (this.isMobileView()) {
+      // On mobile, close friends sidebar if open, then toggle calendar
+      if (this.friendsSidebarOpen) {
+        this.friendsSidebarOpen = false;
+      }
+      this.calendarSidebarOpen = !this.calendarSidebarOpen;
+      this.updateBodyClass();
+    } else {
+      // Desktop behavior remains the same
+      this.calendarSidebarOpen = !this.calendarSidebarOpen;
+    }
   }
 
   toggleFriendsSidebar(): void {
-    this.friendsSidebarOpen = !this.friendsSidebarOpen;
+    if (this.isMobileView()) {
+      // On mobile, close calendar sidebar if open, then toggle friends
+      if (this.calendarSidebarOpen) {
+        this.calendarSidebarOpen = false;
+      }
+      this.friendsSidebarOpen = !this.friendsSidebarOpen;
+      this.updateBodyClass();
+    } else {
+      // Desktop behavior remains the same
+      this.friendsSidebarOpen = !this.friendsSidebarOpen;
+    }
+  }
+
+  closeAllSidebars(): void {
+    this.calendarSidebarOpen = false;
+    this.friendsSidebarOpen = false;
+    this.updateBodyClass();
+  }
+
+  // Handle overlay backdrop clicks
+  onOverlayBackdropClick(event: MouseEvent): void {
+    // Only close if clicking the backdrop itself, not the content
+    if (event.target === event.currentTarget) {
+      this.closeAllSidebars();
+    }
+  }
+
+  // Update body class for overlay state
+  private updateBodyClass(): void {
+    if (this.isOverlayActive()) {
+      document.body.classList.add('overlay-active');
+    } else {
+      document.body.classList.remove('overlay-active');
+    }
   }
 
   openHelp(): void {
