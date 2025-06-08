@@ -233,7 +233,7 @@ svg {
     padding: 24px 12px;
   }
   
-  .boltbadge {
+  .boltbadge.mobile-adjusted {
     bottom: calc(50vh + 10px);;
   }
 
