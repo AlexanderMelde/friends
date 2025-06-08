@@ -62,9 +62,6 @@ svg {
 /* Mobile tab system */
 .mobile-tabs {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 50vh;
   display: flex;
   flex-direction: column;
