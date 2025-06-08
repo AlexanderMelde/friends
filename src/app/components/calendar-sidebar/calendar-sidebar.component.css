@@ -19,7 +19,7 @@
 }
 
 .sidebar.open.friends-open {
-  right: 400px; /* Move calendar sidebar to the left when friends sidebar is open AND calendar is open */
+  right: 300px; /* Move calendar sidebar to the left when friends sidebar is open AND calendar is open */
 }
 
 .sidebar-header {
