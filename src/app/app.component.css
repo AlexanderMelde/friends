@@ -54,3 +54,17 @@ mat-toolbar {
     margin-right: 100%;
   }
 }
+
+  .bolt-badge {
+    transition: all 0.3s ease;
+  }
+  @keyframes badgeIntro {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .bolt-badge-intro {
+    animation: badgeIntro 1s ease-out 1s both;
+  }
+  .bolt-badge-intro.animated {
+    animation: none;
+  }
