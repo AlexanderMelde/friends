@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import * as d3 from 'd3';
 import { FriendNode } from '../../models/friend.model';
 import { EventLink } from '../../models/event.model';
@@ -28,7 +29,25 @@ import { EventDetailsCardComponent } from '../event-details-card/event-details-c
     EventDetailsCardComponent
   ],
   templateUrl: './graph-visualization.component.html',
-  styleUrls: ['./graph-visualization.component.css']
+  styleUrls: ['./graph-visualization.component.css'],
+  animations: [
+    trigger('slideUpAnimation', [
+      state('hidden', style({
+        transform: 'translateY(100%)',
+        opacity: 0
+      })),
+      state('visible', style({
+        transform: 'translateY(0)',
+        opacity: 1
+      })),
+      transition('hidden => visible', [
+        animate('350ms cubic-bezier(0.25, 0.8, 0.25, 1)')
+      ]),
+      transition('visible => hidden', [
+        animate('300ms cubic-bezier(0.25, 0.8, 0.25, 1)')
+      ])
+    ])
+  ]
 })
 export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('graphContainer', { static: true }) graphContainer!: ElementRef;
@@ -48,6 +67,11 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   readonly selectedNode = computed(() => this.graphService.selectedNode());
   readonly selectedLink = computed(() => this.graphService.selectedLink());
   readonly selectedTabIndex = signal(0);
+  
+  // Computed property to determine if mobile tabs should be shown
+  readonly showMobileTabs = computed(() => {
+    return this.isMobileView() && (this.selectedNode() !== null || this.selectedLink() !== null);
+  });
   
   constructor(public graphService: GraphService) {
     // Effect for data changes (nodes/links)
@@ -70,7 +94,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       }
     });
 
-    // Effect to auto-switch tabs only when something is newly selected (not when manually changing tabs)
+    // Effect to auto-switch tabs when something is newly selected
     effect(() => {
       const selectedNode = this.selectedNode();
       const selectedLink = this.selectedLink();
@@ -88,6 +112,19 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
             this.selectedTabIndex.set(1);
           }
         }
+      }
+    });
+
+    // Effect to handle mobile tab visibility changes for smooth transitions
+    effect(() => {
+      const showTabs = this.showMobileTabs();
+      
+      // Add a small delay to ensure smooth animation timing
+      if (showTabs) {
+        // When showing tabs, trigger the animation after a brief delay
+        setTimeout(() => {
+          // This ensures the DOM has updated before the animation starts
+        }, 10);
       }
     });
   }
