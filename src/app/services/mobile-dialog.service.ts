@@ -58,7 +58,7 @@ export class MobileDialogService {
 
   openWithContent(
     title: string,
-    content: string | ComponentType<any>,
+    content: string | ComponentType<any> | null,
     options: Partial<MobileDialogConfig> = {}
   ): MatDialogRef<MobileDialogComponent> {
     
