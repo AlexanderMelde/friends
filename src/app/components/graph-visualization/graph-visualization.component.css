@@ -210,6 +210,10 @@ svg {
     right: 16px;
   }
 
+  .boltbadge {
+    bottom: calc(50vh + 10px);;
+  }
+
   /* Responsive adjustments */
   .network-controls.mobile-adjusted {
     bottom: calc(50vh + 8px);
