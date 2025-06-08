@@ -55,6 +55,12 @@ mat-toolbar {
   }
 }
 
+.boltbadge {
+ position: fixed;
+  bottom: 4px;
+  left: 4px;
+  z-index: 50;
+}
   .bolt-badge {
     transition: all 0.3s ease;
   }
