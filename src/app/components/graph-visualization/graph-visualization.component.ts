@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import * as d3 from 'd3';
 import { FriendNode } from '../../models/friend.model';
@@ -21,6 +22,7 @@ import { EventDetailsCardComponent } from '../event-details-card/event-details-c
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatTabsModule,
     MatTooltipModule,
     FriendTooltipComponent,
     EventDetailsCardComponent
