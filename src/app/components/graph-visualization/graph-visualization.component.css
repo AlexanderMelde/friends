@@ -298,6 +298,10 @@ svg {
     .network-controls.mobile-adjusted {
       bottom: calc(40vh + 8px);
     }
+
+      .boltbadge.mobile-adjusted {
+        bottom: calc(40vh + 10px);;
+      }
   }
 }
 
