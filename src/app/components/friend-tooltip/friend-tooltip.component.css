@@ -5,6 +5,7 @@
   z-index: 20;
   width: 400px;
   max-width: calc(100% - 32px);
+  max-height: calc(100% - 64px);
 }
 
 mat-card {
