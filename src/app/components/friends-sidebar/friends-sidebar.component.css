@@ -108,7 +108,6 @@
 }
 
 :host(.mobile-sidebar) .sidebar-header {
-  padding: 20px;
   background-color: #4CAF50;
   position: relative;
 }
@@ -158,9 +157,6 @@
 
 /* Small mobile devices */
 @media (max-width: 480px) {
-  :host(.mobile-sidebar) .sidebar-header {
-    padding: 4px;
-  }
 
   :host(.mobile-sidebar) .sidebar-title {
     font-size: 18px;
