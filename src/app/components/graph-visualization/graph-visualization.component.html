@@ -1,28 +1,74 @@
-<div class="graph-container" #graphContainer (click)="graphService.selectNode(null); graphService.selectLink(null)">
-  <!-- D3 will attach the SVG graph here -->
-</div>
+<div class="graph-container" #graphContainer>
+  <!-- Graph visualization area -->
+  <div class="graph-area" [class.mobile-reduced]="isMobileView()"  (click)="graphService.selectNode(null); graphService.selectLink(null)">
+    <!-- D3 will attach the SVG graph here -->
+  </div>
 
-<!-- Controls overlay -->
-<div class="network-controls">
-  <div class="zoom-controls">
-    <button mat-mini-fab color="primary" (click)="zoomIn()" matTooltip="Zoom In">
-      <mat-icon>add</mat-icon>
-    </button>
-    <button mat-mini-fab color="primary" (click)="zoomOut()" matTooltip="Zoom Out">
-      <mat-icon>remove</mat-icon>
-    </button>
-    <button mat-mini-fab color="primary" (click)="resetZoom()" matTooltip="Reset Zoom">
-      <mat-icon>home</mat-icon>
-    </button>
+  <!-- Controls overlay -->
+  <div class="network-controls">
+    <div class="zoom-controls">
+      <button mat-mini-fab color="primary" (click)="zoomIn()" matTooltip="Zoom In">
+        <mat-icon>add</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" (click)="zoomOut()" matTooltip="Zoom Out">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" (click)="resetZoom()" matTooltip="Reset Zoom">
+        <mat-icon>home</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Desktop overlays (shown when >= 800px) -->
+  <div class="desktop-overlays" *ngIf="!isMobileView()">
+    <!-- Friend Details Tooltip -->
+    @if (selectedNode(); as node) {
+      <app-friend-tooltip [friend]="node"></app-friend-tooltip>
+    }
+
+    <!-- Shared Events Card -->
+    @if (selectedLink(); as link) {
+      <app-event-details-card [link]="link"></app-event-details-card>
+    }
+  </div>
+
+  <!-- Mobile tab system (shown when < 800px) -->
+  <div class="mobile-tabs" *ngIf="isMobileView()">
+    <mat-tab-group 
+      [selectedIndex]="selectedTabIndex()"
+      (selectedIndexChange)="onTabChange($event)"
+      animationDuration="300ms"
+      class="details-tabs">
+      
+      <!-- Friend Details Tab -->
+      <mat-tab label="Friend Details">
+        <div class="tab-content friend-details-tab">
+          @if (selectedNode(); as node) {
+            <app-friend-tooltip [friend]="node" class="mobile-tooltip"></app-friend-tooltip>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>person_outline</mat-icon>
+              <h3>No Friend Selected</h3>
+              <p>Tap on a friend in the graph to see their details</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Event Details Tab -->
+      <mat-tab label="Event Details">
+        <div class="tab-content event-details-tab">
+          @if (selectedLink(); as link) {
+            <app-event-details-card [link]="link" class="mobile-card"></app-event-details-card>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>link_off</mat-icon>
+              <h3>No Connection Selected</h3>
+              <p>Tap on a connection line between friends to see shared events</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>
-
-<!-- Friend Details Tooltip -->
-@if (selectedNode(); as node) {
-  <app-friend-tooltip [friend]="node"></app-friend-tooltip>
-}
-
-<!-- Shared Events Card -->
-@if (selectedLink(); as link) {
-  <app-event-details-card [link]="link"></app-event-details-card>
-}

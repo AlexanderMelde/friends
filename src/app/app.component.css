@@ -23,6 +23,7 @@
   transition: margin-right 0.3s ease;
 }
 
+/* Desktop sidebar positioning */
 .content-container.calendar-sidebar-open {
   margin-right: 400px;
 }
@@ -40,28 +41,174 @@ mat-toolbar {
   z-index: 10;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1000px) {
-  .content-container.both-sidebars-open {
-    margin-right: 100%;
-  }
+/* Mobile Overlay System */
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .content-container.calendar-sidebar-open,
-  .content-container.friends-sidebar-open,
-  .content-container.both-sidebars-open {
-    margin-right: 100%;
-  }
+.mobile-overlay.active {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.overlay-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.overlay-content.slide-in {
+  transform: translateX(0);
+}
+
+.overlay-sidebar {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Prevent scrolling when overlay is active */
+.content-container.overlay-active {
+  overflow: hidden;
 }
 
 .boltbadge {
- position: fixed;
+  position: fixed;
   bottom: 10px;
   left: 10px;
   z-index: 50;
 }
+
 .boltbadge > img {
- width: 90px;
- height: 90px; 
+  width: 90px;
+  height: 90px; 
+}
+
+/* Desktop-only sidebars */
+.desktop-sidebar {
+  display: block;
+}
+
+.mobile-sidebar {
+  display: none;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 800px) {
+  /* Hide desktop sidebars on mobile */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* Show mobile sidebars in overlay */
+  .mobile-sidebar {
+    display: block;
+  }
+
+  /* Reset desktop sidebar margins on mobile */
+  .content-container.calendar-sidebar-open,
+  .content-container.friends-sidebar-open,
+  .content-container.both-sidebars-open {
+    margin-right: 0;
+  }
+
+  /* Prevent body scroll when overlay is active */
+  body.overlay-active {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  /* Adjust overlay content for mobile */
+  .overlay-content {
+    box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Adjust badge position on mobile */
+  .boltbadge {
+    bottom: 8px;
+    left: 8px;
+    z-index: 1001; /* Above overlay */
+  }
+
+  .boltbadge > img {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1000px) and (min-width: 801px) {
+  .content-container.both-sidebars-open {
+    margin-right: 100%;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .overlay-content {
+    box-shadow: -1px 0 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .boltbadge > img {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .overlay-content {
+    box-shadow: -2px 0 12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 800px) and (orientation: landscape) {
+  .overlay-content {
+    width: 100%;
+  }
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-overlay,
+  .overlay-content,
+  .overlay-backdrop,
+  .content-container {
+    transition: none;
+  }
 }
