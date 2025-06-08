@@ -1,7 +1,7 @@
 <div class="app-container" 
      (document:dragleave)="onDocumentDragLeave($event)">
   <mat-toolbar color="primary">
-    <span>{{ title }}</span>
+    <span  (click)="graphService.selectNode(null); graphService.selectLink(null)" >{{ title }}</span>
     <span class="toolbar-spacer"></span>
 
     <button mat-icon-button (click)="toggleCalendarSidebar()" matTooltip="Calendar">
