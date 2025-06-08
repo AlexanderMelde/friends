@@ -34,6 +34,7 @@
   padding: 8px 0;
   border-bottom: 1px solid #f0f0f0;
   min-width: 0;
+  position: relative;
 }
 
 .friend-item:last-child {
@@ -61,4 +62,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  bottom: 16px;
+    text-align: center;
 }
