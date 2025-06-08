@@ -70,26 +70,8 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       }
     });
 
-    // Effect to auto-switch tabs only when something is newly selected (not when manually changing tabs)
-    effect(() => {
-      const selectedNode = this.selectedNode();
-      const selectedLink = this.selectedLink();
-      
-      // Only auto-switch if we're on mobile and something was just selected
-      if (this.isMobileView()) {
-        if (selectedNode && !selectedLink) {
-          // Only switch to friend tab if not already there
-          if (this.selectedTabIndex() !== 0) {
-            this.selectedTabIndex.set(0);
-          }
-        } else if (selectedLink) {
-          // Only switch to event tab if not already there
-          if (this.selectedTabIndex() !== 1) {
-            this.selectedTabIndex.set(1);
-          }
-        }
-      }
-    });
+    // NO automatic tab switching - selections persist across all tab changes
+    // Users can manually switch tabs and selections will remain
   }
 
   ngOnInit(): void {
@@ -125,7 +107,8 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   }
 
   onTabChange(index: number): void {
-    // Allow manual tab switching without auto-switching back
+    // Simply update the tab index - no automatic selection clearing
+    // Selections persist across all tab changes
     this.selectedTabIndex.set(index);
   }
 
