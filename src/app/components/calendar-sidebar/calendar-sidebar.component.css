@@ -312,7 +312,7 @@
 }
 
 :host(.mobile-sidebar) .sidebar-header {
-  padding: 20px;
+  padding: 4px;
   background-color: #3F51B5;
   position: relative;
 }
