@@ -146,13 +146,6 @@ mat-toolbar {
     box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
   }
 
-  /* Adjust badge position on mobile */
-  .boltbadge {
-    bottom: 8px;
-    left: 8px;
-    z-index: 1001; /* Above overlay */
-  }
-
 }
 
 /* Tablet adjustments */
