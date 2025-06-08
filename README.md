@@ -4,6 +4,7 @@ Welcome to **Friends!**, your Social Network Visualization tool!
 
 <img width="1916" alt="image" src="https://github.com/user-attachments/assets/4abca3c8-e623-4bb8-a5bb-bfb19da0a766" />
 
+**Demo:**: [friends-graph.netlify.app](https://friends-graph.netlify.app/)
 
 **This app helps you visualize and manage your social connections through an interactive network graph.**
 
