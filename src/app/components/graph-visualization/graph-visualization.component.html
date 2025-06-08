@@ -1,6 +1,6 @@
 <div class="graph-container" #graphContainer>
   <!-- Graph visualization area -->
-  <div class="graph-area" [class.mobile-reduced]="isMobileView() && (selectedLink() || selectedEvent())"  (click)="graphService.selectNode(null); graphService.selectLink(null)">
+  <div class="graph-area" [class.mobile-reduced]="isMobileView() && (selectedNode() || selectedLink())"  (click)="graphService.selectNode(null); graphService.selectLink(null)">
     <!-- D3 will attach the SVG graph here -->
   </div>
 
@@ -33,7 +33,7 @@
   </div>
 
   <!-- Mobile tab system (shown when < 800px) -->
-  <div class="mobile-tabs" *ngIf="isMobileView() && (selectedLink() || selectedEvent())">
+  <div class="mobile-tabs" *ngIf="isMobileView() && (selectedNode() || selectedLink())">
     <mat-tab-group 
       [selectedIndex]="selectedTabIndex()"
       (selectedIndexChange)="onTabChange($event)"
