@@ -57,11 +57,11 @@ mat-toolbar {
 
 .boltbadge {
  position: fixed;
-  bottom: 4px;
-  left: 4px;
+  bottom: 10px;
+  left: 10px;
   z-index: 50;
 }
 .boltbadge > img {
- width: 60px;
- height: 60px; 
+ width: 90px;
+ height: 90px; 
 }
