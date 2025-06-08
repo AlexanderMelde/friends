@@ -128,7 +128,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   }
 
   isMobileView(): boolean {
-    return window.innerWidth <= 800;
+    return document.getElementsByClassName('graph-container')[0].innerWidth <= 800;
   }
 
   onTabChange(index: number): void {
