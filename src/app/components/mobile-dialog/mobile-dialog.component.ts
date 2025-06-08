@@ -22,6 +22,7 @@ export interface MobileDialogData {
 @Component({
   selector: 'app-mobile-dialog',
   standalone: true,
+  encapsulation: ViewEncapsulation.None,
   imports: [
     CommonModule,
     MatDialogModule,
