@@ -8,11 +8,17 @@
   flex-direction: column;
 }
 
+.graph-area {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
 svg {
   display: block;
   width: 100%;
   height: 100%;
-  flex: 1;
 }
 
 /* Controls styling */
@@ -33,10 +39,145 @@ svg {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Desktop overlays */
+.desktop-overlays {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.desktop-overlays > * {
+  pointer-events: all;
+}
+
+/* Mobile tab system */
+.mobile-tabs {
+  flex: 0 0 50%;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.details-tabs {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.details-tabs ::ng-deep .mat-mdc-tab-body-wrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
+.details-tabs ::ng-deep .mat-mdc-tab-body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.details-tabs ::ng-deep .mat-mdc-tab-body-content {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-content {
+  height: 100%;
+  padding: 16px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: #666;
+  padding: 32px 16px;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+/* Mobile tooltip adjustments */
+.mobile-tooltip ::ng-deep .friend-tooltip {
+  position: static;
+  width: 100%;
+  max-width: none;
+  top: auto;
+  left: auto;
+}
+
+.mobile-tooltip ::ng-deep mat-card {
+  margin: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Mobile card adjustments */
+.mobile-card ::ng-deep .event-details-card {
+  position: static;
+  width: 100%;
+  max-width: none;
+  top: auto;
+  right: auto;
+  left: auto;
+  bottom: auto;
+  max-height: none;
+}
+
+.mobile-card ::ng-deep mat-card {
+  margin: 0;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 800px) {
+  .graph-area.mobile-reduced {
+    flex: 0 0 50%;
+  }
+  
+  .mobile-tabs {
+    flex: 0 0 50%;
+  }
+  
+  .network-controls {
+    bottom: calc(50% + 16px);
+    right: 16px;
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .network-controls {
-    bottom: 8px;
+    bottom: calc(50% + 8px);
     right: 8px;
   }
   
@@ -46,5 +187,71 @@ svg {
   
   .zoom-controls button {
     transform: scale(0.9);
+  }
+  
+  .tab-content {
+    padding: 12px;
+  }
+  
+  .empty-state {
+    padding: 24px 12px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .tab-content {
+    padding: 8px;
+  }
+  
+  .empty-state {
+    padding: 16px 8px;
+  }
+  
+  .empty-state mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .empty-state h3 {
+    font-size: 16px;
+  }
+  
+  .empty-state p {
+    font-size: 13px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 800px) and (orientation: landscape) {
+  .graph-area.mobile-reduced {
+    flex: 0 0 60%;
+  }
+  
+  .mobile-tabs {
+    flex: 0 0 40%;
+  }
+  
+  .network-controls {
+    bottom: calc(40% + 8px);
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .zoom-controls button {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .details-tabs {
+    animation: none;
+  }
+  
+  .details-tabs ::ng-deep .mat-mdc-tab-body-content {
+    transition: none;
   }
 }
