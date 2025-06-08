@@ -22,8 +22,8 @@
 
 .friends-list {
   max-height: 200px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   width: 100%;
 }
 
