@@ -71,6 +71,10 @@
   position: relative;
 }
 
+.dynamic-component-container {
+  width: 100%;
+  /* height: 100%; */
+}
 
 /* Footer */
 .mobile-dialog-footer {
@@ -148,20 +152,4 @@
 .header-action-button:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.5);
   outline-offset: 2px;
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .mobile-dialog-container {
-    background-color: #121212;
-  }
-  
-  .mobile-dialog-content {
-    background-color: #1e1e1e;
-  }
-  
-  .mobile-dialog-footer {
-    background-color: #1e1e1e;
-    border-top-color: #333;
-  }
 }
