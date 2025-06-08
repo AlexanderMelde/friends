@@ -343,20 +343,6 @@
     display: flex;
   }
   
-  .clear-filter-button {
-    align-self: flex-end;
-    margin-bottom: 0;
-  }
-  
-  .year-range-labels {
-    margin-bottom: 12px;
-  }
-  
-  .year-label {
-    font-size: 13px;
-    padding: 3px 6px;
-  }
-
   .filter-section {
     margin-bottom: 16px;
   }
