@@ -148,12 +148,6 @@ mat-toolbar {
 
 }
 
-/* Tablet adjustments */
-@media (max-width: 1000px) and (min-width: 801px) {
-  .content-container.both-sidebars-open {
-    margin-right: 100%;
-  }
-}
 
 /* Small mobile devices */
 @media (max-width: 480px) {
