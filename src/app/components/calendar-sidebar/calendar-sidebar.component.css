@@ -192,7 +192,6 @@
 .year-range-labels {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
 }
 
 .year-label {
