@@ -6,6 +6,7 @@ import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
+import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { GraphService } from '../../services/graph.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 
@@ -23,18 +24,38 @@ export class EventsListComponent {
   constructor(
     private dialog: MatDialog,
     private dataService: DataService,
-    private graphService: GraphService
+    private graphService: GraphService,
+    private mobileDialogService: MobileDialogService
   ) {}
 
-  editEvent(event: Event): void {
-    const dialogRef = this.dialog.open(EventEditDialogComponent, {
-      data: { event, friends: this.dataService.friendsWithEventCount() }
-    });
+  private isMobileView(): boolean {
+    return window.innerWidth <= 800;
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.dataService.updateEvent(result);
-      }
-    });
+  editEvent(event: Event): void {
+    if (this.isMobileView()) {
+      this.mobileDialogService.openWithContent(
+        'Edit Event',
+        EventEditDialogComponent,
+        {
+          data: { event, friends: this.dataService.friendsWithEventCount() },
+          showBackButton: true
+        }
+      ).afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.updateEvent(result);
+        }
+      });
+    } else {
+      const dialogRef = this.dialog.open(EventEditDialogComponent, {
+        data: { event, friends: this.dataService.friendsWithEventCount() }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.updateEvent(result);
+        }
+      });
+    }
   }
 }

@@ -29,11 +29,11 @@
 }
 
 .content-container.friends-sidebar-open {
-  margin-right: 400px;
+  margin-right: 300px;
 }
 
 .content-container.both-sidebars-open {
-  margin-right: 800px;
+  margin-right: 700px;
 }
 
 mat-toolbar {
@@ -105,17 +105,6 @@ mat-toolbar {
   overflow: hidden;
 }
 
-.boltbadge {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  z-index: 50;
-}
-
-.boltbadge > img {
-  width: 90px;
-  height: 90px; 
-}
 
 /* Desktop-only sidebars */
 .desktop-sidebar {
@@ -157,35 +146,13 @@ mat-toolbar {
     box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
   }
 
-  /* Adjust badge position on mobile */
-  .boltbadge {
-    bottom: 8px;
-    left: 8px;
-    z-index: 1001; /* Above overlay */
-  }
-
-  .boltbadge > img {
-    width: 70px;
-    height: 70px;
-  }
 }
 
-/* Tablet adjustments */
-@media (max-width: 1000px) and (min-width: 801px) {
-  .content-container.both-sidebars-open {
-    margin-right: 100%;
-  }
-}
 
 /* Small mobile devices */
 @media (max-width: 480px) {
   .overlay-content {
     box-shadow: -1px 0 10px rgba(0, 0, 0, 0.15);
-  }
-
-  .boltbadge > img {
-    width: 60px;
-    height: 60px;
   }
 }
 

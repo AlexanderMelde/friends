@@ -1,11 +1,18 @@
 <div class="graph-container" #graphContainer>
+  <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer"  class="boltbadge" [class.mobile-adjusted]="isMobileView() && showMobileTabs()">
+    <img src="assets/black_circle_360x360.png" alt="Built with Bolt.new badge" />
+  </a>
+  
   <!-- Graph visualization area -->
-  <div class="graph-area" [class.mobile-reduced]="isMobileView()"  (click)="graphService.selectNode(null); graphService.selectLink(null)">
+  <div class="graph-area" 
+       [class.mobile-reduced]="isMobileView() && showMobileTabs()"  
+       (click)="graphService.selectNode(null); graphService.selectLink(null)">
     <!-- D3 will attach the SVG graph here -->
   </div>
 
   <!-- Controls overlay -->
-  <div class="network-controls">
+  <div class="network-controls" 
+       [class.mobile-adjusted]="isMobileView() && showMobileTabs()">
     <div class="zoom-controls">
       <button mat-mini-fab color="primary" (click)="zoomIn()" matTooltip="Zoom In">
         <mat-icon>add</mat-icon>
@@ -32,8 +39,10 @@
     }
   </div>
 
-  <!-- Mobile tab system (shown when < 800px) -->
-  <div class="mobile-tabs" *ngIf="isMobileView()">
+  <!-- Mobile tab system (shown when < 800px AND something is selected) -->
+  <div class="mobile-tabs" 
+       *ngIf="isMobileView()"
+       [class.visible]="showMobileTabs()">
     <mat-tab-group 
       [selectedIndex]="selectedTabIndex()"
       (selectedIndexChange)="onTabChange($event)"
@@ -41,7 +50,7 @@
       class="details-tabs">
       
       <!-- Friend Details Tab -->
-      <mat-tab label="Friend Details">
+      <mat-tab label="Friend Details" [disabled]="!selectedNode()">
         <div class="tab-content friend-details-tab">
           @if (selectedNode(); as node) {
             <app-friend-tooltip [friend]="node" class="mobile-tooltip"></app-friend-tooltip>
@@ -56,7 +65,7 @@
       </mat-tab>
 
       <!-- Event Details Tab -->
-      <mat-tab label="Event Details">
+      <mat-tab label="Event Details" [disabled]="!selectedLink()">
         <div class="tab-content event-details-tab">
           @if (selectedLink(); as link) {
             <app-event-details-card [link]="link" class="mobile-card"></app-event-details-card>

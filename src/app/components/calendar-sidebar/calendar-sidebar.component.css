@@ -19,7 +19,7 @@
 }
 
 .sidebar.open.friends-open {
-  right: 400px; /* Move calendar sidebar to the left when friends sidebar is open AND calendar is open */
+  right: 300px; /* Move calendar sidebar to the left when friends sidebar is open AND calendar is open */
 }
 
 .sidebar-header {
@@ -186,13 +186,11 @@
 }
 
 .year-range-container {
-  padding: 8px 0;
 }
 
 .year-range-labels {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
 }
 
 .year-label {
@@ -208,7 +206,7 @@
 
 .year-range-slider {
   width: 100%;
-  margin: 16px 0;
+  margin: 0;
 }
 
 .year-range-slider ::ng-deep .mat-mdc-slider {
@@ -312,14 +310,11 @@
 }
 
 :host(.mobile-sidebar) .sidebar-header {
-  padding: 20px;
+  padding: 4px;
   background-color: #3F51B5;
   position: relative;
 }
 
-:host(.mobile-sidebar) .sidebar-title {
-  font-size: 20px;
-}
 
 :host(.mobile-sidebar) .title-icon {
   font-size: 28px;
@@ -345,27 +340,7 @@
   :host(.mobile-sidebar) .sidebar {
     display: flex;
   }
-
-  .filter-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
   
-  .clear-filter-button {
-    align-self: flex-end;
-    margin-bottom: 0;
-  }
-  
-  .year-range-labels {
-    margin-bottom: 12px;
-  }
-  
-  .year-label {
-    font-size: 13px;
-    padding: 3px 6px;
-  }
-
   .filter-section {
     margin-bottom: 16px;
   }
@@ -385,9 +360,6 @@
 
 /* Small mobile devices */
 @media (max-width: 480px) {
-  :host(.mobile-sidebar) .sidebar-header {
-    padding: 16px;
-  }
 
   :host(.mobile-sidebar) .sidebar-title {
     font-size: 18px;

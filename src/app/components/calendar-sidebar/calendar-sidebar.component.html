@@ -51,6 +51,11 @@
         <div class="year-filter-section" *ngIf="availableYears().length > 1">
           <div class="year-filter-header">
             <span class="year-filter-label">Year Range</span>
+            <div class="year-range-labels">
+              <span class="year-label">{{ getDisplayFromYear() }}</span>
+              <span style="padding: 0 3px;">&mdash;</span>
+              <span class="year-label">{{ getDisplayToYear() }}</span>
+            </div>
             <button mat-icon-button 
               color="primary" 
               (click)="clearYearFilter()"
@@ -62,17 +67,12 @@
           </div>
           
           <div class="year-range-container">
-            <div class="year-range-labels">
-              <span class="year-label">{{ getDisplayFromYear() }}</span>
-              <span class="year-label">{{ getDisplayToYear() }}</span>
-            </div>
-            
             <mat-slider 
               class="year-range-slider"
               [min]="minYear()"
               [max]="maxYear()"
               [step]="1"
-              [discrete]="true"
+              [discrete]="false"
               [showTickMarks]="availableYears().length <= 10">
               <input matSliderStartThumb 
                      [(ngModel)]="selectedFromYear" 
@@ -83,12 +83,6 @@
                      (ngModelChange)="onYearRangeChange()"
                      [value]="selectedToYear || maxYear()">
             </mat-slider>
-            
-            <div class="year-range-info">
-              <span class="year-info-text">
-                {{ getYearRangeText() }}
-              </span>
-            </div>
           </div>
         </div>
 

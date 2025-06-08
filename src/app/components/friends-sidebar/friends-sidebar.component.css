@@ -2,7 +2,7 @@
   position: fixed;
   top: 64px; /* Account for toolbar height */
   right: 0;
-  width: 400px;
+  width: 300px;
   height: calc(100vh - 64px); /* Subtract toolbar height */
   background-color: white;
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
@@ -108,13 +108,9 @@
 }
 
 :host(.mobile-sidebar) .sidebar-header {
-  padding: 20px;
+  padding: 4px;
   background-color: #4CAF50;
   position: relative;
-}
-
-:host(.mobile-sidebar) .sidebar-title {
-  font-size: 20px;
 }
 
 :host(.mobile-sidebar) .title-icon {
@@ -158,13 +154,6 @@
 
 /* Small mobile devices */
 @media (max-width: 480px) {
-  :host(.mobile-sidebar) .sidebar-header {
-    padding: 16px;
-  }
-
-  :host(.mobile-sidebar) .sidebar-title {
-    font-size: 18px;
-  }
 
   :host(.mobile-sidebar) .title-icon {
     font-size: 24px;

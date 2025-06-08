@@ -1,7 +1,7 @@
 <div class="app-container" 
      (document:dragleave)="onDocumentDragLeave($event)">
   <mat-toolbar color="primary">
-    <span  (click)="graphService.selectNode(null); graphService.selectLink(null)" >{{ title }}</span>
+    <span style="cursor: pointer;" (click)="graphService.selectNode(null); graphService.selectLink(null); closeAllSidebars()" >{{ title }}</span>
     <span class="toolbar-spacer"></span>
 
     <button mat-icon-button (click)="toggleCalendarSidebar()" matTooltip="Calendar">
@@ -95,8 +95,4 @@
   <div class="overlay-backdrop" 
        [class.active]="isOverlayActive()"
        (click)="closeAllSidebars()"></div>
-
-  <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer"  class="boltbadge">
-    <img src="/assets/black_circle_360x360.png" alt="Built with Bolt.new badge" />
-  </a>
 </div>

@@ -9,31 +9,14 @@
     <base href="/">
   </head>
   <body>
-    <app-root>Loading...</app-root>
-    <!-- Custom Bolt.new Badge Configuration -->
-<style>
-  .bolt-badge {
-    transition: all 0.3s ease;
-  }
-  @keyframes badgeIntro {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-  }
-  .bolt-badge-intro {
-    animation: badgeIntro 1s ease-out 1s both;
-  }
-  .bolt-badge-intro.animated {
-    animation: none;
-  }
-</style>
-<div class="fixed bottom-4 left-4 z-50">
-  <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer" 
-     class="block transition-all duration-300 hover:shadow-2xl">
-    <img src="assets/black_circle_360x360.png" 
-         alt="Built with Bolt.new badge" 
-         class="w-20 h-20 md:w-28 md:h-28 rounded-full shadow-lg  bolt-badge-intro"
-         onanimationend="this.classList.add('animated')" />
-  </a>
-</div>
+    <app-root>
+      <div style="height: 100vh; width: 100vw;  background: #3f51b5; color: white; display: flex; flex-direction: row; align-items: center;">
+        <div style="text-align: center; width: 100%;">Loading <b>Friends!</b> App...</div>
+        <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer"  style="position: fixed; bottom: 10px; left: 10px;">
+          <img style="width: 90px; height: 90px;" src="assets/black_circle_360x360.png" alt="Built with Bolt.new badge" />
+        </a>
+      </div>
+
+    </app-root>
   </body>
 </html>

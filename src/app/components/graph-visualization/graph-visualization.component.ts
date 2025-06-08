@@ -49,6 +49,13 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   readonly selectedLink = computed(() => this.graphService.selectedLink());
   readonly selectedTabIndex = signal(0);
   
+  // Computed property to determine if mobile tabs should be shown
+  readonly showMobileTabs = computed(() => {
+    const isMobile = this.isMobileView();
+    const hasSelection = this.selectedNode() !== null || this.selectedLink() !== null;
+    return isMobile && hasSelection;
+  });
+  
   constructor(public graphService: GraphService) {
     // Effect for data changes (nodes/links)
     effect(() => {
@@ -70,7 +77,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       }
     });
 
-    // Effect to auto-switch tabs only when something is newly selected (not when manually changing tabs)
+    // Effect to auto-switch tabs when something is newly selected
     effect(() => {
       const selectedNode = this.selectedNode();
       const selectedLink = this.selectedLink();
@@ -121,7 +128,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   }
 
   isMobileView(): boolean {
-    return window.innerWidth <= 800;
+    return document.getElementsByClassName('graph-container')[0].clientWidth <= 800;
   }
 
   onTabChange(index: number): void {
