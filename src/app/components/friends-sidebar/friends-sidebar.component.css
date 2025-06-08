@@ -113,7 +113,7 @@
 }
 
 :host(.mobile-sidebar) .sidebar-title {
-  font-size: 20px;
+  font-size: 16px;
 }
 
 :host(.mobile-sidebar) .title-icon {
@@ -157,10 +157,6 @@
 
 /* Small mobile devices */
 @media (max-width: 480px) {
-
-  :host(.mobile-sidebar) .sidebar-title {
-    font-size: 18px;
-  }
 
   :host(.mobile-sidebar) .title-icon {
     font-size: 24px;
