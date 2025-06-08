@@ -34,6 +34,7 @@
   border-bottom: 1px solid #f0f0f0;
   min-width: 0;
   position: relative;
+  margin-right: 8px;
 }
 
 .friend-item:last-child {
