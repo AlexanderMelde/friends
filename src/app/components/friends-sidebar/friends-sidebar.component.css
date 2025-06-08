@@ -2,7 +2,7 @@
   position: fixed;
   top: 64px; /* Account for toolbar height */
   right: 0;
-  width: 400px;
+  width: 300px;
   height: calc(100vh - 64px); /* Subtract toolbar height */
   background-color: white;
   box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
