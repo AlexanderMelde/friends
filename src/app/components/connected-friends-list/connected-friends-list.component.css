@@ -53,7 +53,6 @@
 
 .shared-events {
   position: absolute;
-  bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
@@ -63,5 +62,5 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   bottom: 16px;
-    text-align: center;
+  text-align: center;
 }
