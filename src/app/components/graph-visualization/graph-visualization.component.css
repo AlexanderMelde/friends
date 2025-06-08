@@ -150,7 +150,7 @@ svg {
 
 .boltbadge {
   position: fixed;
-  bottom: 10px;
+  top: 10px;
   left: 10px;
   z-index: 50;
 }
