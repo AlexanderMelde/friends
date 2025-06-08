@@ -59,22 +59,34 @@ svg {
 
 /* Mobile tab system */
 .mobile-tabs {
-  flex: 0 0 50%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50vh;
   display: flex;
   flex-direction: column;
   background-color: white;
   border-top: 1px solid #e0e0e0;
   overflow: hidden;
-  min-height: 200px; /* Ensure minimum height for tabs */
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
   z-index: 15;
+  
+  /* Initial hidden state */
+  transform: translateY(100%);
+  opacity: 0;
+  visibility: hidden;
+  
+  /* Transition properties */
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+              opacity 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+              visibility 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.mobile-tabs.slide-in {
+.mobile-tabs.visible {
   transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
 }
 
 .details-tabs {
@@ -174,17 +186,17 @@ svg {
 /* Mobile-specific adjustments */
 @media (max-width: 800px) {
   .graph-area.mobile-reduced {
-    flex: 0 0 50%;
+    flex: 0 0 50vh;
     min-height: 250px; /* Ensure graph is visible on mobile */
   }
   
   .mobile-tabs {
-    flex: 0 0 50%;
+    height: 50vh;
     min-height: 250px; /* Ensure tabs are visible on mobile */
   }
   
   .network-controls.mobile-adjusted {
-    bottom: calc(50% + 16px);
+    bottom: calc(50vh + 16px);
     right: 16px;
   }
 }
@@ -192,7 +204,7 @@ svg {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .network-controls.mobile-adjusted {
-    bottom: calc(50% + 8px);
+    bottom: calc(50vh + 8px);
     right: 8px;
   }
   
@@ -249,17 +261,17 @@ svg {
 /* Landscape mobile orientation */
 @media (max-width: 800px) and (orientation: landscape) {
   .graph-area.mobile-reduced {
-    flex: 0 0 60%;
+    flex: 0 0 60vh;
     min-height: 180px;
   }
   
   .mobile-tabs {
-    flex: 0 0 40%;
+    height: 40vh;
     min-height: 120px;
   }
   
   .network-controls.mobile-adjusted {
-    bottom: calc(40% + 8px);
+    bottom: calc(40vh + 8px);
   }
 }
 
@@ -289,7 +301,7 @@ svg {
 
 /* Performance optimizations */
 .mobile-tabs {
-  will-change: transform;
+  will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }

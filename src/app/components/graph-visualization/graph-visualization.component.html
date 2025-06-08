@@ -35,11 +35,10 @@
     }
   </div>
 
-  <!-- Mobile tab system (shown when < 800px) -->
+  <!-- Mobile tab system (shown when < 800px AND something is selected) -->
   <div class="mobile-tabs" 
        *ngIf="isMobileView()"
-       [class.slide-in]="showMobileTabs()"
-       [@slideUpAnimation]="showMobileTabs() ? 'visible' : 'hidden'">
+       [class.visible]="showMobileTabs()">
     <mat-tab-group 
       [selectedIndex]="selectedTabIndex()"
       (selectedIndexChange)="onTabChange($event)"
