@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, inject, effect } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -77,10 +77,28 @@ export class CalendarSidebarComponent {
   private dialog = inject(MatDialog);
 
   selectedType: string = '';
-  selectedFromYear: number | null = null;
-  selectedToYear: number | null = null;
+  // Convert year filter values to signals so they're reactive
+  private _selectedFromYear = signal<number | null>(null);
+  private _selectedToYear = signal<number | null>(null);
   showFilters: boolean = false;
   private isInitialized = false;
+
+  // Expose year filter values as properties for template binding
+  get selectedFromYear(): number | null {
+    return this._selectedFromYear();
+  }
+
+  set selectedFromYear(value: number | null) {
+    this._selectedFromYear.set(value);
+  }
+
+  get selectedToYear(): number | null {
+    return this._selectedToYear();
+  }
+
+  set selectedToYear(value: number | null) {
+    this._selectedToYear.set(value);
+  }
 
   readonly eventTypes = computed(() => {
     const events = this.dataService.events();
@@ -150,13 +168,15 @@ export class CalendarSidebarComponent {
       filteredEvents = filteredEvents.filter(e => e.type === this.selectedType);
     }
     
-    // Apply year range filter
-    if (this.selectedFromYear || this.selectedToYear) {
+    // Apply year range filter - now reactive to signal changes
+    const fromYear = this._selectedFromYear();
+    const toYear = this._selectedToYear();
+    if (fromYear || toYear) {
       filteredEvents = filteredEvents.filter(event => {
         const eventYear = new Date(event.date).getFullYear();
-        const fromYear = this.selectedFromYear || this.minYear();
-        const toYear = this.selectedToYear || this.maxYear();
-        return eventYear >= fromYear && eventYear <= toYear;
+        const filterFromYear = fromYear || this.minYear();
+        const filterToYear = toYear || this.maxYear();
+        return eventYear >= filterFromYear && eventYear <= filterToYear;
       });
     }
     
@@ -220,8 +240,8 @@ export class CalendarSidebarComponent {
       const years = this.availableYears();
       if (years.length > 0 && !this.isInitialized) {
         // Initialize to full range
-        this.selectedFromYear = this.minYear();
-        this.selectedToYear = this.maxYear();
+        this._selectedFromYear.set(this.minYear());
+        this._selectedToYear.set(this.maxYear());
         this.isInitialized = true;
       }
     });
@@ -263,14 +283,14 @@ export class CalendarSidebarComponent {
 
   clearYearFilter(): void {
     // Reset to full range instead of null
-    this.selectedFromYear = this.minYear();
-    this.selectedToYear = this.maxYear();
+    this._selectedFromYear.set(this.minYear());
+    this._selectedToYear.set(this.maxYear());
   }
 
   clearAllFilters(): void {
     this.selectedType = '';
-    this.selectedFromYear = this.minYear();
-    this.selectedToYear = this.maxYear();
+    this._selectedFromYear.set(this.minYear());
+    this._selectedToYear.set(this.maxYear());
     this.graphService.setFilter('');
   }
 
@@ -282,32 +302,34 @@ export class CalendarSidebarComponent {
 
   hasYearFilter(): boolean {
     // Check if the current selection is different from the full range
-    const currentFromYear = this.selectedFromYear || this.minYear();
-    const currentToYear = this.selectedToYear || this.maxYear();
+    const currentFromYear = this._selectedFromYear() || this.minYear();
+    const currentToYear = this._selectedToYear() || this.maxYear();
     return currentFromYear !== this.minYear() || currentToYear !== this.maxYear();
   }
 
   onYearRangeChange(): void {
     // Ensure from year is not greater than to year
-    if (this.selectedFromYear && this.selectedToYear && this.selectedFromYear > this.selectedToYear) {
+    const fromYear = this._selectedFromYear();
+    const toYear = this._selectedToYear();
+    
+    if (fromYear && toYear && fromYear > toYear) {
       // Swap values if from > to
-      const temp = this.selectedFromYear;
-      this.selectedFromYear = this.selectedToYear;
-      this.selectedToYear = temp;
+      this._selectedFromYear.set(toYear);
+      this._selectedToYear.set(fromYear);
     }
   }
 
   getDisplayFromYear(): string {
-    return this.selectedFromYear?.toString() || this.minYear().toString();
+    return (this._selectedFromYear() || this.minYear()).toString();
   }
 
   getDisplayToYear(): string {
-    return this.selectedToYear?.toString() || this.maxYear().toString();
+    return (this._selectedToYear() || this.maxYear()).toString();
   }
 
   getYearRangeText(): string {
-    const fromYear = this.selectedFromYear || this.minYear();
-    const toYear = this.selectedToYear || this.maxYear();
+    const fromYear = this._selectedFromYear() || this.minYear();
+    const toYear = this._selectedToYear() || this.maxYear();
     
     if (fromYear === toYear) {
       return `Showing events from ${fromYear}`;
