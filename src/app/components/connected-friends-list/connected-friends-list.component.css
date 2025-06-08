@@ -25,6 +25,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   width: 100%;
+  white-space: nowrap;
 }
 
 .friend-item {
@@ -32,7 +33,6 @@
   align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid #f0f0f0;
-  width: 100%;
   min-width: 0;
 }
 
