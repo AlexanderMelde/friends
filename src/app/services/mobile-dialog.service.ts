@@ -22,7 +22,7 @@ export class MobileDialogService {
   open<T = any>(
     component: ComponentType<T> | null,
     config: MobileDialogConfig
-  ): MatDialogRef<MobileDialogComponent> {
+  ): MatDialogRef<any> {
     
     if (!this.isMobile()) {
       // For desktop, use regular dialog
@@ -33,7 +33,7 @@ export class MobileDialogService {
           maxHeight: '90vh',
           disableClose: config.disableClose || false,
           data: config.data
-        }) as any;
+        });
       }
     }
 
@@ -60,7 +60,7 @@ export class MobileDialogService {
     title: string,
     content: string | ComponentType<any> | null,
     options: Partial<MobileDialogConfig> = {}
-  ): MatDialogRef<MobileDialogComponent> {
+  ): MatDialogRef<any> {
     
     const config: MobileDialogConfig = {
       title,
@@ -79,7 +79,7 @@ export class MobileDialogService {
     }
   }
 
-  openSettings(): MatDialogRef<MobileDialogComponent> {
+  openSettings(): MatDialogRef<any> {
     return this.openWithContent(
       'Settings',
       null, // We'll import the settings component
@@ -97,7 +97,7 @@ export class MobileDialogService {
     );
   }
 
-  openHelp(): MatDialogRef<MobileDialogComponent> {
+  openHelp(): MatDialogRef<any> {
     return this.openWithContent(
       'Help & Support',
       null, // We'll import the help component
@@ -107,7 +107,7 @@ export class MobileDialogService {
     );
   }
 
-  openFriendDetails(friendId: string): MatDialogRef<MobileDialogComponent> {
+  openFriendDetails(friendId: string): MatDialogRef<any> {
     return this.openWithContent(
       'Friend Details',
       null, // We'll import the friend details component
@@ -126,7 +126,7 @@ export class MobileDialogService {
     );
   }
 
-  openEventDetails(eventId: string): MatDialogRef<MobileDialogComponent> {
+  openEventDetails(eventId: string): MatDialogRef<any> {
     return this.openWithContent(
       'Event Details',
       null, // We'll import the event details component

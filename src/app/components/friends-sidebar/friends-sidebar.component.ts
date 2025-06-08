@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Friend, FriendNode } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
+import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { FriendListItemComponent } from '../friend-list-item/friend-list-item.component';
 import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
 
@@ -26,6 +27,7 @@ export class FriendsSidebarComponent {
   private dataService = inject(DataService);
   private graphService = inject(GraphService);
   private dialog = inject(MatDialog);
+  private mobileDialogService = inject(MobileDialogService);
 
   readonly sortedFriends = computed(() => {
     const friends = this.dataService.friendsWithEventCount();
@@ -50,6 +52,10 @@ export class FriendsSidebarComponent {
     });
   });
 
+  private isMobileView(): boolean {
+    return window.innerWidth <= 800;
+  }
+
   close(): void {
     this.closeRequested.emit();
   }
@@ -69,14 +75,29 @@ export class FriendsSidebarComponent {
   }
 
   editFriend(friend: Friend & { eventCount: number }): void {
-    const dialogRef = this.dialog.open(FriendDialogComponent, {
-      data: { friend: friend, events: this.dataService.events(), isEdit: true }
-    });
+    if (this.isMobileView()) {
+      this.mobileDialogService.openWithContent(
+        'Edit Friend',
+        FriendDialogComponent,
+        {
+          data: { friend: friend, events: this.dataService.events(), isEdit: true },
+          showBackButton: true
+        }
+      ).afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.updateFriend(result.friend, result.selectedEvents);
+        }
+      });
+    } else {
+      const dialogRef = this.dialog.open(FriendDialogComponent, {
+        data: { friend: friend, events: this.dataService.events(), isEdit: true }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.dataService.updateFriend(result.friend, result.selectedEvents);
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.updateFriend(result.friend, result.selectedEvents);
+        }
+      });
+    }
   }
 }

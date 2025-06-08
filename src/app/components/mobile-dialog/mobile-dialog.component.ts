@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -58,12 +58,11 @@ export interface MobileDialogData {
 
       <!-- Content Area -->
       <div class="mobile-dialog-content" #contentArea>
-        <ng-content></ng-content>
+        <!-- Dynamic Component Container -->
+        <div #dynamicComponentContainer class="dynamic-component-container"></div>
         
-        <!-- Dynamic Component Insertion -->
-        <div *ngIf="data.component" class="dynamic-component-container">
-          <!-- Component will be dynamically inserted here -->
-        </div>
+        <!-- Fallback Content -->
+        <ng-content></ng-content>
       </div>
 
       <!-- Optional Footer -->
@@ -92,9 +91,13 @@ export interface MobileDialogData {
     ])
   ]
 })
-export class MobileDialogComponent implements OnInit, OnDestroy {
+export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('dynamicComponentContainer', { read: ViewContainerRef, static: true }) 
+  dynamicComponentContainer!: ViewContainerRef;
+
   animationState = 'enter';
   hasFooterContent = false;
+  private componentRef: ComponentRef<any> | null = null;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: MobileDialogData,
@@ -117,12 +120,63 @@ export class MobileDialogComponent implements OnInit, OnDestroy {
     document.body.style.height = '100%';
   }
 
+  ngAfterViewInit(): void {
+    // Create dynamic component if provided
+    if (this.data.component && this.dynamicComponentContainer) {
+      this.createDynamicComponent();
+    }
+  }
+
   ngOnDestroy(): void {
     // Restore body scroll
     document.body.style.overflow = '';
     document.body.style.position = '';
     document.body.style.width = '';
     document.body.style.height = '';
+
+    // Clean up component reference
+    if (this.componentRef) {
+      this.componentRef.destroy();
+    }
+  }
+
+  private createDynamicComponent(): void {
+    if (!this.data.component || !this.dynamicComponentContainer) return;
+
+    try {
+      // Clear any existing component
+      this.dynamicComponentContainer.clear();
+
+      // Create the component
+      this.componentRef = this.dynamicComponentContainer.createComponent(this.data.component);
+
+      // Pass data to the component if it has a data property
+      if (this.componentRef.instance && this.data.data) {
+        // For dialog components that expect MAT_DIALOG_DATA
+        if ('data' in this.componentRef.instance) {
+          this.componentRef.instance.data = this.data.data;
+        }
+        
+        // For components with specific properties
+        Object.keys(this.data.data).forEach(key => {
+          if (key in this.componentRef!.instance) {
+            this.componentRef!.instance[key] = this.data.data[key];
+          }
+        });
+      }
+
+      // Handle dialog result if the component has afterClosed or similar
+      if (this.componentRef.instance && typeof this.componentRef.instance.afterClosed === 'function') {
+        this.componentRef.instance.afterClosed().subscribe((result: any) => {
+          this.closeDialog(result);
+        });
+      }
+
+      // Trigger change detection
+      this.componentRef.changeDetectorRef.detectChanges();
+    } catch (error) {
+      console.error('Error creating dynamic component:', error);
+    }
   }
 
   @HostListener('document:keydown.escape', ['$event'])

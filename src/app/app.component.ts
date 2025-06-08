@@ -147,7 +147,11 @@ export class AppComponent {
 
   openHelp(): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openHelp();
+      this.mobileDialogService.openWithContent(
+        'Help & User Guide',
+        HelpDialogComponent,
+        { showBackButton: true }
+      );
     } else {
       this.dialog.open(HelpDialogComponent, {
         width: '700px',
@@ -159,7 +163,11 @@ export class AppComponent {
 
   openSettings(): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openSettings();
+      this.mobileDialogService.openWithContent(
+        'Settings',
+        SettingsDialogComponent,
+        { showBackButton: true }
+      );
     } else {
       this.dialog.open(SettingsDialogComponent, {
         width: '600px',
@@ -194,16 +202,7 @@ export class AppComponent {
         FriendDialogComponent,
         {
           data: { events, isEdit: false },
-          showBackButton: true,
-          headerActions: [
-            {
-              icon: 'save',
-              label: 'Save Friend',
-              action: () => {
-                // This will be handled by the dialog component
-              }
-            }
-          ]
+          showBackButton: true
         }
       ).afterClosed().subscribe(result => {
         if (result) {
@@ -239,16 +238,7 @@ export class AppComponent {
         EventEditDialogComponent,
         {
           data: { event: newEvent, friends, isNew: true },
-          showBackButton: true,
-          headerActions: [
-            {
-              icon: 'save',
-              label: 'Save Event',
-              action: () => {
-                // This will be handled by the dialog component
-              }
-            }
-          ]
+          showBackButton: true
         }
       ).afterClosed().subscribe(result => {
         if (result) {

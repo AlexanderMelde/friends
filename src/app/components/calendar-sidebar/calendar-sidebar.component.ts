@@ -12,6 +12,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
+import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 
@@ -75,6 +76,7 @@ export class CalendarSidebarComponent {
   private dataService = inject(DataService);
   private graphService = inject(GraphService);
   private dialog = inject(MatDialog);
+  private mobileDialogService = inject(MobileDialogService);
 
   selectedType: string = '';
   // Convert year filter values to signals so they're reactive
@@ -260,6 +262,10 @@ export class CalendarSidebarComponent {
     });
   }
 
+  private isMobileView(): boolean {
+    return window.innerWidth <= 800;
+  }
+
   close(): void {
     this.closeRequested.emit();
   }
@@ -269,15 +275,30 @@ export class CalendarSidebarComponent {
   }
 
   editEvent(event: Event): void {
-    const dialogRef = this.dialog.open(EventEditDialogComponent, {
-      data: { event, friends: this.dataService.friendsWithEventCount() }
-    });
+    if (this.isMobileView()) {
+      this.mobileDialogService.openWithContent(
+        'Edit Event',
+        EventEditDialogComponent,
+        {
+          data: { event, friends: this.dataService.friendsWithEventCount() },
+          showBackButton: true
+        }
+      ).afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.updateEvent(result);
+        }
+      });
+    } else {
+      const dialogRef = this.dialog.open(EventEditDialogComponent, {
+        data: { event, friends: this.dataService.friendsWithEventCount() }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.dataService.updateEvent(result);
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.dataService.updateEvent(result);
+        }
+      });
+    }
   }
 
   toggleFilters(): void {
