@@ -108,6 +108,7 @@
 }
 
 :host(.mobile-sidebar) .sidebar-header {
+  padding: 4px;
   background-color: #4CAF50;
   position: relative;
 }
