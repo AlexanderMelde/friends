@@ -2,7 +2,8 @@
      (click)="selectFriend($event)"
      draggable="true"
      (dragstart)="onDragStart($event)"
-     (dragend)="onDragEnd($event)">
+     (dragend)="onDragEnd($event)"
+     (touchstart)="onTouchStart($event)">
   <img [src]="friend.photoUrl" [alt]="friend.name" class="friend-avatar">
   <div class="friend-details">
     <span class="friend-name">{{ friend.name }}</span>
