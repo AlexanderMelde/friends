@@ -56,13 +56,24 @@
 }
 
 .add-button,
-.close-button {
+.desktop-close-button {
   color: white;
   transition: background-color 0.2s ease;
 }
 
 .add-button:hover,
-.close-button:hover {
+.desktop-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile back button - hidden by default */
+.mobile-back-button {
+  display: none;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-back-button:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -138,6 +149,15 @@
     display: flex;
   }
 
+  /* Show mobile back button, hide desktop close button */
+  :host(.mobile-sidebar) .mobile-back-button {
+    display: flex;
+  }
+
+  :host(.mobile-sidebar) .desktop-close-button {
+    display: none;
+  }
+
   .sidebar-content {
     padding: 16px;
   }
@@ -173,7 +193,7 @@
 
 /* Accessibility improvements for mobile */
 @media (max-width: 800px) {
-  .close-button,
+  .mobile-back-button,
   .add-button {
     min-width: 44px;
     min-height: 44px;
