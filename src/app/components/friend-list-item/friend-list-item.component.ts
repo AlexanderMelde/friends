@@ -15,6 +15,8 @@ import { DragService } from '../../services/drag.service';
 })
 export class FriendListItemComponent {
   @Input() friend!: Friend & { eventCount: number };
+  @Input() compactView: boolean = false;
+  @Input() showEditButton: boolean = true;
   @Output() friendSelected = new EventEmitter<Friend & { eventCount: number }>();
   @Output() editFriendRequested = new EventEmitter<Friend & { eventCount: number }>();
 

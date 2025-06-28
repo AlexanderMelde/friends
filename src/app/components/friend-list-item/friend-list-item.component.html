@@ -1,17 +1,28 @@
 <div class="friend-item" 
+     [class.compact-view]="compactView"
      (click)="selectFriend($event)"
      draggable="true"
      (dragstart)="onDragStart($event)"
      (dragend)="onDragEnd($event)">
-  <img [src]="friend.photoUrl" [alt]="friend.name" class="friend-avatar">
-  <div class="friend-details">
+  <img [src]="friend.photoUrl" 
+       [alt]="friend.name" 
+       class="friend-avatar"
+       [class.compact-view]="compactView"
+       [matTooltip]="compactView ? friend.name + ' (' + friend.eventCount + ' ' + (friend.eventCount === 1 ? 'event' : 'events') + ')' : ''">
+  
+  <div class="friend-details" *ngIf="!compactView">
     <span class="friend-name">{{ friend.name }}</span>
     <span class="friend-stats">
       <span class="event-count">{{ friend.eventCount }}</span> 
       {{ friend.eventCount === 1 ? 'event' : 'events' }}
     </span>
   </div>
-  <button mat-icon-button (click)="editFriend($event)" class="edit-button" matTooltip="Edit Friend">
+  
+  <button mat-icon-button 
+          (click)="editFriend($event)" 
+          class="edit-button" 
+          matTooltip="Edit Friend"
+          *ngIf="showEditButton && !compactView">
     <mat-icon>edit</mat-icon>
   </button>
 </div>

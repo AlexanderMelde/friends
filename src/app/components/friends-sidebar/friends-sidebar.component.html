@@ -12,22 +12,11 @@
   </app-header-bar>
   
   <div class="sidebar-content">
-    <ng-container *ngIf="sortedFriends().length > 0; else noFriends">
-      <div class="friends-list">
-        <app-friend-list-item 
-          *ngFor="let friend of sortedFriends()"
-          [friend]="friend"
-          (friendSelected)="selectFriend($event)"
-          (editFriendRequested)="editFriend($event)">
-        </app-friend-list-item>
-      </div>
-    </ng-container>
-    
-    <ng-template #noFriends>
-      <div class="no-friends">
-        <mat-icon style="font-size: 48px; color: #ccc; margin-bottom: 16px;">people_outline</mat-icon>
-        <p>No friends to display</p>
-      </div>
-    </ng-template>
+    <app-friend-list
+      [compactView]="false"
+      [showEditButton]="true"
+      (friendSelected)="selectFriend($event)"
+      (editFriendRequested)="editFriend($event)">
+    </app-friend-list>
   </div>
 </div>

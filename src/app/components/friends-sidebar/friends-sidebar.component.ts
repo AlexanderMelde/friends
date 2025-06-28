@@ -4,11 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
-import { Friend, FriendNode } from '../../models/friend.model';
+import { Friend } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
-import { FriendListItemComponent } from '../friend-list-item/friend-list-item.component';
+import { FriendListComponent } from '../friend-list/friend-list.component';
 import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
 
@@ -20,7 +20,7 @@ import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-heade
     MatIconModule, 
     MatButtonModule, 
     MatTooltipModule, 
-    FriendListItemComponent,
+    FriendListComponent,
     AppHeaderBarComponent
   ],
   templateUrl: './friends-sidebar.component.html',
@@ -45,29 +45,6 @@ export class FriendsSidebarComponent {
       action: () => this.addFriend()
     }
   ]);
-
-  readonly sortedFriends = computed(() => {
-    const friends = this.dataService.friendsWithEventCount();
-    // Use filtered events from graph service to get accurate counts
-    const filteredEvents = this.graphService.filteredEvents();
-    
-    return friends.map(friend => {
-      const eventCount = filteredEvents.filter(event => 
-        event.attendees.includes(friend.id)
-      ).length;
-      
-      return {
-        ...friend,
-        eventCount
-      };
-    }).sort((a, b) => {
-      // Sort by event count (descending), then by name
-      if (b.eventCount !== a.eventCount) {
-        return b.eventCount - a.eventCount;
-      }
-      return a.name.localeCompare(b.name);
-    });
-  });
 
   private isMobileView(): boolean {
     return window.innerWidth <= 800;

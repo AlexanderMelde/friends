@@ -1,0 +1,44 @@
+.friends-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.friends-list.compact-view {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.no-friends {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-top: 40px;
+}
+
+/* Mobile adjustments for compact view */
+@media (max-width: 800px) {
+  .friends-list.compact-view {
+    gap: 6px;
+  }
+  
+  .no-friends {
+    margin-top: 60px;
+    padding: 20px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .friends-list.compact-view {
+    gap: 4px;
+  }
+  
+  .no-friends {
+    margin-top: 40px;
+    padding: 16px;
+  }
+}
