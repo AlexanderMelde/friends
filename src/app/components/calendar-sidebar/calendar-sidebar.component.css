@@ -301,7 +301,7 @@
     position: absolute;
     top: 56px; /* Below mobile header */
     right: 0;
-    width: 50px;
+    width: 60px; /* Increased from 50px to 60px */
     height: calc(100vh - 56px);
     background-color: white;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);

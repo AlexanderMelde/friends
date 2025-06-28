@@ -32,10 +32,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  padding: 2px; /* Reduced from 4px to 2px */
   border-bottom: none;
-  width: 40px;
-  min-width: 40px;
+  width: 52px; /* Increased from 40px to 52px */
+  min-width: 52px; /* Increased from 40px to 52px */
   background-color: transparent;
   border-radius: 4px;
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -58,8 +58,8 @@
 }
 
 .friend-avatar.compact-view {
-  width: 32px;
-  height: 32px;
+  width: 48px; /* Increased from 32px to 48px */
+  height: 48px; /* Increased from 32px to 48px */
   margin-right: 0;
   border-width: 1px;
 }
@@ -137,28 +137,28 @@
 /* Mobile adjustments */
 @media (max-width: 800px) {
   .friend-item.compact-view {
-    width: 36px;
-    min-width: 36px;
+    width: 52px; /* Increased from 36px to 52px */
+    min-width: 52px; /* Increased from 36px to 52px */
     padding: 3px;
   }
   
   .friend-avatar.compact-view {
-    width: 30px;
-    height: 30px;
+    width: 48px; /* Increased from 30px to 48px */
+    height: 48px; /* Increased from 30px to 48px */
   }
 }
 
 /* Small mobile devices */
 @media (max-width: 480px) {
   .friend-item.compact-view {
-    width: 32px;
-    min-width: 32px;
+    width: 48px; /* Increased from 32px to 48px */
+    min-width: 48px; /* Increased from 32px to 48px */
     padding: 2px;
   }
   
   .friend-avatar.compact-view {
-    width: 28px;
-    height: 28px;
+    width: 44px; /* Increased from 28px to 44px */
+    height: 44px; /* Increased from 28px to 44px */
   }
 }
 
