@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Event } from '../../models/event.model';
 import { Friend } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
+import { HeaderAction } from '../app-header-bar/app-header-bar.component';
 
 @Component({
   selector: 'app-event-edit-dialog',
@@ -54,6 +55,21 @@ export class EventEditDialogComponent {
     return Array.from(types).sort();
   });
 
+  // Computed property for header actions (mobile only)
+  readonly headerActions = computed((): HeaderAction[] => {
+    // Only show save action on mobile
+    if (this.isMobileView()) {
+      return [
+        {
+          icon: 'save',
+          label: 'Save',
+          action: () => this.onSave()
+        }
+      ];
+    }
+    return [];
+  });
+
   get isValid(): boolean {
     return !!(
       this.editedEvent.title &&
@@ -63,13 +79,22 @@ export class EventEditDialogComponent {
   }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { event: Event; friends: Friend[]; isNew: boolean },
+    @Inject(MAT_DIALOG_DATA) data: { event: Event; friends: Friend[]; isNew: boolean; headerActions?: HeaderAction[] },
     private dialogRef: MatDialogRef<EventEditDialogComponent>,
     private dataService: DataService
   ) {
     this.editedEvent = { ...data.event };
     this.availableFriends = data.friends;
     this.isNew = data.isNew;
+    
+    // Merge header actions if provided (for mobile)
+    if (data.headerActions) {
+      // The header actions will be handled by the computed property
+    }
+  }
+
+  private isMobileView(): boolean {
+    return window.innerWidth <= 800;
   }
 
   onKeyDown(event: KeyboardEvent): void {

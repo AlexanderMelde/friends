@@ -53,8 +53,12 @@ mat-dialog-actions {
   width: 100% !important;
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
+/* Mobile adjustments - hide dialog actions on mobile */
+@media (max-width: 800px) {
+  mat-dialog-actions {
+    display: none;
+  }
+  
   .form-container {
     min-width: 280px;
     padding: 8px 0;

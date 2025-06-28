@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Friend } from '../../models/friend.model';
 import { Event } from '../../models/event.model';
+import { HeaderAction } from '../app-header-bar/app-header-bar.component';
 
 @Component({
   selector: 'app-friend-dialog',
@@ -25,7 +26,7 @@ import { Event } from '../../models/event.model';
     MatIconModule,
     MatTooltipModule
   ],
-  templateUrl: './friend-dialog.component.html',
+  templateUrl: './app-friend-dialog.component.html',
   styleUrls: ['./friend-dialog.component.css']
 })
 export class FriendDialogComponent {
@@ -38,12 +39,32 @@ export class FriendDialogComponent {
     return !!(this.friend.name && this.friend.photoUrl);
   }
 
+  // Computed property for header actions (mobile only)
+  readonly headerActions = computed((): HeaderAction[] => {
+    // Only show save action on mobile
+    if (this.isMobileView()) {
+      return [
+        {
+          icon: 'save',
+          label: 'Save',
+          action: () => this.onSave()
+        }
+      ];
+    }
+    return [];
+  });
+
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { friend?: Friend; events: Event[]; isEdit: boolean },
+    @Inject(MAT_DIALOG_DATA) data: { friend?: Friend; events: Event[]; isEdit: boolean; headerActions?: HeaderAction[] },
     private dialogRef: MatDialogRef<FriendDialogComponent>
   ) {
     this.isEdit = data.isEdit;
     this.availableEvents = data.events;
+    
+    // Merge header actions if provided (for mobile)
+    if (data.headerActions) {
+      // The header actions will be handled by the computed property
+    }
     
     if (data.friend) {
       this.friend = { ...data.friend };
@@ -59,6 +80,10 @@ export class FriendDialogComponent {
         joinDate: new Date()
       };
     }
+  }
+
+  private isMobileView(): boolean {
+    return window.innerWidth <= 800;
   }
 
   onKeyDown(event: KeyboardEvent): void {
