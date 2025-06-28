@@ -327,7 +327,7 @@ export class EventListItemComponent {
     this.isDraggingTouch = false;
   }
 
-  onAttendeeContextMenu(event: Event): void {
+  onAttendeeContextMenu(event: MouseEvent): void {
     // Always prevent context menu on attendee avatars
     event.preventDefault();
     event.stopPropagation();
