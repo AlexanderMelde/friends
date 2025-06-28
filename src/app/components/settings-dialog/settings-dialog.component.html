@@ -98,6 +98,37 @@
       </div>
     </div>
 
+    <mat-divider></mat-divider>
+
+    <!-- Clear Data Section -->
+    <div class="settings-section">
+      <h3 class="section-title">
+        <mat-icon class="section-icon">delete_forever</mat-icon>
+        Clear All Data
+      </h3>
+      <p class="section-description">
+        Permanently delete all friends, events, and application data. <strong>Warning:</strong> This action cannot be undone. Consider exporting your data first.
+      </p>
+      
+      <div class="clear-data-options">
+        <div class="clear-data-option">
+          <div class="option-info">
+            <h4>Reset Application</h4>
+            <p>Delete all data and reset the application to its initial state with sample data. This will permanently remove all your friends and events.</p>
+          </div>
+          <button mat-raised-button 
+                  color="warn" 
+                  (click)="confirmClearAllData()" 
+                  [disabled]="isClearing">
+            <mat-icon>delete_forever</mat-icon>
+            <span *ngIf="!isClearing">Clear All Data</span>
+            <span *ngIf="isClearing">Clearing...</span>
+            <mat-spinner *ngIf="isClearing" diameter="16" style="margin-left: 8px;"></mat-spinner>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </mat-dialog-content>
 

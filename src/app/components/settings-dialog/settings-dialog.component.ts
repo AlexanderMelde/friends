@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { DataService } from '../../services/data.service';
 import { Friend } from '../../models/friend.model';
 import { Event as AppEvent } from '../../models/event.model';
+import { SAMPLE_DATA } from '../../services/sample-data';
 
 interface AppData {
   version: string;
@@ -34,10 +35,12 @@ interface AppData {
 export class SettingsDialogComponent {
   isExporting = false;
   isImporting = false;
+  isClearing = false;
 
   private dataService = inject(DataService);
   private snackBar = inject(MatSnackBar);
   private dialogRef = inject(MatDialogRef<SettingsDialogComponent>);
+  private dialog = inject(MatDialog);
 
   close(): void {
     this.dialogRef.close();
@@ -475,5 +478,60 @@ export class SettingsDialogComponent {
   triggerFileInput(inputId: string): void {
     const input = document.getElementById(inputId) as HTMLInputElement;
     input?.click();
+  }
+
+  confirmClearAllData(): void {
+    // Show confirmation dialog
+    const confirmed = confirm(
+      'Are you sure you want to clear all data?\n\n' +
+      'This will permanently delete all friends, events, and application data. ' +
+      'This action cannot be undone.\n\n' +
+      'Consider exporting your data first as a backup.'
+    );
+
+    if (confirmed) {
+      this.clearAllDataAndReset();
+    }
+  }
+
+  private async clearAllDataAndReset(): Promise<void> {
+    this.isClearing = true;
+    
+    try {
+      // Clear all existing data
+      await this.clearAllData();
+      
+      // Load sample data to reset the application
+      await this.loadSampleData();
+      
+      this.snackBar.open('All data cleared successfully! Application has been reset with sample data.', 'Close', { duration: 5000 });
+      
+      // Close the dialog after a short delay to let the user see the success message
+      setTimeout(() => {
+        this.close();
+      }, 1000);
+    } catch (error) {
+      console.error('Clear data failed:', error);
+      this.snackBar.open('Failed to clear data. Please try again.', 'Close', { duration: 5000 });
+    } finally {
+      this.isClearing = false;
+    }
+  }
+
+  private async loadSampleData(): Promise<void> {
+    try {
+      // Import sample friends first
+      for (const friend of SAMPLE_DATA.friends) {
+        await this.dataService.addFriend(friend, []);
+      }
+      
+      // Then import sample events
+      for (const event of SAMPLE_DATA.events) {
+        await this.dataService.addEvent(event);
+      }
+    } catch (error) {
+      console.error('Failed to load sample data:', error);
+      throw error;
+    }
   }
 }

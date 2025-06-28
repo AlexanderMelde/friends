@@ -27,6 +27,10 @@
   color: #3F51B5;
 }
 
+.section-title .section-icon.warn-icon {
+  color: #f44336;
+}
+
 .section-description {
   margin: 0 0 20px 0;
   color: #666;
@@ -34,14 +38,16 @@
 }
 
 .export-options,
-.import-options {
+.import-options,
+.clear-data-options {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
 .export-option,
-.import-option {
+.import-option,
+.clear-data-option {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,6 +64,16 @@
   border-color: #d0d0d0;
 }
 
+.clear-data-option {
+  border-color: #ffcdd2;
+  background-color: #ffebee;
+}
+
+.clear-data-option:hover {
+  background-color: #ffcdd2;
+  border-color: #f44336;
+}
+
 .option-info {
   flex: 1;
   margin-right: 16px;
@@ -70,6 +86,10 @@
   color: #333;
 }
 
+.clear-data-option .option-info h4 {
+  color: #d32f2f;
+}
+
 .option-info p {
   margin: 0;
   font-size: 14px;
@@ -77,8 +97,13 @@
   line-height: 1.4;
 }
 
+.clear-data-option .option-info p {
+  color: #d32f2f;
+}
+
 .export-option button,
-.import-option button {
+.import-option button,
+.clear-data-option button {
   min-width: 140px;
   display: flex;
   align-items: center;
@@ -87,7 +112,8 @@
 }
 
 .export-option button mat-icon,
-.import-option button mat-icon {
+.import-option button mat-icon,
+.clear-data-option button mat-icon {
   font-size: 18px;
   height: 18px;
   width: 18px;
@@ -105,7 +131,8 @@ mat-spinner {
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .export-option,
-  .import-option {
+  .import-option,
+  .clear-data-option {
     flex-direction: column;
     align-items: stretch;
     text-align: center;
@@ -117,7 +144,8 @@ mat-spinner {
   }
   
   .export-option button,
-  .import-option button {
+  .import-option button,
+  .clear-data-option button {
     min-width: auto;
     width: 100%;
     justify-content: center;
@@ -125,6 +153,11 @@ mat-spinner {
 }
 
 /* Warning styling for import section */
+.settings-section:nth-child(3) .section-description strong {
+  color: #f44336;
+}
+
+/* Warning styling for clear data section */
 .settings-section:last-child .section-description strong {
   color: #f44336;
 }
