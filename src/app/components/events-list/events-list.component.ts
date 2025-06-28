@@ -7,6 +7,7 @@ import { DataService } from '../../services/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
+import { NavigationService } from '../../services/navigation.service';
 import { GraphService } from '../../services/graph.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 
@@ -25,7 +26,8 @@ export class EventsListComponent {
     private dialog: MatDialog,
     private dataService: DataService,
     private graphService: GraphService,
-    private mobileDialogService: MobileDialogService
+    private mobileDialogService: MobileDialogService,
+    private navigationService: NavigationService
   ) {}
 
   private isMobileView(): boolean {
@@ -34,14 +36,24 @@ export class EventsListComponent {
 
   editEvent(event: Event): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Edit Event',
         EventEditDialogComponent,
         {
           data: { event, friends: this.dataService.friendsWithEventCount() },
           showBackButton: true
         }
-      ).afterClosed().subscribe(result => {
+      );
+      
+      // Add to navigation stack
+      const dialogId = `edit-event-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.dataService.updateEvent(result);
         }

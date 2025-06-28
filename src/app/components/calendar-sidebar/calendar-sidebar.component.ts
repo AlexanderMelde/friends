@@ -13,6 +13,7 @@ import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
+import { NavigationService } from '../../services/navigation.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
@@ -81,6 +82,7 @@ export class CalendarSidebarComponent {
   private graphService = inject(GraphService);
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
+  private navigationService = inject(NavigationService);
 
   selectedType: string = '';
   // Convert year filter values to signals so they're reactive
@@ -92,6 +94,7 @@ export class CalendarSidebarComponent {
 
   // Compact friends sidebar state
   compactFriendsSidebarOpen = signal(false);
+  private readonly COMPACT_FRIENDS_ID = 'compact-friends-sidebar';
 
   // Computed property for header actions
   readonly headerActions = computed((): HeaderAction[] => {
@@ -294,7 +297,7 @@ export class CalendarSidebarComponent {
   @HostListener('document:keydown.escape', ['$event'])
   onEscapeKey(event: KeyboardEvent): void {
     if (this.compactFriendsSidebarOpen()) {
-      this.compactFriendsSidebarOpen.set(false);
+      this.closeCompactFriendsSidebar();
       event.preventDefault();
     }
   }
@@ -312,19 +315,53 @@ export class CalendarSidebarComponent {
   }
 
   toggleCompactFriendsSidebar(): void {
-    this.compactFriendsSidebarOpen.set(!this.compactFriendsSidebarOpen());
+    if (this.compactFriendsSidebarOpen()) {
+      this.closeCompactFriendsSidebar();
+    } else {
+      this.openCompactFriendsSidebar();
+    }
+  }
+
+  private openCompactFriendsSidebar(): void {
+    this.compactFriendsSidebarOpen.set(true);
+    
+    if (this.isMobileView()) {
+      this.navigationService.pushState({
+        id: this.COMPACT_FRIENDS_ID,
+        type: 'overlay',
+        closeCallback: () => this.closeCompactFriendsSidebar()
+      });
+    }
+  }
+
+  private closeCompactFriendsSidebar(): void {
+    this.compactFriendsSidebarOpen.set(false);
+    
+    if (this.navigationService.isInStack(this.COMPACT_FRIENDS_ID)) {
+      this.navigationService.closeItem(this.COMPACT_FRIENDS_ID);
+    }
   }
 
   editEvent(event: Event): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Edit Event',
         EventEditDialogComponent,
         {
           data: { event, friends: this.dataService.friendsWithEventCount() },
           showBackButton: true
         }
-      ).afterClosed().subscribe(result => {
+      );
+      
+      // Add to navigation stack
+      const dialogId = `edit-event-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.dataService.updateEvent(result);
         }

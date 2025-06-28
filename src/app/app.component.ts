@@ -20,6 +20,7 @@ import { DataService } from './services/data.service';
 import { DragService } from './services/drag.service';
 import { GraphService } from './services/graph.service';
 import { MobileDialogService } from './services/mobile-dialog.service';
+import { NavigationService } from './services/navigation.service';
 import { Event } from './models/event.model';
 
 @Component({
@@ -51,6 +52,11 @@ export class AppComponent {
   private dataService = inject(DataService);
   private dragService = inject(DragService);
   private mobileDialogService = inject(MobileDialogService);
+  private navigationService = inject(NavigationService);
+
+  // Navigation state IDs
+  private readonly CALENDAR_SIDEBAR_ID = 'calendar-sidebar';
+  private readonly FRIENDS_SIDEBAR_ID = 'friends-sidebar';
 
   constructor() {
     // Add global drop event listener to handle drops outside of valid zones
@@ -98,10 +104,14 @@ export class AppComponent {
     if (this.isMobileView()) {
       // On mobile, close friends sidebar if open, then toggle calendar
       if (this.friendsSidebarOpen) {
-        this.friendsSidebarOpen = false;
+        this.closeFriendsSidebar();
       }
-      this.calendarSidebarOpen = !this.calendarSidebarOpen;
-      this.updateBodyClass();
+      
+      if (this.calendarSidebarOpen) {
+        this.closeCalendarSidebar();
+      } else {
+        this.openCalendarSidebar();
+      }
     } else {
       // Desktop behavior remains the same
       this.calendarSidebarOpen = !this.calendarSidebarOpen;
@@ -112,13 +122,61 @@ export class AppComponent {
     if (this.isMobileView()) {
       // On mobile, close calendar sidebar if open, then toggle friends
       if (this.calendarSidebarOpen) {
-        this.calendarSidebarOpen = false;
+        this.closeCalendarSidebar();
       }
-      this.friendsSidebarOpen = !this.friendsSidebarOpen;
-      this.updateBodyClass();
+      
+      if (this.friendsSidebarOpen) {
+        this.closeFriendsSidebar();
+      } else {
+        this.openFriendsSidebar();
+      }
     } else {
       // Desktop behavior remains the same
       this.friendsSidebarOpen = !this.friendsSidebarOpen;
+    }
+  }
+
+  private openCalendarSidebar(): void {
+    this.calendarSidebarOpen = true;
+    this.updateBodyClass();
+    
+    if (this.isMobileView()) {
+      this.navigationService.pushState({
+        id: this.CALENDAR_SIDEBAR_ID,
+        type: 'sidebar',
+        closeCallback: () => this.closeCalendarSidebar()
+      });
+    }
+  }
+
+  private closeCalendarSidebar(): void {
+    this.calendarSidebarOpen = false;
+    this.updateBodyClass();
+    
+    if (this.navigationService.isInStack(this.CALENDAR_SIDEBAR_ID)) {
+      this.navigationService.closeItem(this.CALENDAR_SIDEBAR_ID);
+    }
+  }
+
+  private openFriendsSidebar(): void {
+    this.friendsSidebarOpen = true;
+    this.updateBodyClass();
+    
+    if (this.isMobileView()) {
+      this.navigationService.pushState({
+        id: this.FRIENDS_SIDEBAR_ID,
+        type: 'sidebar',
+        closeCallback: () => this.closeFriendsSidebar()
+      });
+    }
+  }
+
+  private closeFriendsSidebar(): void {
+    this.friendsSidebarOpen = false;
+    this.updateBodyClass();
+    
+    if (this.navigationService.isInStack(this.FRIENDS_SIDEBAR_ID)) {
+      this.navigationService.closeItem(this.FRIENDS_SIDEBAR_ID);
     }
   }
 
@@ -126,6 +184,14 @@ export class AppComponent {
     this.calendarSidebarOpen = false;
     this.friendsSidebarOpen = false;
     this.updateBodyClass();
+    
+    // Close any navigation items for these sidebars
+    if (this.navigationService.isInStack(this.CALENDAR_SIDEBAR_ID)) {
+      this.navigationService.closeItem(this.CALENDAR_SIDEBAR_ID);
+    }
+    if (this.navigationService.isInStack(this.FRIENDS_SIDEBAR_ID)) {
+      this.navigationService.closeItem(this.FRIENDS_SIDEBAR_ID);
+    }
   }
 
   // Handle overlay backdrop clicks
@@ -147,11 +213,19 @@ export class AppComponent {
 
   openHelp(): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Help & User Guide',
         HelpDialogComponent,
         { showBackButton: true }
       );
+      
+      // Add to navigation stack
+      const dialogId = `help-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
     } else {
       this.dialog.open(HelpDialogComponent, {
         width: '700px',
@@ -163,11 +237,19 @@ export class AppComponent {
 
   openSettings(): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Settings',
         SettingsDialogComponent,
         { showBackButton: true }
       );
+      
+      // Add to navigation stack
+      const dialogId = `settings-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
     } else {
       this.dialog.open(SettingsDialogComponent, {
         width: '600px',
@@ -179,11 +261,19 @@ export class AppComponent {
 
   openLegal(): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Legal Information',
         LegalDialogComponent,
         { showBackButton: true }
       );
+      
+      // Add to navigation stack
+      const dialogId = `legal-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
     } else {
       this.dialog.open(LegalDialogComponent, {
         width: '600px',
@@ -197,14 +287,24 @@ export class AppComponent {
     const events = this.dataService.events();
     
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Add Friend',
         FriendDialogComponent,
         {
           data: { events, isEdit: false },
           showBackButton: true
         }
-      ).afterClosed().subscribe(result => {
+      );
+      
+      // Add to navigation stack
+      const dialogId = `add-friend-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.dataService.addFriend(result.friend, result.selectedEvents);
         }
@@ -233,14 +333,24 @@ export class AppComponent {
     };
 
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Add Event',
         EventEditDialogComponent,
         {
           data: { event: newEvent, friends, isNew: true },
           showBackButton: true
         }
-      ).afterClosed().subscribe(result => {
+      );
+      
+      // Add to navigation stack
+      const dialogId = `add-event-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.dataService.addEvent(result);
         }

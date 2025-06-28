@@ -8,6 +8,7 @@ import { Friend } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
+import { NavigationService } from '../../services/navigation.service';
 import { FriendListComponent } from '../friend-list/friend-list.component';
 import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
@@ -36,6 +37,7 @@ export class FriendsSidebarComponent {
   private graphService = inject(GraphService);
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
+  private navigationService = inject(NavigationService);
 
   // Computed property for header actions
   readonly headerActions = computed((): HeaderAction[] => [
@@ -70,14 +72,24 @@ export class FriendsSidebarComponent {
 
   editFriend(friend: Friend & { eventCount: number }): void {
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Edit Friend',
         FriendDialogComponent,
         {
           data: { friend: friend, events: this.dataService.events(), isEdit: true },
           showBackButton: true
         }
-      ).afterClosed().subscribe(result => {
+      );
+      
+      // Add to navigation stack
+      const dialogId = `edit-friend-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.dataService.updateFriend(result.friend, result.selectedEvents);
         }

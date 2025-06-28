@@ -10,6 +10,7 @@ import { Event } from '../../models/event.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
+import { NavigationService } from '../../services/navigation.service';
 import { EventsListComponent } from '../events-list/events-list.component';
 import { ConnectedFriendsListComponent } from '../connected-friends-list/connected-friends-list.component';
 import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
@@ -113,7 +114,8 @@ export class FriendTooltipComponent {
     private dataService: DataService,
     private graphService: GraphService,
     private dialog: MatDialog,
-    private mobileDialogService: MobileDialogService
+    private mobileDialogService: MobileDialogService,
+    private navigationService: NavigationService
   ) {}
 
   private isMobileView(): boolean {
@@ -135,14 +137,24 @@ export class FriendTooltipComponent {
     if (!friend) return;
     
     if (this.isMobileView()) {
-      this.mobileDialogService.openWithContent(
+      const dialogRef = this.mobileDialogService.openWithContent(
         'Edit Friend',
         FriendDialogComponent,
         {
           data: { friend: friend, events: this.dataService.events(), isEdit: true },
           showBackButton: true
         }
-      ).afterClosed().subscribe(result => {
+      );
+      
+      // Add to navigation stack
+      const dialogId = `edit-friend-dialog-${Date.now()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+      
+      dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.dataService.updateFriend(result.friend, result.selectedEvents);
         }

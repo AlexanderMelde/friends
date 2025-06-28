@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
+import { NavigationService } from '../../services/navigation.service';
 
 export interface MobileDialogData {
   title: string;
@@ -78,11 +79,13 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
   animationState = 'enter';
   hasFooterContent = false;
   private componentRef: ComponentRef<any> | null = null;
+  private navigationId: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: MobileDialogData,
     private dialogRef: MatDialogRef<MobileDialogComponent>,
-    private injector: Injector
+    private injector: Injector,
+    private navigationService: NavigationService
   ) {
     // Set default values
     this.data = {
@@ -91,6 +94,9 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
       headerActions: [],
       ...this.data
     };
+
+    // Generate unique navigation ID
+    this.navigationId = `mobile-dialog-${Date.now()}-${Math.random()}`;
   }
 
   ngOnInit(): void {
@@ -99,6 +105,13 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
     document.body.style.position = 'fixed';
     document.body.style.width = '100%';
     document.body.style.height = '100%';
+
+    // Add to navigation stack for back button handling
+    this.navigationService.pushState({
+      id: this.navigationId,
+      type: 'dialog',
+      closeCallback: () => this.closeDialog()
+    });
   }
 
   ngAfterViewInit(): void {
@@ -118,6 +131,11 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
     // Clean up component reference
     if (this.componentRef) {
       this.componentRef.destroy();
+    }
+
+    // Remove from navigation stack if still there
+    if (this.navigationService.isInStack(this.navigationId)) {
+      this.navigationService.closeItem(this.navigationId);
     }
   }
 
@@ -174,18 +192,17 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.closeDialog();
   }
 
-  @HostListener('window:popstate', ['$event'])
-  onPopState(event: PopStateEvent): void {
-    // Handle browser back button
-    this.closeDialog();
-  }
-
   onBackClick(): void {
     this.closeDialog();
   }
 
   closeDialog(result?: any): void {
     this.animationState = 'exit';
+    
+    // Remove from navigation stack
+    if (this.navigationService.isInStack(this.navigationId)) {
+      this.navigationService.closeItem(this.navigationId);
+    }
     
     // Wait for animation to complete before closing
     setTimeout(() => {
