@@ -34,8 +34,8 @@
   justify-content: center;
   padding: 4px;
   border-bottom: none;
-  width: auto;
-  min-width: 44px;
+  width: 40px;
+  min-width: 40px;
   background-color: transparent;
   border-radius: 4px;
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -58,8 +58,8 @@
 }
 
 .friend-avatar.compact-view {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   margin-right: 0;
   border-width: 1px;
 }
@@ -137,20 +137,22 @@
 /* Mobile adjustments */
 @media (max-width: 800px) {
   .friend-item.compact-view {
-    min-width: 40px;
+    width: 36px;
+    min-width: 36px;
     padding: 3px;
   }
   
   .friend-avatar.compact-view {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 }
 
 /* Small mobile devices */
 @media (max-width: 480px) {
   .friend-item.compact-view {
-    min-width: 36px;
+    width: 32px;
+    min-width: 32px;
     padding: 2px;
   }
   

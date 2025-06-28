@@ -11,38 +11,7 @@
     (navButtonClick)="close()">
   </app-header-bar>
   
-  <!-- Compact Friends Overlay (Mobile Only) -->
-  <div class="compact-friends-overlay" 
-       *ngIf="isMobileView()"
-       [class.active]="compactFriendsSidebarOpen()">
-    <!-- Backdrop -->
-    <div class="compact-friends-backdrop" 
-         (click)="toggleCompactFriendsSidebar()"></div>
-    
-    <!-- Compact Friends Content -->
-    <div class="compact-friends-content" 
-         [class.slide-in]="compactFriendsSidebarOpen()">
-      <!-- Sub-sidebar Header -->
-      <app-header-bar
-        title="Friends"
-        icon="people"
-        headerColor="accent"
-        [headerActions]="[]"
-        (navButtonClick)="toggleCompactFriendsSidebar()">
-      </app-header-bar>
-      
-      <!-- Compact Friends List Container -->
-      <div class="compact-friends-list-container">
-        <app-friend-list
-          [compactView]="true"
-          [showEditButton]="false">
-        </app-friend-list>
-      </div>
-    </div>
-  </div>
-  
-  <div class="sidebar-content" 
-       [class.compact-friends-open]="compactFriendsSidebarOpen()">
+  <div class="sidebar-content">
     <!-- Filter Section -->
     <div class="filter-section" [class.expanded]="showFilters">
       <div class="filter-header" (click)="toggleFilters()">
@@ -154,5 +123,32 @@
         <p *ngIf="hasActiveFilters()" class="filter-hint">Try adjusting your filters</p>
       </div>
     </ng-template>
+  </div>
+</div>
+
+<!-- Compact Friends Sidebar (Desktop Only) -->
+<div class="compact-friends-sidebar" 
+     *ngIf="!isMobileView()"
+     [class.open]="compactFriendsSidebarOpen()">
+  
+  <!-- Compact Header -->
+  <div class="compact-friends-header">
+    <button mat-icon-button 
+            (click)="toggleCompactFriendsSidebar()" 
+            class="compact-friends-close-button"
+            matTooltip="Close Friends List">
+      <mat-icon class="compact-friends-icon">close</mat-icon>
+    </button>
+    <mat-icon class="compact-friends-icon">people</mat-icon>
+  </div>
+  
+  <!-- Compact Friends Content -->
+  <div class="compact-friends-content">
+    <div class="compact-friends-list-container">
+      <app-friend-list
+        [compactView]="true"
+        [showEditButton]="false">
+      </app-friend-list>
+    </div>
   </div>
 </div>

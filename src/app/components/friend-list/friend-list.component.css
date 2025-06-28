@@ -5,11 +5,10 @@
 
 .friends-list.compact-view {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .no-friends {
