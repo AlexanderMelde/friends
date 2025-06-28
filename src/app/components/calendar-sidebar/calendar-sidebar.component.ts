@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, inject, effect, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, effect, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
+import { FriendListComponent } from '../friend-list/friend-list.component';
 
 interface MonthGroup {
   month: string;
@@ -46,7 +47,8 @@ interface EventTypeOption {
     MatSelectModule,
     MatSliderModule,
     EventListItemComponent,
-    AppHeaderBarComponent
+    AppHeaderBarComponent,
+    FriendListComponent
   ],
   templateUrl: './calendar-sidebar.component.html',
   styleUrls: ['./calendar-sidebar.component.css'],
@@ -88,14 +90,30 @@ export class CalendarSidebarComponent {
   private isInitialized = false;
   private isUpdatingFromGraphService = false;
 
+  // Compact friends sidebar state
+  compactFriendsSidebarOpen = signal(false);
+
   // Computed property for header actions
-  readonly headerActions = computed((): HeaderAction[] => [
-    {
-      icon: 'add',
-      label: 'Add Event',
-      action: () => this.addEvent()
+  readonly headerActions = computed((): HeaderAction[] => {
+    const actions: HeaderAction[] = [
+      {
+        icon: 'add',
+        label: 'Add Event',
+        action: () => this.addEvent()
+      }
+    ];
+
+    // Add friends list button only on mobile
+    if (this.isMobileView()) {
+      actions.push({
+        icon: 'people_alt',
+        label: 'Friends List',
+        action: () => this.toggleCompactFriendsSidebar()
+      });
     }
-  ]);
+
+    return actions;
+  });
 
   // Expose year filter values as properties for template binding
   get selectedFromYear(): number | null {
@@ -273,6 +291,14 @@ export class CalendarSidebarComponent {
     });
   }
 
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent): void {
+    if (this.compactFriendsSidebarOpen()) {
+      this.compactFriendsSidebarOpen.set(false);
+      event.preventDefault();
+    }
+  }
+
   private isMobileView(): boolean {
     return window.innerWidth <= 800;
   }
@@ -283,6 +309,10 @@ export class CalendarSidebarComponent {
 
   addEvent(): void {
     this.addEventRequested.emit();
+  }
+
+  toggleCompactFriendsSidebar(): void {
+    this.compactFriendsSidebarOpen.set(!this.compactFriendsSidebarOpen());
   }
 
   editEvent(event: Event): void {

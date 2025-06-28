@@ -11,7 +11,38 @@
     (navButtonClick)="close()">
   </app-header-bar>
   
-  <div class="sidebar-content">
+  <!-- Compact Friends Overlay (Mobile Only) -->
+  <div class="compact-friends-overlay" 
+       *ngIf="isMobileView()"
+       [class.active]="compactFriendsSidebarOpen()">
+    <!-- Backdrop -->
+    <div class="compact-friends-backdrop" 
+         (click)="toggleCompactFriendsSidebar()"></div>
+    
+    <!-- Compact Friends Content -->
+    <div class="compact-friends-content" 
+         [class.slide-in]="compactFriendsSidebarOpen()">
+      <!-- Sub-sidebar Header -->
+      <app-header-bar
+        title="Friends"
+        icon="people"
+        headerColor="accent"
+        [headerActions]="[]"
+        (navButtonClick)="toggleCompactFriendsSidebar()">
+      </app-header-bar>
+      
+      <!-- Compact Friends List Container -->
+      <div class="compact-friends-list-container">
+        <app-friend-list
+          [compactView]="true"
+          [showEditButton]="false">
+        </app-friend-list>
+      </div>
+    </div>
+  </div>
+  
+  <div class="sidebar-content" 
+       [class.compact-friends-open]="compactFriendsSidebarOpen()">
     <!-- Filter Section -->
     <div class="filter-section" [class.expanded]="showFilters">
       <div class="filter-header" (click)="toggleFilters()">

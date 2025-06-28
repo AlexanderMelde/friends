@@ -54,6 +54,15 @@ export class FriendListComponent {
   });
 
   onFriendSelected(friend: Friend & { eventCount: number }): void {
+    // Find the corresponding node in the graph and select it
+    const nodes = this.graphService.nodes();
+    const node = nodes.find(n => n.id === friend.id);
+    
+    if (node) {
+      this.graphService.selectNode(node);
+    }
+    
+    // Also emit the event for parent components
     this.friendSelected.emit(friend);
   }
 

@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
   border-left: 1px solid #e0e0e0;
+  overflow: hidden;
 }
 
 .sidebar.open {
@@ -26,6 +27,61 @@
   flex: 1;
   overflow-y: auto;
   padding: 16px 20px;
+  transition: overflow 0.3s ease;
+}
+
+.sidebar-content.compact-friends-open {
+  overflow: hidden;
+}
+
+/* Compact Friends Overlay Styles */
+.compact-friends-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.compact-friends-overlay.active {
+  pointer-events: all;
+  opacity: 1;
+  visibility: visible;
+}
+
+.compact-friends-backdrop {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.compact-friends-content {
+  width: 280px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.compact-friends-content.slide-in {
+  transform: translateX(0);
+}
+
+.compact-friends-list-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .filter-section {
@@ -174,7 +230,6 @@
   --mdc-slider-with-tick-marks-active-container-color: #3F51B5;
 }
 
-
 .filter-actions {
   display: flex;
   justify-content: center;
@@ -305,6 +360,11 @@
   .sidebar-content {
     padding: 16px;
   }
+
+  /* Compact friends overlay adjustments for mobile */
+  .compact-friends-content {
+    width: 100%;
+  }
 }
 
 /* Small mobile devices */
@@ -333,5 +393,14 @@
 @media (prefers-contrast: high) {
   .sidebar {
     border-left: 2px solid;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .compact-friends-overlay,
+  .compact-friends-content,
+  .sidebar-content {
+    transition: none;
   }
 }
