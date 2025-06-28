@@ -1,0 +1,145 @@
+.app-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  min-height: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.nav-button {
+  color: white;
+  transition: background-color 0.2s ease;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile: show back arrow, hide close */
+.nav-icon-mobile {
+  display: block;
+}
+
+.nav-icon-desktop {
+  display: none;
+}
+
+/* Desktop: show close, hide back arrow */
+@media (min-width: 801px) {
+  .nav-icon-mobile {
+    display: none;
+  }
+  
+  .nav-icon-desktop {
+    display: block;
+  }
+}
+
+.header-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.title-icon {
+  font-size: 24px;
+  height: 24px;
+  width: 24px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.title-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.action-button {
+  color: white;
+  transition: background-color 0.2s ease;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 800px) {
+  .app-header-bar {
+    padding: 4px;
+  }
+  
+  .title-icon {
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
+  }
+  
+  .title-text {
+    font-size: 18px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .title-icon {
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+  }
+  
+  .title-text {
+    font-size: 16px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 800px) and (orientation: landscape) {
+  .app-header-bar {
+    min-height: 48px;
+    height: 48px;
+  }
+}
+
+/* Accessibility improvements */
+.nav-button:focus-visible,
+.action-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .app-header-bar {
+    border-bottom: 2px solid;
+  }
+}

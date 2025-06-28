@@ -2,6 +2,7 @@ import { Injectable, ComponentRef, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MobileDialogComponent, MobileDialogData } from '../components/mobile-dialog/mobile-dialog.component';
 import { ComponentType } from '@angular/cdk/portal';
+import { HeaderAction } from '../components/app-header-bar/app-header-bar.component';
 
 export interface MobileDialogConfig extends MobileDialogData {
   disableClose?: boolean;

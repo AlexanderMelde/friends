@@ -1,26 +1,15 @@
 <div class="sidebar" 
      [class.open]="isOpen"
      [class.friends-open]="friendsSidebarOpen">
-  <div class="sidebar-header">
-    <!-- Mobile back button (hidden on desktop) -->
-    <button mat-icon-button (click)="close()" class="mobile-back-button" matTooltip="Back">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    
-    <h2 class="sidebar-title">
-      <mat-icon class="title-icon">event_note</mat-icon>
-      Calendar
-    </h2>
-    <div class="header-actions">
-      <button mat-icon-button (click)="addEvent()" class="add-button" matTooltip="Add Event">
-        <mat-icon>add</mat-icon>
-      </button>
-      <!-- Desktop close button (hidden on mobile) -->
-      <button mat-icon-button (click)="close()" class="desktop-close-button" matTooltip="Close">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-  </div>
+  
+  <!-- Unified Header -->
+  <app-header-bar
+    title="Calendar"
+    icon="event_note"
+    headerColor="primary"
+    [headerActions]="headerActions()"
+    (navButtonClick)="close()">
+  </app-header-bar>
   
   <div class="sidebar-content">
     <!-- Filter Section -->

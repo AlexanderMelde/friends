@@ -15,6 +15,7 @@ import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
+import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
 
 interface MonthGroup {
   month: string;
@@ -44,7 +45,8 @@ interface EventTypeOption {
     MatFormFieldModule,
     MatSelectModule,
     MatSliderModule,
-    EventListItemComponent
+    EventListItemComponent,
+    AppHeaderBarComponent
   ],
   templateUrl: './calendar-sidebar.component.html',
   styleUrls: ['./calendar-sidebar.component.css'],
@@ -85,6 +87,15 @@ export class CalendarSidebarComponent {
   showFilters: boolean = false;
   private isInitialized = false;
   private isUpdatingFromGraphService = false;
+
+  // Computed property for header actions
+  readonly headerActions = computed((): HeaderAction[] => [
+    {
+      icon: 'add',
+      label: 'Add Event',
+      action: () => this.addEvent()
+    }
+  ]);
 
   // Expose year filter values as properties for template binding
   get selectedFromYear(): number | null {

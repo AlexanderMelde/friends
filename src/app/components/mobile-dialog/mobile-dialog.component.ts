@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
 
 export interface MobileDialogData {
   title: string;
@@ -12,11 +12,7 @@ export interface MobileDialogData {
   data?: any;
   showBackButton?: boolean;
   showCloseButton?: boolean;
-  headerActions?: Array<{
-    icon: string;
-    label: string;
-    action: () => void;
-  }>;
+  headerActions?: HeaderAction[];
 }
 
 @Component({
@@ -28,34 +24,17 @@ export interface MobileDialogData {
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatToolbarModule
+    AppHeaderBarComponent
   ],
   template: `
     <div class="mobile-dialog-container" [@slideIn]="animationState">
-      <!-- Header -->
-      <mat-toolbar class="mobile-dialog-header" color="primary">
-        <!-- Back/Close Button -->
-        <button mat-icon-button 
-                (click)="onBackClick()"
-                class="header-nav-button"
-                [attr.aria-label]="data.showBackButton ? 'Go back' : 'Close dialog'">
-          <mat-icon>{{ data.showBackButton ? 'arrow_back' : 'close' }}</mat-icon>
-        </button>
-
-        <!-- Title -->
-        <span class="dialog-title">{{ data.title }}</span>
-
-        <!-- Header Actions -->
-        <div class="header-actions">
-          <button mat-icon-button 
-                  *ngFor="let action of data.headerActions"
-                  (click)="action.action()"
-                  [attr.aria-label]="action.label"
-                  class="header-action-button">
-            <mat-icon>{{ action.icon }}</mat-icon>
-          </button>
-        </div>
-      </mat-toolbar>
+      <!-- Unified Header -->
+      <app-header-bar
+        [title]="data.title"
+        headerColor="primary"
+        [headerActions]="data.headerActions || []"
+        (navButtonClick)="onBackClick()">
+      </app-header-bar>
 
       <!-- Content Area -->
       <div class="mobile-dialog-content" #contentArea>

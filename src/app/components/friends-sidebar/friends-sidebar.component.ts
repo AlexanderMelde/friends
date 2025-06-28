@@ -10,11 +10,19 @@ import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { FriendListItemComponent } from '../friend-list-item/friend-list-item.component';
 import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
+import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
 
 @Component({
   selector: 'app-friends-sidebar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, FriendListItemComponent],
+  imports: [
+    CommonModule, 
+    MatIconModule, 
+    MatButtonModule, 
+    MatTooltipModule, 
+    FriendListItemComponent,
+    AppHeaderBarComponent
+  ],
   templateUrl: './friends-sidebar.component.html',
   styleUrls: ['./friends-sidebar.component.css']
 })
@@ -28,6 +36,15 @@ export class FriendsSidebarComponent {
   private graphService = inject(GraphService);
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
+
+  // Computed property for header actions
+  readonly headerActions = computed((): HeaderAction[] => [
+    {
+      icon: 'person_add',
+      label: 'Add Friend',
+      action: () => this.addFriend()
+    }
+  ]);
 
   readonly sortedFriends = computed(() => {
     const friends = this.dataService.friendsWithEventCount();

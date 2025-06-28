@@ -23,60 +23,6 @@
   /* Calendar will move to right: 400px to make room */
 }
 
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: #4CAF50;
-  color: white;
-  flex-shrink: 0;
-}
-
-.sidebar-title {
-  font-size: 18px;
-  font-weight: 500;
-  margin: 0;
-  display: flex;
-  align-items: center;
-}
-
-.title-icon {
-  font-size: 24px;
-  height: 24px;
-  width: 24px;
-  margin-right: 8px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.add-button,
-.desktop-close-button {
-  color: white;
-  transition: background-color 0.2s ease;
-}
-
-.add-button:hover,
-.desktop-close-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Mobile back button - hidden by default */
-.mobile-back-button {
-  display: none;
-  color: white;
-  transition: background-color 0.2s ease;
-}
-
-.mobile-back-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
 .sidebar-content {
   flex: 1;
   overflow-y: auto;
@@ -118,21 +64,9 @@
   right: 0;
 }
 
-:host(.mobile-sidebar) .sidebar-header {
-  padding: 4px;
-  background-color: #4CAF50;
-  position: relative;
-}
-
-:host(.mobile-sidebar) .title-icon {
-  font-size: 28px;
-  height: 28px;
-  width: 28px;
-}
-
 :host(.mobile-sidebar) .sidebar-content {
   padding: 20px;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 56px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -147,15 +81,6 @@
   /* Ensure mobile sidebar takes full space */
   :host(.mobile-sidebar) .sidebar {
     display: flex;
-  }
-
-  /* Show mobile back button, hide desktop close button */
-  :host(.mobile-sidebar) .mobile-back-button {
-    display: flex;
-  }
-
-  :host(.mobile-sidebar) .desktop-close-button {
-    display: none;
   }
 
   .sidebar-content {
@@ -174,13 +99,6 @@
 
 /* Small mobile devices */
 @media (max-width: 480px) {
-
-  :host(.mobile-sidebar) .title-icon {
-    font-size: 24px;
-    height: 24px;
-    width: 24px;
-  }
-
   :host(.mobile-sidebar) .sidebar-content {
     padding: 16px;
   }
@@ -191,36 +109,16 @@
   }
 }
 
-/* Accessibility improvements for mobile */
-@media (max-width: 800px) {
-  .mobile-back-button,
-  .add-button {
-    min-width: 44px;
-    min-height: 44px;
-  }
-
-  /* Improve touch targets for friend list items */
-  .friends-list ::ng-deep .friend-item {
-    min-height: 60px;
-    padding: 16px 0;
-  }
-
-  .friends-list ::ng-deep .edit-button {
-    min-width: 44px;
-    min-height: 44px;
-  }
-}
-
 /* Landscape mobile orientation */
 @media (max-width: 800px) and (orientation: landscape) {
   :host(.mobile-sidebar) .sidebar-content {
-    height: calc(100vh - 70px);
+    height: calc(100vh - 48px);
   }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .sidebar-header {
-    border-bottom: 2px solid;
+  .sidebar {
+    border-left: 2px solid;
   }
 }

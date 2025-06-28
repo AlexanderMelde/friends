@@ -1,0 +1,24 @@
+<mat-toolbar [color]="headerColor" class="app-header-bar">
+  <!-- Navigation button (back on mobile, close on desktop) -->
+  <button mat-icon-button (click)="onNavButtonClick()" class="nav-button" [matTooltip]="'Back'">
+    <mat-icon class="nav-icon-mobile">arrow_back</mat-icon>
+    <mat-icon class="nav-icon-desktop">close</mat-icon>
+  </button>
+  
+  <!-- Title with icon -->
+  <div class="header-title">
+    <mat-icon *ngIf="icon" class="title-icon">{{ icon }}</mat-icon>
+    <span class="title-text">{{ title }}</span>
+  </div>
+  
+  <!-- Header actions -->
+  <div class="header-actions">
+    <button mat-icon-button 
+            *ngFor="let action of headerActions"
+            (click)="onActionClick(action)"
+            [matTooltip]="action.label"
+            class="action-button">
+      <mat-icon>{{ action.icon }}</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
