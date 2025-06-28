@@ -301,7 +301,7 @@
     position: absolute;
     top: 56px; /* Below mobile header */
     right: 0;
-    width: 4.5rem; /* 72px - accommodates 4rem items + padding */
+    width: 5rem; /* Increased from 4.5rem to 5rem (80px) to accommodate hover scaling */
     height: calc(100vh - 56px);
     background-color: white;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
@@ -310,7 +310,7 @@
     z-index: 45; /* Higher than calendar sidebar */
     flex-direction: column;
     border-left: 1px solid #e0e0e0;
-    overflow: hidden;
+    overflow: hidden; /* Prevent any overflow */
   }
 
   :host(.mobile-sidebar) .compact-friends-sidebar.open {
@@ -320,8 +320,11 @@
   :host(.mobile-sidebar) .compact-friends-content {
     flex: 1;
     overflow-y: auto;
-    padding: 0.25rem; /* 4px - using rem for consistency */
+    overflow-x: hidden; /* Explicitly prevent horizontal scrolling */
+    padding: 0.5rem; /* Increased from 0.25rem to 0.5rem (8px) for more breathing room */
     -webkit-overflow-scrolling: touch;
+    width: 100%; /* Ensure full width usage */
+    box-sizing: border-box; /* Include padding in width calculation */
   }
 
   :host(.mobile-sidebar) .compact-friends-list-container {
@@ -329,6 +332,8 @@
     flex-direction: column;
     gap: 6px;
     align-items: center;
+    width: 100%; /* Ensure full width usage */
+    box-sizing: border-box; /* Include any padding/margins in width calculation */
   }
   
   .filter-section {
