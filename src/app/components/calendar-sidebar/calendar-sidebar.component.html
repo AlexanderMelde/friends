@@ -126,9 +126,9 @@
   </div>
 </div>
 
-<!-- Compact Friends Sidebar (Desktop Only) -->
+<!-- Compact Friends Sidebar (Mobile Only - as overlay within calendar sidebar) -->
 <div class="compact-friends-sidebar" 
-     *ngIf="!isMobileView()"
+     *ngIf="isMobileView()"
      [class.open]="compactFriendsSidebarOpen()">
   
   <!-- Compact Header -->
