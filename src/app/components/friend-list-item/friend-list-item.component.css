@@ -26,16 +26,16 @@
   cursor: grabbing;
 }
 
-/* Compact view styles */
+/* Compact view styles - using rem units for responsive sizing */
 .friend-item.compact-view {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2px; /* Reduced from 4px to 2px */
+  padding: 0.25rem; /* 4px at base font size */
   border-bottom: none;
-  width: 52px; /* Increased from 40px to 52px */
-  min-width: 52px; /* Increased from 40px to 52px */
+  width: 4rem; /* 64px at base font size */
+  min-width: 4rem; /* 64px at base font size */
   background-color: transparent;
   border-radius: 4px;
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -58,8 +58,8 @@
 }
 
 .friend-avatar.compact-view {
-  width: 48px; /* Increased from 32px to 48px */
-  height: 48px; /* Increased from 32px to 48px */
+  width: 3.5rem; /* 56px at base font size - good touch target */
+  height: 3.5rem; /* 56px at base font size */
   margin-right: 0;
   border-width: 1px;
 }
@@ -132,34 +132,6 @@
 
 .edit-button:hover {
   opacity: 1;
-}
-
-/* Mobile adjustments */
-@media (max-width: 800px) {
-  .friend-item.compact-view {
-    width: 52px; /* Increased from 36px to 52px */
-    min-width: 52px; /* Increased from 36px to 52px */
-    padding: 3px;
-  }
-  
-  .friend-avatar.compact-view {
-    width: 48px; /* Increased from 30px to 48px */
-    height: 48px; /* Increased from 30px to 48px */
-  }
-}
-
-/* Small mobile devices */
-@media (max-width: 480px) {
-  .friend-item.compact-view {
-    width: 48px; /* Increased from 32px to 48px */
-    min-width: 48px; /* Increased from 32px to 48px */
-    padding: 2px;
-  }
-  
-  .friend-avatar.compact-view {
-    width: 44px; /* Increased from 28px to 44px */
-    height: 44px; /* Increased from 28px to 44px */
-  }
 }
 
 /* Accessibility improvements */

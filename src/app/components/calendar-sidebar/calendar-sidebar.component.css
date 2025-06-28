@@ -301,7 +301,7 @@
     position: absolute;
     top: 56px; /* Below mobile header */
     right: 0;
-    width: 60px; /* Increased from 50px to 60px */
+    width: 4.5rem; /* 72px - accommodates 4rem items + padding */
     height: calc(100vh - 56px);
     background-color: white;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
@@ -320,7 +320,7 @@
   :host(.mobile-sidebar) .compact-friends-content {
     flex: 1;
     overflow-y: auto;
-    padding: 8px 4px;
+    padding: 0.25rem; /* 4px - using rem for consistency */
     -webkit-overflow-scrolling: touch;
   }
 
