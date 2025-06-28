@@ -46,6 +46,30 @@ export class DataService {
     this.initDatabase();
   }
 
+  private ensureDate(value: any): Date | undefined {
+    if (!value) return undefined;
+    if (value instanceof Date) return value;
+    if (typeof value === 'string') {
+      const date = new Date(value);
+      return isNaN(date.getTime()) ? undefined : date;
+    }
+    return undefined;
+  }
+
+  private normalizeFriend(friend: any): Friend {
+    return {
+      ...friend,
+      joinDate: this.ensureDate(friend.joinDate)
+    };
+  }
+
+  private normalizeEvent(event: any): Event {
+    return {
+      ...event,
+      date: this.ensureDate(event.date)
+    };
+  }
+
   private async initDatabase() {
     try {
       const friendCount = await this.db.friends.count();
@@ -69,8 +93,12 @@ export class DataService {
         this.db.events.toArray()
       ]);
       
-      this.friendsSignal.set(friends);
-      this.eventsSignal.set(events);
+      // Normalize dates when loading from database
+      const normalizedFriends = friends.map(friend => this.normalizeFriend(friend));
+      const normalizedEvents = events.map(event => this.normalizeEvent(event));
+      
+      this.friendsSignal.set(normalizedFriends);
+      this.eventsSignal.set(normalizedEvents);
     } catch (error) {
       console.error('Failed to load data from Dexie', error);
       this.loadFromLocalStorage();
@@ -79,25 +107,27 @@ export class DataService {
 
   private async loadSampleData() {
     try {
-      // Remove eventCount from sample data before storing
+      // Remove eventCount from sample data before storing and normalize dates
       const friendsWithoutEventCount = SAMPLE_DATA.friends.map(friend => {
         const { eventCount, ...friendData } = friend as any;
-        return friendData;
+        return this.normalizeFriend(friendData);
       });
+      
+      const normalizedEvents = SAMPLE_DATA.events.map(event => this.normalizeEvent(event));
       
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
         await Promise.all([
           this.db.friends.bulkAdd(friendsWithoutEventCount),
-          this.db.events.bulkAdd(SAMPLE_DATA.events)
+          this.db.events.bulkAdd(normalizedEvents)
         ]);
       });
       
       this.friendsSignal.set(friendsWithoutEventCount);
-      this.eventsSignal.set(SAMPLE_DATA.events);
+      this.eventsSignal.set(normalizedEvents);
       
       // Store clean data without eventCount
       localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
-      localStorage.setItem('events', JSON.stringify(SAMPLE_DATA.events));
+      localStorage.setItem('events', JSON.stringify(normalizedEvents));
     } catch (error) {
       console.error('Failed to load sample data', error);
       this.loadFromLocalStorage();
@@ -110,26 +140,29 @@ export class DataService {
     
     if (storedFriends) {
       const friends = JSON.parse(storedFriends);
-      // Remove eventCount if it exists in stored data
+      // Remove eventCount if it exists in stored data and normalize dates
       const friendsWithoutEventCount = friends.map((friend: any) => {
         const { eventCount, ...friendData } = friend;
-        return friendData;
+        return this.normalizeFriend(friendData);
       });
       this.friendsSignal.set(friendsWithoutEventCount);
     } else {
       const friendsWithoutEventCount = SAMPLE_DATA.friends.map(friend => {
         const { eventCount, ...friendData } = friend as any;
-        return friendData;
+        return this.normalizeFriend(friendData);
       });
       this.friendsSignal.set(friendsWithoutEventCount);
       localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
     }
     
     if (storedEvents) {
-      this.eventsSignal.set(JSON.parse(storedEvents));
+      const events = JSON.parse(storedEvents);
+      const normalizedEvents = events.map((event: any) => this.normalizeEvent(event));
+      this.eventsSignal.set(normalizedEvents);
     } else {
-      this.eventsSignal.set(SAMPLE_DATA.events);
-      localStorage.setItem('events', JSON.stringify(SAMPLE_DATA.events));
+      const normalizedEvents = SAMPLE_DATA.events.map(event => this.normalizeEvent(event));
+      this.eventsSignal.set(normalizedEvents);
+      localStorage.setItem('events', JSON.stringify(normalizedEvents));
     }
     
     this.dbReady.set(true);
@@ -160,10 +193,11 @@ export class DataService {
 
   async addEvent(event: Event): Promise<void> {
     try {
-      await this.db.events.add(event);
+      const normalizedEvent = this.normalizeEvent(event);
+      await this.db.events.add(normalizedEvent);
 
       // Update signals
-      this.eventsSignal.update(events => [...events, event]);
+      this.eventsSignal.update(events => [...events, normalizedEvent]);
 
       // Update localStorage in background (events only)
       setTimeout(() => {
@@ -178,9 +212,10 @@ export class DataService {
   async addFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        // Remove eventCount before storing
+        // Remove eventCount before storing and normalize dates
         const { eventCount, ...friendWithoutEventCount } = friend as any;
-        await this.db.friends.add(friendWithoutEventCount);
+        const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
+        await this.db.friends.add(normalizedFriend);
         
         // Update events
         for (const eventId of eventIds) {
@@ -194,7 +229,8 @@ export class DataService {
 
       // Update signals
       const { eventCount, ...friendWithoutEventCount } = friend as any;
-      this.friendsSignal.update(friends => [...friends, friendWithoutEventCount]);
+      const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
+      this.friendsSignal.update(friends => [...friends, normalizedFriend]);
       
       this.eventsSignal.update(events => 
         events.map(event => 
@@ -218,9 +254,10 @@ export class DataService {
   async updateFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        // Remove eventCount before storing
+        // Remove eventCount before storing and normalize dates
         const { eventCount, ...friendWithoutEventCount } = friend as any;
-        await this.db.friends.put(friendWithoutEventCount);
+        const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
+        await this.db.friends.put(normalizedFriend);
         
         // Get all events to update
         const events = await this.db.events.toArray();
@@ -241,8 +278,9 @@ export class DataService {
 
       // Update signals
       const { eventCount, ...friendWithoutEventCount } = friend as any;
+      const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
       this.friendsSignal.update(friends => 
-        friends.map(f => f.id === friend.id ? friendWithoutEventCount : f)
+        friends.map(f => f.id === friend.id ? normalizedFriend : f)
       );
       
       this.eventsSignal.update(events => 
@@ -275,11 +313,12 @@ export class DataService {
 
   async updateEvent(updatedEvent: Event): Promise<void> {
     try {
-      await this.db.events.put(updatedEvent);
+      const normalizedEvent = this.normalizeEvent(updatedEvent);
+      await this.db.events.put(normalizedEvent);
 
       // Update signals
       this.eventsSignal.update(events =>
-        events.map(event => event.id === updatedEvent.id ? updatedEvent : event)
+        events.map(event => event.id === updatedEvent.id ? normalizedEvent : event)
       );
 
       // Update localStorage in background (events only)
@@ -294,14 +333,16 @@ export class DataService {
 
   async getFriend(id: string): Promise<Friend | undefined> {
     if (this.dbReady()) {
-      return await this.db.friends.get(id);
+      const friend = await this.db.friends.get(id);
+      return friend ? this.normalizeFriend(friend) : undefined;
     }
     return this.friends().find(f => f.id === id);
   }
 
   async getEvent(id: string): Promise<Event | undefined> {
     if (this.dbReady()) {
-      return await this.db.events.get(id);
+      const event = await this.db.events.get(id);
+      return event ? this.normalizeEvent(event) : undefined;
     }
     return this.events().find(e => e.id === id);
   }
