@@ -268,7 +268,7 @@
 
 :host(.mobile-sidebar) .sidebar-content {
   padding: 20px;
-  height: calc(100vh - 56px);
+  height: calc(100vh - 64px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -284,6 +284,10 @@
   :host(.mobile-sidebar) .sidebar {
     display: flex;
   }
+
+  :host(.mobile-sidebar) .sidebar-content {
+    height: calc(100vh - 56px);
+  }
   
   .filter-section {
     margin-bottom: 16px;
@@ -291,6 +295,7 @@
 
   .filter-header {
     padding: 16px;
+    min-height: 48px;
   }
 
   .filter-content {
@@ -321,5 +326,12 @@
 @media (max-width: 800px) and (orientation: landscape) {
   :host(.mobile-sidebar) .sidebar-content {
     height: calc(100vh - 48px);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sidebar {
+    border-left: 2px solid;
   }
 }
