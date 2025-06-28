@@ -131,18 +131,7 @@
      *ngIf="isMobileView()"
      [class.open]="compactFriendsSidebarOpen()">
   
-  <!-- Compact Header -->
-  <div class="compact-friends-header">
-    <button mat-icon-button 
-            (click)="toggleCompactFriendsSidebar()" 
-            class="compact-friends-close-button"
-            matTooltip="Close Friends List">
-      <mat-icon class="compact-friends-icon">close</mat-icon>
-    </button>
-    <mat-icon class="compact-friends-icon">people</mat-icon>
-  </div>
-  
-  <!-- Compact Friends Content -->
+  <!-- Compact Friends Content (no header) -->
   <div class="compact-friends-content">
     <div class="compact-friends-list-container">
       <app-friend-list
