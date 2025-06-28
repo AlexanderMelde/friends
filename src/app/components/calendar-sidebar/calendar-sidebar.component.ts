@@ -299,7 +299,7 @@ export class CalendarSidebarComponent {
     }
   }
 
-  private isMobileView(): boolean {
+  isMobileView(): boolean {
     return window.innerWidth <= 800;
   }
 
