@@ -1,3 +1,4 @@
+@if (attendees().length > 0)
 <div class="event-item">
   <div class="event-date">{{ formatDate(event.date) }}</div>
   <div class="event-details">
@@ -53,7 +54,11 @@
                draggable="true"
                (click)="selectAttendee(attendee, $event)"
                (dragstart)="onAttendeeDragStart($event, attendee)"
-               (dragend)="onAttendeeDragEnd($event)">
+               (dragend)="onAttendeeDragEnd($event)"
+               (touchstart)="onAttendeeTouchStart($event, attendee)"
+               (touchmove)="onAttendeeTouchMove($event)"
+               (touchend)="onAttendeeTouchEnd($event)"
+               (contextmenu)="onAttendeeContextMenu($event)">
         </ng-container>
         
         <div class="drop-hint" *ngIf="isDragOver && !isDragSource()">

@@ -22,6 +22,12 @@ export class EventListItemComponent {
   
   selectedType: string = '';
   isDragOver: boolean = false;
+  
+  // Touch handling state
+  private touchStartTime: number = 0;
+  private touchMoved: boolean = false;
+  private longPressTimer: any = null;
+  private isDraggingTouch: boolean = false;
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
@@ -241,5 +247,108 @@ export class EventListItemComponent {
     // The global drop handler in AppComponent will handle removal if needed
     // Just notify drag service that dragging has ended
     this.dragService.endDrag();
+  }
+
+  // Touch event handlers for attendee avatars
+  onAttendeeTouchStart(event: TouchEvent, attendee: Friend): void {
+    // Prevent context menu and other default behaviors
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.touchStartTime = Date.now();
+    this.touchMoved = false;
+    this.isDraggingTouch = false;
+    
+    // Clear any existing timer
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+    }
+    
+    // Set up long press timer for drag initiation
+    this.longPressTimer = setTimeout(() => {
+      if (!this.touchMoved) {
+        this.startTouchDrag(attendee);
+      }
+    }, 500); // 500ms for long press
+  }
+
+  onAttendeeTouchMove(event: TouchEvent): void {
+    // Prevent default behaviors
+    event.preventDefault();
+    event.stopPropagation();
+    
+    this.touchMoved = true;
+    
+    // Clear long press timer if user moves
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+    
+    // Handle drag move if we're in drag mode
+    if (this.isDraggingTouch) {
+      // Handle touch drag move logic here if needed
+      // For now, we'll rely on the existing drag service
+    }
+  }
+
+  onAttendeeTouchEnd(event: TouchEvent): void {
+    // Prevent default behaviors including context menu
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Clear long press timer
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+    
+    const touchDuration = Date.now() - this.touchStartTime;
+    
+    // If it was a quick tap and no movement, treat as click
+    if (!this.touchMoved && touchDuration < 300 && !this.isDraggingTouch) {
+      // Handle as click - find the attendee from the event target
+      const target = event.target as HTMLElement;
+      const avatarElement = target.closest('.attendee-avatar') as HTMLImageElement;
+      if (avatarElement) {
+        const attendeeName = avatarElement.alt;
+        const attendee = this.attendees().find(a => a.name === attendeeName);
+        if (attendee) {
+          this.selectAttendee(attendee, event as any);
+        }
+      }
+    }
+    
+    // End touch drag if active
+    if (this.isDraggingTouch) {
+      this.endTouchDrag();
+    }
+    
+    this.isDraggingTouch = false;
+  }
+
+  onAttendeeContextMenu(event: Event): void {
+    // Always prevent context menu on attendee avatars
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  private startTouchDrag(attendee: Friend): void {
+    this.isDraggingTouch = true;
+    
+    // Start drag operation
+    this.dragService.startDrag(attendee, 'attendee', this.event.id);
+    
+    // Add visual feedback or haptic feedback if available
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+  }
+
+  private endTouchDrag(): void {
+    if (this.isDraggingTouch) {
+      this.dragService.endDrag();
+      this.isDraggingTouch = false;
+    }
   }
 }
