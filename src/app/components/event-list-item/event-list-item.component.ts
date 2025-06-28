@@ -209,12 +209,6 @@ export class EventListItemComponent {
     this.dragService.endDrag();
   }
 
-  onAttendeeTouchStart(event: TouchEvent): void {
-    // Prevent the default browser behavior (context menu, image save dialog)
-    // to allow drag and drop to work properly on mobile
-    event.preventDefault();
-  }
-
   onAttendeeDragStart(event: DragEvent, attendee: Friend): void {
     event.stopPropagation();
     

@@ -53,8 +53,7 @@
                draggable="true"
                (click)="selectAttendee(attendee, $event)"
                (dragstart)="onAttendeeDragStart($event, attendee)"
-               (dragend)="onAttendeeDragEnd($event)"
-               (touchstart)="onAttendeeTouchStart($event)">
+               (dragend)="onAttendeeDragEnd($event)">
         </ng-container>
         
         <div class="drop-hint" *ngIf="isDragOver && !isDragSource()">

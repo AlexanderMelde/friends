@@ -135,11 +135,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  /* Prevent image context menu and selection on mobile */
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .attendee-avatar:hover {

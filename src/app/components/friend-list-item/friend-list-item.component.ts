@@ -30,12 +30,6 @@ export class FriendListItemComponent {
     this.editFriendRequested.emit(this.friend);
   }
 
-  onTouchStart(event: TouchEvent): void {
-    // Prevent the default browser behavior (context menu, image save dialog)
-    // to allow drag and drop to work properly on mobile
-    event.preventDefault();
-  }
-
   onDragStart(event: DragEvent): void {
     if (event.dataTransfer) {
       // Set the friend data as JSON string
