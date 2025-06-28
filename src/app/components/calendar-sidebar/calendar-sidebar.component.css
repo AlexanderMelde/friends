@@ -361,9 +361,9 @@
     padding: 16px;
   }
 
-  /* Compact friends overlay adjustments for mobile */
+  /* Compact friends overlay adjustments for mobile - FIXED TO 50PX */
   .compact-friends-content {
-    width: 100%;
+    width: 50px;
   }
 }
 
