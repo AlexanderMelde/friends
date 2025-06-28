@@ -79,18 +79,13 @@ export class EventEditDialogComponent {
   }
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { event: Event; friends: Friend[]; isNew: boolean; headerActions?: HeaderAction[] },
+    @Inject(MAT_DIALOG_DATA) data: { event: Event; friends: Friend[]; isNew: boolean },
     private dialogRef: MatDialogRef<EventEditDialogComponent>,
     private dataService: DataService
   ) {
     this.editedEvent = { ...data.event };
     this.availableFriends = data.friends;
     this.isNew = data.isNew;
-    
-    // Merge header actions if provided (for mobile)
-    if (data.headerActions) {
-      // The header actions will be handled by the computed property
-    }
   }
 
   isMobileView(): boolean {

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,7 +33,7 @@ export interface MobileDialogData {
       <app-header-bar
         [title]="data.title"
         headerColor="primary"
-        [headerActions]="getHeaderActions()"
+        [headerActions]="combinedHeaderActions()"
         (navButtonClick)="onBackClick()">
       </app-header-bar>
 
@@ -80,6 +80,16 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
   hasFooterContent = false;
   private componentRef: ComponentRef<any> | null = null;
   private navigationId: string;
+
+  // Signal for child component header actions
+  private _childHeaderActions = signal<HeaderAction[]>([]);
+
+  // Computed signal that combines static and dynamic header actions
+  readonly combinedHeaderActions = computed(() => {
+    const staticActions = this.data.headerActions || [];
+    const childActions = this._childHeaderActions();
+    return [...staticActions, ...childActions];
+  });
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: MobileDialogData,
@@ -139,24 +149,6 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getHeaderActions(): HeaderAction[] {
-    // Combine static header actions with dynamic component header actions
-    let actions = [...(this.data.headerActions || [])];
-    
-    // If we have a component instance, try to get its header actions
-    if (this.componentRef && this.componentRef.instance) {
-      const instance = this.componentRef.instance;
-      
-      // Check if the component has headerActions computed property
-      if (instance.headerActions && typeof instance.headerActions === 'function') {
-        const componentActions = instance.headerActions();
-        actions = [...actions, ...componentActions];
-      }
-    }
-    
-    return actions;
-  }
-
   private createDynamicComponent(): void {
     if (!this.data.component || !this.dynamicComponentContainer) return;
 
@@ -169,10 +161,7 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
         providers: [
           {
             provide: MAT_DIALOG_DATA,
-            useValue: {
-              ...this.data.data || {},
-              headerActions: this.getHeaderActions.bind(this) // Provide access to header actions
-            }
+            useValue: this.data.data || {}
           },
           {
             provide: MatDialogRef,
@@ -201,13 +190,19 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
         { injector: customInjector }
       );
 
+      // Set up reactive monitoring of child component's header actions
+      if (this.componentRef.instance && this.componentRef.instance.headerActions) {
+        // Create an effect to watch for changes in the child component's header actions
+        effect(() => {
+          if (this.componentRef?.instance?.headerActions) {
+            const childActions = this.componentRef.instance.headerActions();
+            this._childHeaderActions.set(childActions);
+          }
+        }, { allowSignalWrites: true });
+      }
+
       // Trigger change detection
       this.componentRef.changeDetectorRef.detectChanges();
-      
-      // Force header actions update after component is created
-      setTimeout(() => {
-        this.componentRef?.changeDetectorRef.detectChanges();
-      }, 0);
     } catch (error) {
       console.error('Error creating dynamic component:', error);
     }
