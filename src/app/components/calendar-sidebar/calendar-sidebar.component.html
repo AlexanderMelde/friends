@@ -11,7 +11,8 @@
     (navButtonClick)="close()">
   </app-header-bar>
   
-  <div class="sidebar-content">
+  <div class="sidebar-content" 
+       [class.compact-friends-open]="compactFriendsSidebarOpen()">
     <!-- Filter Section -->
     <div class="filter-section" [class.expanded]="showFilters">
       <div class="filter-header" (click)="toggleFilters()">

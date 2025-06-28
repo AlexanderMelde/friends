@@ -27,7 +27,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 16px 20px;
-  transition: overflow 0.3s ease;
+  transition: padding-right 0.3s ease, width 0.3s ease;
 }
 
 /* Compact Friends Sidebar - hidden by default */
@@ -293,6 +293,12 @@
 
   :host(.mobile-sidebar) .sidebar-content {
     height: calc(100vh - 56px);
+    transition: padding-right 0.3s ease;
+  }
+
+  /* Adjust sidebar content when compact friends sidebar is open */
+  :host(.mobile-sidebar) .sidebar-content.compact-friends-open {
+    padding-right: 5.5rem; /* 88px - slightly more than compact sidebar width (80px) for spacing */
   }
 
   /* Show compact friends sidebar on mobile only */
@@ -301,7 +307,7 @@
     position: absolute;
     top: 56px; /* Below mobile header */
     right: 0;
-    width: 5rem; /* Increased from 4.5rem to 5rem (80px) to accommodate hover scaling */
+    width: 5rem; /* 80px to accommodate hover scaling */
     height: calc(100vh - 56px);
     background-color: white;
     box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
@@ -310,7 +316,7 @@
     z-index: 45; /* Higher than calendar sidebar */
     flex-direction: column;
     border-left: 1px solid #e0e0e0;
-    overflow: hidden; /* Prevent any overflow */
+    overflow: hidden;
   }
 
   :host(.mobile-sidebar) .compact-friends-sidebar.open {
@@ -320,11 +326,11 @@
   :host(.mobile-sidebar) .compact-friends-content {
     flex: 1;
     overflow-y: auto;
-    overflow-x: hidden; /* Explicitly prevent horizontal scrolling */
-    padding: 0.5rem; /* Increased from 0.25rem to 0.5rem (8px) for more breathing room */
+    overflow-x: hidden;
+    padding: 0.5rem; /* 8px for breathing room */
     -webkit-overflow-scrolling: touch;
-    width: 100%; /* Ensure full width usage */
-    box-sizing: border-box; /* Include padding in width calculation */
+    width: 100%;
+    box-sizing: border-box;
   }
 
   :host(.mobile-sidebar) .compact-friends-list-container {
@@ -332,8 +338,8 @@
     flex-direction: column;
     gap: 6px;
     align-items: center;
-    width: 100%; /* Ensure full width usage */
-    box-sizing: border-box; /* Include any padding/margins in width calculation */
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .filter-section {
@@ -358,6 +364,10 @@
 @media (max-width: 480px) {
   :host(.mobile-sidebar) .sidebar-content {
     padding: 16px;
+  }
+
+  :host(.mobile-sidebar) .sidebar-content.compact-friends-open {
+    padding-right: 5.5rem; /* Maintain same spacing on small devices */
   }
 
   .filter-header {
