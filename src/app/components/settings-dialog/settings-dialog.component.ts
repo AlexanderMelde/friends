@@ -152,6 +152,11 @@ export class SettingsDialogComponent {
         ical += `X-ATTENDEES:${this.escapeICalText(attendeeNames)}\n`;
       }
       
+      // Export attendee IDs for proper import
+      if (event.attendees.length > 0) {
+        ical += `X-ATTENDEE-IDS:${event.attendees.join(',')}\n`;
+      }
+      
       ical += `CREATED:${this.formatDateForICal(new Date())}\n`;
       ical += `LAST-MODIFIED:${this.formatDateForICal(new Date())}\n`;
       ical += 'END:VEVENT\n';
@@ -313,6 +318,9 @@ export class SettingsDialogComponent {
     let currentEvent: Partial<AppEvent> = {};
     let currentFriend: Partial<Friend> = {};
     
+    // Create a map to store friend IDs by name for attendee mapping
+    const friendNameToIdMap = new Map<string, string>();
+    
     for (const line of lines) {
       if (line === 'BEGIN:VEVENT') {
         currentSection = 'vevent';
@@ -335,6 +343,8 @@ export class SettingsDialogComponent {
       } else if (line === 'END:VCARD') {
         if (currentFriend.name) {
           friends.push(currentFriend as Friend);
+          // Map friend name to ID for attendee resolution
+          friendNameToIdMap.set(currentFriend.name, currentFriend.id!);
         }
         currentSection = 'none';
         currentFriend = {};
@@ -344,6 +354,23 @@ export class SettingsDialogComponent {
         this.parseVCardLine(line, currentFriend);
       }
     }
+    
+    // Second pass: resolve attendee names to IDs for events that don't have X-ATTENDEE-IDS
+    events.forEach(event => {
+      if (event.attendees.length === 0) {
+        // Try to find attendee information from X-ATTENDEES field
+        const attendeeNames = (event as any).attendeeNames;
+        if (attendeeNames) {
+          const names = attendeeNames.split(',').map((name: string) => name.trim());
+          event.attendees = names
+            .map((name: string) => friendNameToIdMap.get(name))
+            .filter((id: string | undefined) => id) as string[];
+        }
+      }
+      
+      // Clean up temporary fields
+      delete (event as any).attendeeNames;
+    });
     
     return { events, friends };
   }
@@ -372,6 +399,16 @@ export class SettingsDialogComponent {
         break;
       case 'CATEGORIES':
         event.type = this.unescapeICalText(value);
+        break;
+      case 'X-ATTENDEES':
+        // Store attendee names temporarily for resolution later
+        (event as any).attendeeNames = this.unescapeICalText(value);
+        break;
+      case 'X-ATTENDEE-IDS':
+        // Direct attendee IDs (preferred method)
+        if (value) {
+          event.attendees = value.split(',').map(id => id.trim()).filter(id => id);
+        }
         break;
     }
   }
