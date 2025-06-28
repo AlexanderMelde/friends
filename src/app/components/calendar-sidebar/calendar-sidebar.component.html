@@ -2,6 +2,9 @@
      [class.open]="isOpen"
      [class.friends-open]="friendsSidebarOpen">
   <div class="sidebar-header">
+    <button mat-icon-button (click)="close()" class="mobile-back-button" matTooltip="Back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
     <h2 class="sidebar-title">
       <mat-icon class="title-icon">event_note</mat-icon>
       Calendar
@@ -10,7 +13,7 @@
       <button mat-icon-button (click)="addEvent()" class="add-button" matTooltip="Add Event">
         <mat-icon>add</mat-icon>
       </button>
-      <button mat-icon-button (click)="close()" class="close-button" matTooltip="Close">
+      <button mat-icon-button (click)="close()" class="desktop-close-button" matTooltip="Close">
         <mat-icon>close</mat-icon>
       </button>
     </div>

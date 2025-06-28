@@ -31,6 +31,20 @@
   background-color: #3F51B5;
   color: white;
   flex-shrink: 0;
+  position: relative;
+}
+
+.mobile-back-button {
+  display: none;
+  color: white;
+  transition: background-color 0.2s ease;
+  position: absolute;
+  left: 16px;
+  z-index: 1;
+}
+
+.mobile-back-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-title {
@@ -39,6 +53,8 @@
   margin: 0;
   display: flex;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 }
 
 .title-icon {
@@ -52,16 +68,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  position: absolute;
+  right: 16px;
 }
 
 .add-button,
-.close-button {
+.desktop-close-button {
   color: white;
   transition: background-color 0.2s ease;
 }
 
 .add-button:hover,
-.close-button:hover {
+.desktop-close-button:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -315,6 +333,13 @@
   position: relative;
 }
 
+:host(.mobile-sidebar) .mobile-back-button {
+  display: block;
+}
+
+:host(.mobile-sidebar) .desktop-close-button {
+  display: none;
+}
 
 :host(.mobile-sidebar) .title-icon {
   font-size: 28px;
@@ -339,6 +364,15 @@
   /* Ensure mobile sidebar takes full space */
   :host(.mobile-sidebar) .sidebar {
     display: flex;
+  }
+
+  /* Show mobile back button and hide desktop close button */
+  .mobile-back-button {
+    display: block !important;
+  }
+
+  .desktop-close-button {
+    display: none !important;
   }
   
   .filter-section {
@@ -386,7 +420,7 @@
 
 /* Accessibility improvements for mobile */
 @media (max-width: 800px) {
-  .close-button,
+  .mobile-back-button,
   .add-button {
     min-width: 44px;
     min-height: 44px;
