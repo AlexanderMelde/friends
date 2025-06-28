@@ -3,6 +3,7 @@
 
 html, body {
   height: 100dvh; /* Use dynamic viewport height instead of 100vh */
+  min-height: -webkit-fill-available; /* Fallback for WebKit browsers */
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   overflow: hidden;
@@ -16,6 +17,7 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100dvh; /* Use dynamic viewport height instead of 100vh */
+  min-height: -webkit-fill-available; /* Fallback for WebKit browsers */
   overflow: hidden;
 }
 
@@ -56,6 +58,7 @@ html, body {
   border-radius: 0 !important;
   max-width: 100vw !important;
   max-height: 100dvh !important; /* Use dynamic viewport height */
+  min-height: -webkit-fill-available !important; /* Fallback for WebKit browsers */
   width: 100vw !important;
   height: 100dvh !important; /* Use dynamic viewport height */
   position: fixed !important;
@@ -77,6 +80,7 @@ html, body {
     left: 0 !important;
     width: 100vw !important;
     height: 100dvh !important; /* Use dynamic viewport height */
+    min-height: -webkit-fill-available !important; /* Fallback for WebKit browsers */
     max-width: 100vw !important;
     max-height: 100dvh !important; /* Use dynamic viewport height */
   }
@@ -86,6 +90,7 @@ html, body {
     border-radius: 0 !important;
     width: 100vw !important;
     height: 100dvh !important; /* Use dynamic viewport height */
+    min-height: -webkit-fill-available !important; /* Fallback for WebKit browsers */
     max-width: 100vw !important;
     max-height: 100dvh !important; /* Use dynamic viewport height */
   }
@@ -97,6 +102,7 @@ body.overlay-active {
   position: fixed;
   width: 100%;
   height: 100dvh; /* Use dynamic viewport height */
+  min-height: -webkit-fill-available; /* Fallback for WebKit browsers */
 }
 
 /* Prevent scrolling on mobile when overlay is active */
