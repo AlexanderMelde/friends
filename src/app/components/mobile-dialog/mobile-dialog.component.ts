@@ -27,31 +27,7 @@ export interface MobileDialogData {
     MatIconModule,
     AppHeaderBarComponent
   ],
-  template: `
-    <div class="mobile-dialog-container" [@slideIn]="animationState">
-      <!-- Unified Header -->
-      <app-header-bar
-        [title]="data.title"
-        headerColor="primary"
-        [headerActions]="getHeaderActions()"
-        (navButtonClick)="onBackClick()">
-      </app-header-bar>
-
-      <!-- Content Area -->
-      <div class="mobile-dialog-content" #contentArea>
-        <!-- Dynamic Component Container -->
-        <div #dynamicComponentContainer class="dynamic-component-container"></div>
-        
-        <!-- Fallback Content -->
-        <ng-content></ng-content>
-      </div>
-
-      <!-- Optional Footer -->
-      <div class="mobile-dialog-footer" *ngIf="hasFooterContent">
-        <ng-content select="[slot=footer]"></ng-content>
-      </div>
-    </div>
-  `,
+  templateUrl: './mobile-dialog.component.html',
   styleUrls: ['./mobile-dialog.component.css'],
   animations: [
     trigger('slideIn', [

@@ -26,7 +26,7 @@ import { HeaderAction } from '../app-header-bar/app-header-bar.component';
     MatIconModule,
     MatTooltipModule
   ],
-  templateUrl: './app-friend-dialog.component.html',
+  templateUrl: './friend-dialog.component.html',
   styleUrls: ['./friend-dialog.component.css']
 })
 export class FriendDialogComponent {
