@@ -18,6 +18,21 @@
            (cdkDragEnded)="onCdkDragEnded($event)"
            (click)="selectAttendee(attendee, $event)">
       
+      <!-- Custom drag preview template -->
+      <ng-template cdkDragPreview>
+        @if (dragService.isDraggingAttendee() && !dragService.isOverValidDropTarget()) {
+          <!-- Show trash bin when dragging attendee outside valid drop zones -->
+          <div class="trash-bin-preview">
+            <mat-icon>delete</mat-icon>
+          </div>
+        } @else {
+          <!-- Show normal avatar preview -->
+          <img [src]="attendee.photoUrl" 
+               [alt]="attendee.name" 
+               class="cdk-drag-preview-avatar">
+        }
+      </ng-template>
+      
       <!-- Custom drag placeholder for attendee avatars -->
       <div *cdkDragPlaceholder class="attendee-avatar-placeholder"></div>
     </ng-container>

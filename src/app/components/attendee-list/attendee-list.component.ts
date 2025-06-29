@@ -25,7 +25,7 @@ export class AttendeeListComponent {
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
-  private dragService = inject(DragService);
+  public dragService = inject(DragService);
 
   showDropHint: boolean = false;
 

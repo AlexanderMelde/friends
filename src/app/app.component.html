@@ -32,7 +32,10 @@
     </mat-menu>
   </mat-toolbar>
   
-  <div class="main-content" cdkDropListGroup>
+  <div class="main-content" 
+       cdkDropListGroup
+       (cdkDropListEntered)="onCdkDropListEntered($event)"
+       (cdkDropListExited)="onCdkDropListExited($event)">
     <div class="content-container" 
          [class.calendar-sidebar-open]="uiStateService.calendarSidebarOpen() && !uiStateService.friendsSidebarOpen()"
          [class.friends-sidebar-open]="uiStateService.friendsSidebarOpen() && !uiStateService.calendarSidebarOpen()"

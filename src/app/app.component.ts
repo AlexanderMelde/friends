@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDropList } from '@angular/cdk/drag-drop';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
 import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
 import { FriendsSidebarComponent } from './components/friends-sidebar/friends-sidebar.component';
@@ -72,6 +72,22 @@ export class AppComponent {
     // Check if the drag operation has left the entire document
     if (!event.relatedTarget) {
       this.dragService.endDrag();
+    }
+  }
+
+  // Handle CDK drop list entered event
+  onCdkDropListEntered(event: any): void {
+    // Only update if we're dragging an attendee
+    if (this.dragService.isDraggingAttendee()) {
+      this.dragService.setOverValidDropTarget(true);
+    }
+  }
+
+  // Handle CDK drop list exited event
+  onCdkDropListExited(event: any): void {
+    // Only update if we're dragging an attendee
+    if (this.dragService.isDraggingAttendee()) {
+      this.dragService.setOverValidDropTarget(false);
     }
   }
 
