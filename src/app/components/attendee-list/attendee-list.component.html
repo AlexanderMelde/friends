@@ -3,8 +3,6 @@
        cdkDropList
        [cdkDropListData]="event.id"
        (cdkDropListDropped)="onCdkDropListDropped($event)"
-       (cdkDropListEntered)="onCdkDragEnter($event)"
-       (cdkDropListExited)="onCdkDragExit($event)"
        [cdkDropListEnterPredicate]="canEnterDropList"
        cdkDropListSortingDisabled>
     
@@ -33,8 +31,6 @@
        cdkDropList
        [cdkDropListData]="event.id"
        (cdkDropListDropped)="onCdkDropListDropped($event)"
-       (cdkDropListEntered)="onCdkDragEnter($event)"
-       (cdkDropListExited)="onCdkDragExit($event)"
        [cdkDropListEnterPredicate]="canEnterDropList"
        cdkDropListSortingDisabled>
     <div class="empty-state" *ngIf="!showDropHint">

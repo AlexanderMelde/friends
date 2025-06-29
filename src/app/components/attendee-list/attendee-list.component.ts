@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, computed, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList, CdkDragStart, CdkDragEnd, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList, CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Event } from '../../models/event.model';
 import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
@@ -83,17 +83,7 @@ export class AttendeeListComponent {
 
   onCdkDragStarted(event: CdkDragStart): void {
     const dragData = event.source.data;
-    this.dragService.startDrag(dragData.friend, 'attendee', dragData.sourceEventId);
-  }
-
-  onCdkDragEnter(event: CdkDragEnter): void {
-    // Mark that we're over a valid drop zone
-    this.dragService.setOverValidDropZone(true);
-  }
-
-  onCdkDragExit(event: CdkDragExit): void {
-    // Mark that we're no longer over a valid drop zone
-    this.dragService.setOverValidDropZone(false);
+    this.dragService.startDrag(dragData.friend, 'attendee');
   }
 
   onCdkDragEnded(event: CdkDragEnd): void {

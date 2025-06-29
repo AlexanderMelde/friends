@@ -17,7 +17,6 @@ import { EventEditDialogComponent } from './components/event-edit-dialog/event-e
 import { SettingsDialogComponent } from './components/settings-dialog/settings-dialog.component';
 import { HelpDialogComponent } from './components/help-dialog/help-dialog.component';
 import { LegalDialogComponent } from './components/legal-dialog/legal-dialog.component';
-import { TrashBinComponent } from './components/trash-bin/trash-bin.component';
 import { DataService } from './services/data.service';
 import { DragService } from './services/drag.service';
 import { GraphService } from './services/graph.service';
@@ -41,8 +40,7 @@ import { Event } from './models/event.model';
     DragDropModule,
     GraphVisualizationComponent,
     CalendarSidebarComponent,
-    FriendsSidebarComponent,
-    TrashBinComponent
+    FriendsSidebarComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
