@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Friend } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
@@ -16,7 +17,8 @@ import { EmptyStateComponent } from '../empty-state/empty-state.component';
     CommonModule, 
     MatIconModule, 
     MatButtonModule, 
-    MatTooltipModule, 
+    MatTooltipModule,
+    DragDropModule,
     FriendListItemComponent,
     EmptyStateComponent
   ],
