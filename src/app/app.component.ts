@@ -82,6 +82,7 @@ export class AppComponent {
       const dropListData = event.container.data;
       const dragSourceEventId = this.dragService.dragSourceEventId();
       this.dragService.setDropListState(dropListData, dragSourceEventId, true);
+      this.dragService.setOverValidDropTarget(true);
     }
   }
 
@@ -92,6 +93,7 @@ export class AppComponent {
       const dropListData = event.container.data;
       const dragSourceEventId = this.dragService.dragSourceEventId();
       this.dragService.setDropListState(dropListData, dragSourceEventId, false);
+      this.dragService.setOverValidDropTarget(false);
     }
   }
 

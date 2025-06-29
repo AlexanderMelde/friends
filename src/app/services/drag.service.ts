@@ -11,6 +11,7 @@ export class DragService {
   private _isOverAnyDropList = signal(false);
   private _isOverDifferentEventDropList = signal(false);
   private _dragSourceEventId = signal<string | null>(null);
+  private _isOverValidDropTarget = signal(false);
 
   readonly isDragging = this._isDragging.asReadonly();
   readonly draggedFriend = this._draggedFriend.asReadonly();
@@ -19,6 +20,7 @@ export class DragService {
   readonly isOverAnyDropList = this._isOverAnyDropList.asReadonly();
   readonly isOverDifferentEventDropList = this._isOverDifferentEventDropList.asReadonly();
   readonly dragSourceEventId = this._dragSourceEventId.asReadonly();
+  readonly isOverValidDropTarget = this._isOverValidDropTarget.asReadonly();
 
   startDrag(friend: any, type: 'friend' | 'attendee' = 'friend', sourceEventId?: string): void {
     this._isDragging.set(true);
@@ -28,6 +30,7 @@ export class DragService {
     this._isOverAnyDropList.set(false);
     this._isOverDifferentEventDropList.set(false);
     this._dragSourceEventId.set(sourceEventId || null);
+    this._isOverValidDropTarget.set(false);
   }
 
   endDrag(): void {
@@ -38,6 +41,7 @@ export class DragService {
     this._isOverAnyDropList.set(false);
     this._isOverDifferentEventDropList.set(false);
     this._dragSourceEventId.set(null);
+    this._isOverValidDropTarget.set(false);
   }
 
   setDropListState(dropListData: string, dragSourceEventId: string | null, isEntering: boolean): void {
@@ -49,5 +53,9 @@ export class DragService {
     } else if (!isEntering) {
       this._isOverDifferentEventDropList.set(false);
     }
+  }
+
+  setOverValidDropTarget(isOver: boolean): void {
+    this._isOverValidDropTarget.set(isOver);
   }
 }
