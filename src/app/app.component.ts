@@ -224,7 +224,7 @@ export class AppComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: () => dialogRef.close()
+        closeCallback: (result?: any) => dialogRef.close(result)
       });
     } else {
       this.dialog.open(HelpDialogComponent, {
@@ -248,7 +248,7 @@ export class AppComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: () => dialogRef.close()
+        closeCallback: (result?: any) => dialogRef.close(result)
       });
     } else {
       this.dialog.open(SettingsDialogComponent, {
@@ -272,7 +272,7 @@ export class AppComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: () => dialogRef.close()
+        closeCallback: (result?: any) => dialogRef.close(result)
       });
     } else {
       this.dialog.open(LegalDialogComponent, {
@@ -301,7 +301,7 @@ export class AppComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: () => dialogRef.close()
+        closeCallback: (result?: any) => dialogRef.close(result)
       });
       
       dialogRef.afterClosed().subscribe(result => {
@@ -347,7 +347,7 @@ export class AppComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: () => dialogRef.close()
+        closeCallback: (result?: any) => dialogRef.close(result)
       });
       
       dialogRef.afterClosed().subscribe(result => {

@@ -50,7 +50,7 @@ export class EventsListComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: () => dialogRef.close()
+        closeCallback: (result?: any) => dialogRef.close(result)
       });
       
       dialogRef.afterClosed().subscribe(result => {

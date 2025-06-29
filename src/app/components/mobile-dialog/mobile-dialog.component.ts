@@ -120,7 +120,7 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
     this.navigationService.pushState({
       id: this.navigationId,
       type: 'dialog',
-      closeCallback: () => this.closeDialog()
+      closeCallback: (result?: any) => this.closeDialog(result)
     });
   }
 
@@ -222,9 +222,9 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
   closeDialog(result?: any): void {
     this.animationState = 'exit';
     
-    // Remove from navigation stack
+    // Remove from navigation stack with result
     if (this.navigationService.isInStack(this.navigationId)) {
-      this.navigationService.closeItem(this.navigationId);
+      this.navigationService.closeItem(this.navigationId, result);
     }
     
     // Wait for animation to complete before closing
