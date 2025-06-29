@@ -45,7 +45,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   private linkElements!: d3.Selection<SVGLineElement, EventLink, SVGGElement, unknown>;
   
   private graphService = inject(GraphService);
-  private uiStateService = inject(UiStateService);
+  uiStateService = inject(UiStateService);
   
   readonly nodes = computed(() => this.graphService.nodes());
   readonly links = computed(() => this.graphService.links());

@@ -84,7 +84,7 @@ export class CalendarSidebarComponent {
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
   private navigationService = inject(NavigationService);
-  private uiStateService = inject(UiStateService);
+  uiStateService = inject(UiStateService);
 
   selectedType: string = '';
   // Convert year filter values to signals so they're reactive
