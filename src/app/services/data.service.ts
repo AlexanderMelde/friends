@@ -46,6 +46,9 @@ export class DataService {
     this.initDatabase();
   }
 
+  /**
+   * Utility function to ensure a value is a proper Date object or undefined
+   */
   private ensureDate(value: any): Date | undefined {
     if (!value) return undefined;
     if (value instanceof Date) return value;
@@ -56,6 +59,9 @@ export class DataService {
     return undefined;
   }
 
+  /**
+   * Utility function to normalize a friend object by ensuring proper date types
+   */
   private normalizeFriend(friend: any): Friend {
     return {
       ...friend,
@@ -63,11 +69,43 @@ export class DataService {
     };
   }
 
+  /**
+   * Utility function to normalize an event object by ensuring proper date types
+   */
   private normalizeEvent(event: any): Event {
     return {
       ...event,
       date: this.ensureDate(event.date)
     };
+  }
+
+  /**
+   * Utility function to prepare a friend object for storage by removing computed properties
+   * and normalizing dates. This ensures consistency across all storage operations.
+   */
+  private normalizeAndCleanFriend(friend: any): Friend {
+    // Remove eventCount if it exists (it's a computed property, not part of the persistent model)
+    const { eventCount, ...friendWithoutEventCount } = friend;
+    return this.normalizeFriend(friendWithoutEventCount);
+  }
+
+  /**
+   * Utility function to update localStorage with current data in a non-blocking way
+   */
+  private updateLocalStorageAsync(): void {
+    setTimeout(() => {
+      localStorage.setItem('friends', JSON.stringify(this.friends()));
+      localStorage.setItem('events', JSON.stringify(this.events()));
+    }, 0);
+  }
+
+  /**
+   * Utility function to update only events in localStorage
+   */
+  private updateEventsLocalStorageAsync(): void {
+    setTimeout(() => {
+      localStorage.setItem('events', JSON.stringify(this.events()));
+    }, 0);
   }
 
   private async initDatabase() {
@@ -107,26 +145,22 @@ export class DataService {
 
   private async loadSampleData() {
     try {
-      // Remove eventCount from sample data before storing and normalize dates
-      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(friend => {
-        const { eventCount, ...friendData } = friend as any;
-        return this.normalizeFriend(friendData);
-      });
-      
+      // Use the utility function to clean and normalize sample data
+      const cleanFriends = SAMPLE_DATA.friends.map(friend => this.normalizeAndCleanFriend(friend));
       const normalizedEvents = SAMPLE_DATA.events.map(event => this.normalizeEvent(event));
       
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
         await Promise.all([
-          this.db.friends.bulkAdd(friendsWithoutEventCount),
+          this.db.friends.bulkAdd(cleanFriends),
           this.db.events.bulkAdd(normalizedEvents)
         ]);
       });
       
-      this.friendsSignal.set(friendsWithoutEventCount);
+      this.friendsSignal.set(cleanFriends);
       this.eventsSignal.set(normalizedEvents);
       
       // Store clean data without eventCount
-      localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
+      localStorage.setItem('friends', JSON.stringify(cleanFriends));
       localStorage.setItem('events', JSON.stringify(normalizedEvents));
     } catch (error) {
       console.error('Failed to load sample data', error);
@@ -140,19 +174,13 @@ export class DataService {
     
     if (storedFriends) {
       const friends = JSON.parse(storedFriends);
-      // Remove eventCount if it exists in stored data and normalize dates
-      const friendsWithoutEventCount = friends.map((friend: any) => {
-        const { eventCount, ...friendData } = friend;
-        return this.normalizeFriend(friendData);
-      });
-      this.friendsSignal.set(friendsWithoutEventCount);
+      // Use the utility function to clean and normalize stored friends
+      const cleanFriends = friends.map((friend: any) => this.normalizeAndCleanFriend(friend));
+      this.friendsSignal.set(cleanFriends);
     } else {
-      const friendsWithoutEventCount = SAMPLE_DATA.friends.map(friend => {
-        const { eventCount, ...friendData } = friend as any;
-        return this.normalizeFriend(friendData);
-      });
-      this.friendsSignal.set(friendsWithoutEventCount);
-      localStorage.setItem('friends', JSON.stringify(friendsWithoutEventCount));
+      const cleanFriends = SAMPLE_DATA.friends.map(friend => this.normalizeAndCleanFriend(friend));
+      this.friendsSignal.set(cleanFriends);
+      localStorage.setItem('friends', JSON.stringify(cleanFriends));
     }
     
     if (storedEvents) {
@@ -200,9 +228,7 @@ export class DataService {
       this.eventsSignal.update(events => [...events, normalizedEvent]);
 
       // Update localStorage in background (events only)
-      setTimeout(() => {
-        localStorage.setItem('events', JSON.stringify(this.events()));
-      }, 0);
+      this.updateEventsLocalStorageAsync();
     } catch (error) {
       console.error('Failed to add event:', error);
       await this.loadAllData(); // Rollback to consistent state
@@ -212,10 +238,9 @@ export class DataService {
   async addFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        // Remove eventCount before storing and normalize dates
-        const { eventCount, ...friendWithoutEventCount } = friend as any;
-        const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
-        await this.db.friends.add(normalizedFriend);
+        // Use the utility function to clean and normalize the friend
+        const cleanFriend = this.normalizeAndCleanFriend(friend);
+        await this.db.friends.add(cleanFriend);
         
         // Update events
         for (const eventId of eventIds) {
@@ -228,9 +253,8 @@ export class DataService {
       });
 
       // Update signals
-      const { eventCount, ...friendWithoutEventCount } = friend as any;
-      const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
-      this.friendsSignal.update(friends => [...friends, normalizedFriend]);
+      const cleanFriend = this.normalizeAndCleanFriend(friend);
+      this.friendsSignal.update(friends => [...friends, cleanFriend]);
       
       this.eventsSignal.update(events => 
         events.map(event => 
@@ -241,10 +265,7 @@ export class DataService {
       );
 
       // Update localStorage in background (clean data only)
-      setTimeout(() => {
-        localStorage.setItem('friends', JSON.stringify(this.friends()));
-        localStorage.setItem('events', JSON.stringify(this.events()));
-      }, 0);
+      this.updateLocalStorageAsync();
     } catch (error) {
       console.error('Failed to add friend:', error);
       await this.loadAllData(); // Rollback to consistent state
@@ -254,10 +275,9 @@ export class DataService {
   async updateFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
       await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        // Remove eventCount before storing and normalize dates
-        const { eventCount, ...friendWithoutEventCount } = friend as any;
-        const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
-        await this.db.friends.put(normalizedFriend);
+        // Use the utility function to clean and normalize the friend
+        const cleanFriend = this.normalizeAndCleanFriend(friend);
+        await this.db.friends.put(cleanFriend);
         
         // Get all events to update
         const events = await this.db.events.toArray();
@@ -277,10 +297,9 @@ export class DataService {
       });
 
       // Update signals
-      const { eventCount, ...friendWithoutEventCount } = friend as any;
-      const normalizedFriend = this.normalizeFriend(friendWithoutEventCount);
+      const cleanFriend = this.normalizeAndCleanFriend(friend);
       this.friendsSignal.update(friends => 
-        friends.map(f => f.id === friend.id ? normalizedFriend : f)
+        friends.map(f => f.id === friend.id ? cleanFriend : f)
       );
       
       this.eventsSignal.update(events => 
@@ -301,10 +320,7 @@ export class DataService {
       );
 
       // Update localStorage in background (clean data only)
-      setTimeout(() => {
-        localStorage.setItem('friends', JSON.stringify(this.friends()));
-        localStorage.setItem('events', JSON.stringify(this.events()));
-      }, 0);
+      this.updateLocalStorageAsync();
     } catch (error) {
       console.error('Failed to update friend:', error);
       await this.loadAllData(); // Rollback to consistent state
@@ -322,9 +338,7 @@ export class DataService {
       );
 
       // Update localStorage in background (events only)
-      setTimeout(() => {
-        localStorage.setItem('events', JSON.stringify(this.events()));
-      }, 0);
+      this.updateEventsLocalStorageAsync();
     } catch (error) {
       console.error('Failed to update event:', error);
       await this.loadAllData(); // Rollback to consistent state
