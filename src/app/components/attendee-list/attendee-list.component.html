@@ -8,33 +8,36 @@
     
     <!-- Regular attendee avatars -->
     <ng-container *ngFor="let attendee of attendees()">
-      <img [src]="attendee.photoUrl" 
-           [alt]="attendee.name"
-           [title]="attendee.name"
-           class="attendee-avatar"
+      <div class="attendee-avatar-wrapper"
+           [class.dragging-for-removal]="isDraggingAttendeeForRemoval(attendee)"
            cdkDrag
            [cdkDragData]="{ friend: attendee, sourceEventId: event.id }"
            (cdkDragStarted)="onCdkDragStarted($event)"
            (cdkDragEnded)="onCdkDragEnded($event)"
            (click)="selectAttendee(attendee, $event)">
-      
-      <!-- Custom drag preview template -->
-      <ng-template cdkDragPreview>
-        @if (dragService.isDraggingAttendee() && !dragService.isOverValidDropTarget()) {
-          <!-- Show trash bin when dragging attendee outside valid drop zones -->
-          <div class="trash-bin-preview">
-            <mat-icon>delete</mat-icon>
-          </div>
-        } @else {
-          <!-- Show normal avatar preview -->
+        
+        <!-- Show either avatar or trash icon based on drag state -->
+        <ng-container *ngIf="!isDraggingAttendeeForRemoval(attendee); else trashIcon">
+          <img [src]="attendee.photoUrl" 
+               [alt]="attendee.name"
+               [title]="attendee.name"
+               class="attendee-avatar">
+        </ng-container>
+        
+        <ng-template #trashIcon>
+          <mat-icon class="attendee-trash-icon">delete</mat-icon>
+        </ng-template>
+        
+        <!-- Custom drag preview template -->
+        <ng-template cdkDragPreview>
           <img [src]="attendee.photoUrl" 
                [alt]="attendee.name" 
                class="cdk-drag-preview-avatar">
-        }
-      </ng-template>
-      
-      <!-- Custom drag placeholder for attendee avatars -->
-      <div *cdkDragPlaceholder class="attendee-avatar-placeholder"></div>
+        </ng-template>
+        
+        <!-- Custom drag placeholder for attendee avatars -->
+        <div *cdkDragPlaceholder class="attendee-avatar-placeholder"></div>
+      </div>
     </ng-container>
     
     <div class="drop-hint" *ngIf="showDropHint">

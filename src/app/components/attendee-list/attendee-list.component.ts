@@ -71,6 +71,27 @@ export class AttendeeListComponent {
     });
   }
 
+  /**
+   * Check if a specific attendee is being dragged for removal
+   * This happens when:
+   * 1. We're dragging an attendee (not a friend from the friends list)
+   * 2. The dragged attendee is this specific attendee
+   * 3. We're not over a valid drop target (meaning it will be removed)
+   */
+  isDraggingAttendeeForRemoval(attendee: { id: string }): boolean {
+    const isDraggingAttendee = this.dragService.isDraggingAttendee();
+    const isOverValidTarget = this.dragService.isOverValidDropTarget();
+    const draggedFriend = this.dragService.draggedFriend();
+    
+    if (!isDraggingAttendee || isOverValidTarget || !draggedFriend) {
+      return false;
+    }
+    
+    // Check if this specific attendee is the one being dragged
+    const draggedFriendId = draggedFriend.friend?.id || draggedFriend.id;
+    return draggedFriendId === attendee.id;
+  }
+
   selectAttendee(attendee: { id: string }, e: MouseEvent): void {
     e.stopPropagation();
     this.graphService.selectAttendeeById(attendee.id);
