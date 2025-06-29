@@ -60,7 +60,7 @@ html, body {
   z-index: 2001 !important; /* Even higher for drag previews */
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
   border-radius: 50% !important;
-  transform: scale(1.1) !important; /* Slightly larger during drag */
+  transform: scale(1.1); /* Removed !important to allow CDK positioning */
 }
 
 .cdk-drag-placeholder {
