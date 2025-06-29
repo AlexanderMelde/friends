@@ -63,7 +63,7 @@ svg {
 .mobile-tabs {
   position: absolute;
   bottom: 0;
-  height: 50vh;
+  height: 50dvh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -150,7 +150,7 @@ svg {
 
 .boltbadge {
   position: absolute;
-  bottom: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   left: 10px;
   z-index: 3;
 }
@@ -196,20 +196,19 @@ svg {
 /* Mobile-specific adjustments */
 @container container-graph (max-width: 800px) {
   .graph-area.mobile-reduced {
-    flex: 0 0 50vh;
+    flex: 0 0 50dvh;
     min-height: 250px; /* Ensure graph is visible on mobile */
   }
   
   .mobile-tabs {
-    height: 50vh;
+    height: 50dvh;
     min-height: 250px; /* Ensure tabs are visible on mobile */
     bottom: env(safe-area-inset-bottom, 0px);
   }
   
   .network-controls.mobile-adjusted {
-    bottom: calc(50vh + 8px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(50dvh + 8px + env(safe-area-inset-bottom, 0px));
     right: 16px;
-    background: red;
   }
 
   .network-controls:not(.mobile-adjusted) {
@@ -217,11 +216,7 @@ svg {
   }
 
   .boltbadge.mobile-adjusted {
-    bottom: calc(50vh + 10px + env(safe-area-inset-bottom, 0px));
-  }
-
-  .boltbadge:not(.mobile-adjusted) {
-    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(50dvh + 10px + env(safe-area-inset-bottom, 0px));
   }
 
   /* Responsive adjustments */
@@ -290,21 +285,21 @@ svg {
 @container container-graph (max-width: 800px) {
   @media (orientation: landscape) {
     .graph-area.mobile-reduced {
-      flex: 0 0 60vh;
+      flex: 0 0 60dvh;
       min-height: 180px;
     }
     
     .mobile-tabs {
-      height: 40vh;
+      height: 40dvh;
       min-height: 120px;
     }
     
     .network-controls.mobile-adjusted {
-      bottom: calc(40vh + 8px + env(safe-area-inset-bottom, 0px));
+      bottom: calc(40dvh + 8px + env(safe-area-inset-bottom, 0px));
     }
 
     .boltbadge.mobile-adjusted {
-      bottom: calc(40vh + 10px + env(safe-area-inset-bottom, 0px));
+      bottom: calc(40dvh + 10px + env(safe-area-inset-bottom, 0px));
     }
   }
 }
