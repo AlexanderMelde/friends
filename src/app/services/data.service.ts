@@ -331,6 +331,75 @@ export class DataService {
     }
   }
 
+  // Attendee management methods
+  async addAttendeeToEvent(friendId: string, eventId: string): Promise<void> {
+    try {
+      const event = await this.getEvent(eventId);
+      if (!event) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      // Check if friend is not already an attendee
+      if (!event.attendees.includes(friendId)) {
+        const updatedEvent = {
+          ...event,
+          attendees: [...event.attendees, friendId]
+        };
+        
+        await this.updateEvent(updatedEvent);
+      }
+    } catch (error) {
+      console.error('Failed to add attendee to event:', error);
+      throw error;
+    }
+  }
+
+  async removeAttendeeFromEvent(friendId: string, eventId: string): Promise<void> {
+    try {
+      const event = await this.getEvent(eventId);
+      if (!event) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      const updatedEvent = {
+        ...event,
+        attendees: event.attendees.filter(id => id !== friendId)
+      };
+      
+      await this.updateEvent(updatedEvent);
+    } catch (error) {
+      console.error('Failed to remove attendee from event:', error);
+      throw error;
+    }
+  }
+
+  async moveAttendeeBetweenEvents(friendId: string, sourceEventId: string, targetEventId: string): Promise<void> {
+    try {
+      // Remove from source event
+      const sourceEvent = await this.getEvent(sourceEventId);
+      if (sourceEvent) {
+        const updatedSourceEvent = {
+          ...sourceEvent,
+          attendees: sourceEvent.attendees.filter(id => id !== friendId)
+        };
+        await this.updateEvent(updatedSourceEvent);
+      }
+
+      // Add to target event
+      const targetEvent = await this.getEvent(targetEventId);
+      if (targetEvent && !targetEvent.attendees.includes(friendId)) {
+        const updatedTargetEvent = {
+          ...targetEvent,
+          attendees: [...targetEvent.attendees, friendId]
+        };
+        await this.updateEvent(updatedTargetEvent);
+      }
+    } catch (error) {
+      console.error('Failed to move attendee between events:', error);
+      throw error;
+    }
+  }
+
   async getFriend(id: string): Promise<Friend | undefined> {
     if (this.dbReady()) {
       const friend = await this.db.friends.get(id);
