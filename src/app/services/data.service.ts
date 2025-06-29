@@ -253,8 +253,9 @@ export class DataService {
   }
 
   async addEvent(event: Event): Promise<void> {
+    const normalizedEvent = this.normalizeEvent(event);
+    
     try {
-      const normalizedEvent = this.normalizeEvent(event);
       console.log('Adding event:', normalizedEvent);
       
       // Try to add to IndexedDB first
@@ -440,8 +441,9 @@ export class DataService {
   }
 
   async updateEvent(updatedEvent: Event): Promise<void> {
+    const normalizedEvent = this.normalizeEvent(updatedEvent);
+    
     try {
-      const normalizedEvent = this.normalizeEvent(updatedEvent);
       console.log('Updating event:', normalizedEvent);
       
       // Try to update in IndexedDB first
