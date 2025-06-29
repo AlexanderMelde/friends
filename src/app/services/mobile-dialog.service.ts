@@ -4,6 +4,7 @@ import { MobileDialogComponent, MobileDialogData } from '../components/mobile-di
 import { ComponentType } from '@angular/cdk/portal';
 import { HeaderAction } from '../components/app-header-bar/app-header-bar.component';
 import { UiStateService } from './ui-state.service';
+import { NavigationService } from './navigation.service';
 
 export interface MobileDialogConfig extends MobileDialogData {
   disableClose?: boolean;
@@ -17,6 +18,73 @@ export interface MobileDialogConfig extends MobileDialogData {
 export class MobileDialogService {
   private dialog = inject(MatDialog);
   private uiStateService = inject(UiStateService);
+  private navigationService = inject(NavigationService);
+
+  /**
+   * Centralized dialog opening method that handles mobile/desktop distinction
+   */
+  private _openDialog<T = any>(
+    component: ComponentType<T> | null,
+    title: string,
+    config: Partial<MobileDialogConfig> = {}
+  ): MatDialogRef<any> {
+    
+    if (this.uiStateService.isMobileView()) {
+      // Mobile: use MobileDialogComponent wrapper
+      const mobileConfig: MatDialogConfig = {
+        width: '100vw',
+        height: '100vh',
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        panelClass: ['mobile-dialog-panel', ...(config.panelClass ? [config.panelClass] : [])],
+        backdropClass: config.backdropClass || 'mobile-dialog-backdrop',
+        disableClose: config.disableClose || false,
+        hasBackdrop: false, // We handle our own backdrop
+        data: {
+          title,
+          component,
+          showBackButton: true,
+          showCloseButton: false,
+          ...config
+        }
+      };
+
+      const dialogRef = this.dialog.open(MobileDialogComponent, mobileConfig);
+
+      // Add to navigation stack for mobile
+      const dialogId = `dialog-${Date.now()}-${Math.random()}`;
+      this.navigationService.pushState({
+        id: dialogId,
+        type: 'dialog',
+        closeCallback: () => dialogRef.close()
+      });
+
+      return dialogRef;
+    } else {
+      // Desktop: open component directly with appropriate sizing
+      if (component) {
+        const dialogConfig: MatDialogConfig = {
+          width: config.panelClass?.includes('wide') ? '800px' : '600px',
+          maxWidth: '90vw',
+          maxHeight: '90vh',
+          disableClose: config.disableClose || false,
+          data: config.data
+        };
+
+        // Apply specific sizing based on dialog type
+        if (title === 'Help & User Guide') {
+          dialogConfig.width = '700px';
+        } else if (title === 'Settings' || title === 'Legal Information') {
+          dialogConfig.width = '600px';
+        }
+
+        return this.dialog.open(component, dialogConfig);
+      }
+    }
+
+    // Fallback - should not reach here
+    throw new Error('Invalid dialog configuration');
+  }
 
   open<T = any>(
     component: ComponentType<T> | null,
@@ -71,37 +139,11 @@ export class MobileDialogService {
     if (typeof content === 'string') {
       // Handle string content
       config.data = { ...config.data, htmlContent: content };
-      return this.open(null, config);
+      return this._openDialog(null, title, config);
     } else {
-      // Handle component content - centralized mobile/desktop logic
-      if (this.uiStateService.isMobileView()) {
-        // Mobile: use MobileDialogComponent wrapper
-        return this.open(content, config);
-      } else {
-        // Desktop: open component directly with appropriate sizing
-        if (content) {
-          const dialogConfig: MatDialogConfig = {
-            width: config.panelClass?.includes('wide') ? '800px' : '600px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: config.disableClose || false,
-            data: config.data
-          };
-
-          // Apply specific sizing based on component type
-          if (title === 'Help & User Guide') {
-            dialogConfig.width = '700px';
-          } else if (title === 'Settings' || title === 'Legal Information') {
-            dialogConfig.width = '600px';
-          }
-
-          return this.dialog.open(content, dialogConfig);
-        }
-      }
+      // Handle component content - use centralized logic
+      return this._openDialog(content, title, config);
     }
-
-    // Fallback - should not reach here
-    return this.open(null, config);
   }
 
   openSettings(): MatDialogRef<any> {

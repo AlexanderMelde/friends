@@ -159,62 +159,36 @@ export class AppComponent {
   }
 
   openHelp(): void {
-    const dialogRef = this.mobileDialogService.openWithContent(
+    // Centralized dialog opening - no mobile/desktop distinction needed here
+    this.mobileDialogService.openWithContent(
       'Help & User Guide',
       HelpDialogComponent,
       { showBackButton: true }
     );
-    
-    // Add to navigation stack only for mobile
-    if (this.uiStateService.isMobileView()) {
-      const dialogId = `help-dialog-${Date.now()}`;
-      this.navigationService.pushState({
-        id: dialogId,
-        type: 'dialog',
-        closeCallback: () => dialogRef.close()
-      });
-    }
   }
 
   openSettings(): void {
-    const dialogRef = this.mobileDialogService.openWithContent(
+    // Centralized dialog opening - no mobile/desktop distinction needed here
+    this.mobileDialogService.openWithContent(
       'Settings',
       SettingsDialogComponent,
       { showBackButton: true }
     );
-    
-    // Add to navigation stack only for mobile
-    if (this.uiStateService.isMobileView()) {
-      const dialogId = `settings-dialog-${Date.now()}`;
-      this.navigationService.pushState({
-        id: dialogId,
-        type: 'dialog',
-        closeCallback: () => dialogRef.close()
-      });
-    }
   }
 
   openLegal(): void {
-    const dialogRef = this.mobileDialogService.openWithContent(
+    // Centralized dialog opening - no mobile/desktop distinction needed here
+    this.mobileDialogService.openWithContent(
       'Legal Information',
       LegalDialogComponent,
       { showBackButton: true }
     );
-    
-    // Add to navigation stack only for mobile
-    if (this.uiStateService.isMobileView()) {
-      const dialogId = `legal-dialog-${Date.now()}`;
-      this.navigationService.pushState({
-        id: dialogId,
-        type: 'dialog',
-        closeCallback: () => dialogRef.close()
-      });
-    }
   }
 
   addFriend(): void {
     const events = this.dataService.events();
     
+    // Centralized dialog opening - no mobile/desktop distinction needed here
     const dialogRef = this.mobileDialogService.openWithContent(
       'Add Friend',
       FriendDialogComponent,
@@ -223,16 +197,6 @@ export class AppComponent {
         showBackButton: true
       }
     );
-    
-    // Add to navigation stack only for mobile
-    if (this.uiStateService.isMobileView()) {
-      const dialogId = `add-friend-dialog-${Date.now()}`;
-      this.navigationService.pushState({
-        id: dialogId,
-        type: 'dialog',
-        closeCallback: () => dialogRef.close()
-      });
-    }
     
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -251,6 +215,7 @@ export class AppComponent {
       attendees: []
     };
 
+    // Centralized dialog opening - no mobile/desktop distinction needed here
     const dialogRef = this.mobileDialogService.openWithContent(
       'Add Event',
       EventEditDialogComponent,
@@ -259,16 +224,6 @@ export class AppComponent {
         showBackButton: true
       }
     );
-    
-    // Add to navigation stack only for mobile
-    if (this.uiStateService.isMobileView()) {
-      const dialogId = `add-event-dialog-${Date.now()}`;
-      this.navigationService.pushState({
-        id: dialogId,
-        type: 'dialog',
-        closeCallback: () => dialogRef.close()
-      });
-    }
     
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
