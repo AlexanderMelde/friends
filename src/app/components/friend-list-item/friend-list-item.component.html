@@ -5,6 +5,14 @@
      [cdkDragData]="friend"
      (cdkDragStarted)="onCdkDragStarted()"
      (cdkDragEnded)="onCdkDragEnded()">
+  
+  <!-- Custom drag preview template -->
+  <ng-template cdkDragPreview>
+    <img [src]="friend.photoUrl" 
+         [alt]="friend.name" 
+         class="cdk-drag-preview-avatar">
+  </ng-template>
+  
   <img [src]="friend.photoUrl" 
        [alt]="friend.name" 
        class="friend-avatar"
