@@ -114,6 +114,7 @@ export class AttendeeListComponent {
     const dragData = event.source.data;
     
     // Check if we were dragging an attendee and it wasn't dropped over a valid target
+    // AND it wasn't dropped back on the same list (which would be a valid target)
     if (this.dragService.isDraggingAttendee() && !this.dragService.isOverValidDropTarget()) {
       const sourceEventId = dragData.sourceEventId;
       const friend = dragData.friend;
@@ -138,18 +139,20 @@ export class AttendeeListComponent {
       }
     }
     
-    // If dragging an attendee from another event
+    // If dragging an attendee from another event (not the same event)
     if (draggedItem.friend && draggedItem.sourceEventId) {
       const sourceEventId = draggedItem.sourceEventId;
       const friend = draggedItem.friend;
       
-      // Only proceed if it's a different event
+      // Only proceed if it's a different event (not dropping back on same list)
       if (sourceEventId !== targetEventId) {
         // Check if friend is not already an attendee in target event
         if (!this.event.attendees.includes(friend.id)) {
           this.dataService.moveAttendeeBetweenEvents(friend.id, sourceEventId, this.event.id);
         }
       }
+      // If dropping back on the same list (sourceEventId === targetEventId), do nothing
+      // This prevents removal when dropping an attendee back on their original list
     }
   }
 }
