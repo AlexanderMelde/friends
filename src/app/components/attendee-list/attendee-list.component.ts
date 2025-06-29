@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList, CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
@@ -71,8 +71,8 @@ export class AttendeeListComponent {
 
   constructor() {
     // Effect to show/hide drop hint based on drag state
-    this.dragService.isDragging.subscribe(isDragging => {
-      this.showDropHint = isDragging;
+    effect(() => {
+      this.showDropHint = this.dragService.isDragging();
     });
   }
 
