@@ -64,6 +64,14 @@ export class AppComponent {
     // CDK drag and drop handles all drag events, so we don't need global listeners
   }
 
+  // Handle document drag leave event
+  onDocumentDragLeave(event: DragEvent): void {
+    // Check if the drag operation has left the entire document
+    if (!event.relatedTarget) {
+      this.dragService.endDrag();
+    }
+  }
+
   // Check if mobile overlay should be active
   isOverlayActive(): boolean {
     return this.isMobileView() && (this.calendarSidebarOpen || this.friendsSidebarOpen);
