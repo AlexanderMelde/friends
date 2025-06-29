@@ -18,9 +18,6 @@ import { DragService } from '../../services/drag.service';
 })
 export class AttendeeListComponent {
   @Input() event!: Event;
-  @Output() attendeeAdded = new EventEmitter<{ friend: Friend, targetEventId: string }>();
-  @Output() attendeeRemoved = new EventEmitter<{ friend: Friend, sourceEventId: string }>();
-  @Output() attendeeMoved = new EventEmitter<{ friend: Friend, sourceEventId: string, targetEventId: string }>();
   @Output() attendeeSelected = new EventEmitter<Friend>();
 
   private graphService = inject(GraphService);
@@ -96,7 +93,7 @@ export class AttendeeListComponent {
       const friend = dragData.friend;
       
       if (sourceEventId && friend) {
-        this.attendeeRemoved.emit({ friend, sourceEventId });
+        this.removeAttendeeFromEvent(friend.id, sourceEventId);
       }
     }
     
@@ -111,7 +108,7 @@ export class AttendeeListComponent {
     if (draggedItem.id) {
       // Check if friend is not already an attendee
       if (!this.event.attendees.includes(draggedItem.id)) {
-        this.attendeeAdded.emit({ friend: draggedItem, targetEventId: this.event.id });
+        this.addAttendeeToEvent(draggedItem.id, this.event.id);
       }
     }
     
@@ -124,13 +121,75 @@ export class AttendeeListComponent {
       if (sourceEventId !== targetEventId) {
         // Check if friend is not already an attendee in target event
         if (!this.event.attendees.includes(friend.id)) {
-          this.attendeeMoved.emit({ 
-            friend, 
-            sourceEventId, 
-            targetEventId: this.event.id 
-          });
+          this.moveAttendeeBetweenEvents(friend.id, sourceEventId, this.event.id);
         }
       }
+    }
+  }
+
+  // Attendee management methods - moved from data service
+  private async addAttendeeToEvent(friendId: string, eventId: string): Promise<void> {
+    try {
+      const event = await this.dataService.getEvent(eventId);
+      if (!event) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      // Check if friend is not already an attendee
+      if (!event.attendees.includes(friendId)) {
+        const updatedEvent = {
+          ...event,
+          attendees: [...event.attendees, friendId]
+        };
+        
+        await this.dataService.updateEvent(updatedEvent);
+      }
+    } catch (error) {
+      console.error('Failed to add attendee to event:', error);
+    }
+  }
+
+  private async removeAttendeeFromEvent(friendId: string, eventId: string): Promise<void> {
+    try {
+      const event = await this.dataService.getEvent(eventId);
+      if (!event) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      const updatedEvent = {
+        ...event,
+        attendees: event.attendees.filter(id => id !== friendId)
+      };
+      
+      await this.dataService.updateEvent(updatedEvent);
+    } catch (error) {
+      console.error('Failed to remove attendee from event:', error);
+    }
+  }
+
+  private async moveAttendeeBetweenEvents(friendId: string, sourceEventId: string, targetEventId: string): Promise<void> {
+    try {
+      // Remove from source event
+      const sourceEvent = await this.dataService.getEvent(sourceEventId);
+      if (sourceEvent) {
+        const updatedSourceEvent = {
+          ...sourceEvent,
+          attendees: sourceEvent.attendees.filter(id => id !== friendId)
+        };
+        await this.dataService.updateEvent(updatedSourceEvent);
+      }
+
+      // Add to target event
+      const targetEvent = await this.dataService.getEvent(targetEventId);
+      if (targetEvent && !targetEvent.attendees.includes(friendId)) {
+        const updatedTargetEvent = {
+          ...targetEvent,
+          attendees: [...targetEvent.attendees, friendId]
+        };
+        await this.dataService.updateEvent(updatedTargetEvent);
+      }
+    } catch (error) {
+      console.error('Failed to move attendee between events:', error);
     }
   }
 }

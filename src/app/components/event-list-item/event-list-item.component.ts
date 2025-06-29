@@ -63,19 +63,6 @@ export class EventListItemComponent {
     return this.selectedType === type;
   }
 
-  // Handle attendee list events - now using data service methods
-  onAttendeeAdded(data: { friend: Friend, targetEventId: string }): void {
-    this.dataService.addAttendeeToEvent(data.friend.id, data.targetEventId);
-  }
-
-  onAttendeeRemoved(data: { friend: Friend, sourceEventId: string }): void {
-    this.dataService.removeAttendeeFromEvent(data.friend.id, data.sourceEventId);
-  }
-
-  onAttendeeMoved(data: { friend: Friend, sourceEventId: string, targetEventId: string }): void {
-    this.dataService.moveAttendeeBetweenEvents(data.friend.id, data.sourceEventId, data.targetEventId);
-  }
-
   selectAttendee(attendee: Friend): void {
     // Find the corresponding node in the graph nodes
     const nodes = this.graphService.nodes();

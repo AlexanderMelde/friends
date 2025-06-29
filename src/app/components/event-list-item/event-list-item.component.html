@@ -22,9 +22,6 @@
       <!-- Use the new AttendeeListComponent -->
       <app-attendee-list
         [event]="event"
-        (attendeeAdded)="onAttendeeAdded($event)"
-        (attendeeRemoved)="onAttendeeRemoved($event)"
-        (attendeeMoved)="onAttendeeMoved($event)"
         (attendeeSelected)="selectAttendee($event)">
       </app-attendee-list>
     </div>
