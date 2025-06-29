@@ -93,7 +93,7 @@ export class EventEditDialogComponent {
     }
   }
 
-  private isMobileView(): boolean {
+  public isMobileView(): boolean {
     return window.innerWidth <= 800;
   }
 
