@@ -82,7 +82,7 @@ export class FriendDialogComponent {
     }
   }
 
-  public isMobileView(): boolean {
+  isMobileView(): boolean {
     return window.innerWidth <= 800;
   }
 
