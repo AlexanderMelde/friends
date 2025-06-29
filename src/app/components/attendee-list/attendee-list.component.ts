@@ -84,9 +84,8 @@ export class AttendeeListComponent {
   onCdkDragEnded(event: CdkDragEnd): void {
     const dragData = event.source.data;
     
-    // If the item was not dropped into a valid drop container, remove it from the source event
-    if (!event.dropPoint || !event.source.dropContainer) {
-      // Check if the drop point is outside the viewport or not over a valid drop zone
+    // Check if we were dragging an attendee and it wasn't dropped over a valid target
+    if (this.dragService.isDraggingAttendee() && !this.dragService.isOverValidDropTarget()) {
       const sourceEventId = dragData.sourceEventId;
       const friend = dragData.friend;
       
