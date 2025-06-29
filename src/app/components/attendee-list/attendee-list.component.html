@@ -1,0 +1,44 @@
+@if (attendees().length > 0) {
+  <div class="attendee-avatars" 
+       cdkDropList
+       [cdkDropListData]="event.id"
+       (cdkDropListDropped)="onCdkDropListDropped($event)"
+       [cdkDropListEnterPredicate]="canEnterDropList"
+       cdkDropListSortingDisabled>
+    
+    <!-- Regular attendee avatars -->
+    <ng-container *ngFor="let attendee of attendees()">
+      <img [src]="attendee.photoUrl" 
+           [alt]="attendee.name"
+           [title]="attendee.name"
+           class="attendee-avatar"
+           cdkDrag
+           [cdkDragData]="{ friend: attendee, sourceEventId: event.id }"
+           (cdkDragStarted)="onCdkDragStarted($event)"
+           (cdkDragEnded)="onCdkDragEnded($event)"
+           (click)="selectAttendee(attendee, $event)">
+      
+      <!-- Custom drag placeholder for attendee avatars -->
+      <div *cdkDragPlaceholder class="attendee-avatar-placeholder"></div>
+    </ng-container>
+    
+    <div class="drop-hint" *ngIf="showDropHint">
+      <mat-icon>{{ isDraggedFriendAlreadyAttendee() ? 'check' : 'person_add' }}</mat-icon>
+    </div>
+  </div>
+} @else {
+  <div class="attendee-avatars empty-dropzone" 
+       cdkDropList
+       [cdkDropListData]="event.id"
+       (cdkDropListDropped)="onCdkDropListDropped($event)"
+       [cdkDropListEnterPredicate]="canEnterDropList"
+       cdkDropListSortingDisabled>
+    <div class="empty-state" *ngIf="!showDropHint">
+      <mat-icon>people_outline</mat-icon>
+      <span>No attendees</span>
+    </div>
+    <div class="drop-hint" *ngIf="showDropHint">
+      <mat-icon>{{ isDraggedFriendAlreadyAttendee() ? 'check' : 'person_add' }}</mat-icon>
+    </div>
+  </div>
+}
