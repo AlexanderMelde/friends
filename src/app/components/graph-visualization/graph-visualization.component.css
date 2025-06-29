@@ -203,20 +203,27 @@ svg {
   .mobile-tabs {
     height: 50vh;
     min-height: 250px; /* Ensure tabs are visible on mobile */
+    bottom: env(safe-area-inset-bottom, 0px);
   }
   
   .network-controls.mobile-adjusted {
-    bottom: calc(50vh + 16px);
+    bottom: calc(50vh + 8px + env(safe-area-inset-bottom, 0px));
     right: 16px;
   }
 
+  .network-controls:not(.mobile-adjusted) {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .boltbadge.mobile-adjusted {
+    bottom: calc(50vh + 10px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .boltbadge:not(.mobile-adjusted) {
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
 
   /* Responsive adjustments */
-  .network-controls.mobile-adjusted {
-    bottom: calc(50vh + 8px);
-    right: 8px;
-  }
-  
   .zoom-controls {
     gap: 4px;
   }
@@ -231,10 +238,6 @@ svg {
   
   .empty-state {
     padding: 24px 12px;
-  }
-  
-  .boltbadge.mobile-adjusted {
-    bottom: calc(50vh + 10px);;
   }
 
   .boltbadge > img {
@@ -296,12 +299,12 @@ svg {
     }
     
     .network-controls.mobile-adjusted {
-      bottom: calc(40vh + 8px);
+      bottom: calc(40vh + 8px + env(safe-area-inset-bottom, 0px));
     }
 
-      .boltbadge.mobile-adjusted {
-        bottom: calc(40vh + 10px);;
-      }
+    .boltbadge.mobile-adjusted {
+      bottom: calc(40vh + 10px + env(safe-area-inset-bottom, 0px));
+    }
   }
 }
 
