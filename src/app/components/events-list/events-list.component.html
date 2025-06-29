@@ -1,8 +1,8 @@
 <div class="events-list">
-  <h3 class="section-title">
-    <mat-icon class="section-icon">event</mat-icon>
-    {{ title }}
-  </h3>
+  <app-section-header 
+    icon="event"
+    [title]="title">
+  </app-section-header>
   <div *ngFor="let event of events">
     <app-event-list-item 
       [event]="event" 

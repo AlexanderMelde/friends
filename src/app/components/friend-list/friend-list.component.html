@@ -12,8 +12,8 @@
 </ng-container>
 
 <ng-template #noFriends>
-  <div class="no-friends">
-    <mat-icon style="font-size: 48px; color: #ccc; margin-bottom: 16px;">people_outline</mat-icon>
-    <p>No friends to display</p>
-  </div>
+  <app-empty-state 
+    icon="people_outline"
+    title="No friends to display">
+  </app-empty-state>
 </ng-template>

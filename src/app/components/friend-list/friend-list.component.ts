@@ -7,6 +7,7 @@ import { Friend } from '../../models/friend.model';
 import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { FriendListItemComponent } from '../friend-list-item/friend-list-item.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 @Component({
   selector: 'app-friend-list',
@@ -16,7 +17,8 @@ import { FriendListItemComponent } from '../friend-list-item/friend-list-item.co
     MatIconModule, 
     MatButtonModule, 
     MatTooltipModule, 
-    FriendListItemComponent
+    FriendListItemComponent,
+    EmptyStateComponent
   ],
   templateUrl: './friend-list.component.html',
   styleUrls: ['./friend-list.component.css'],

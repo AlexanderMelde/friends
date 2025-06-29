@@ -55,11 +55,11 @@
           @if (selectedNode(); as node) {
             <app-friend-tooltip [friend]="node" class="mobile-tooltip"></app-friend-tooltip>
           } @else {
-            <div class="empty-state">
-              <mat-icon>person_outline</mat-icon>
-              <h3>No Friend Selected</h3>
-              <p>Tap on a friend in the graph to see their details</p>
-            </div>
+            <app-empty-state 
+              icon="person_outline"
+              title="No Friend Selected"
+              description="Tap on a friend in the graph to see their details">
+            </app-empty-state>
           }
         </div>
       </mat-tab>
@@ -70,11 +70,11 @@
           @if (selectedLink(); as link) {
             <app-event-details-card [link]="link" class="mobile-card"></app-event-details-card>
           } @else {
-            <div class="empty-state">
-              <mat-icon>link_off</mat-icon>
-              <h3>No Connection Selected</h3>
-              <p>Tap on a connection line between friends to see shared events</p>
-            </div>
+            <app-empty-state 
+              icon="link_off"
+              title="No Connection Selected"
+              description="Tap on a connection line between friends to see shared events">
+            </app-empty-state>
           }
         </div>
       </mat-tab>

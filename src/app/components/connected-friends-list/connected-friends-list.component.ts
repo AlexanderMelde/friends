@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SectionHeaderComponent } from '../section-header/section-header.component';
 
 interface ConnectedFriend {
   friend: Friend;
@@ -13,7 +14,7 @@ interface ConnectedFriend {
 @Component({
   selector: 'app-connected-friends-list',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatIconModule, MatTooltipModule, SectionHeaderComponent],
   templateUrl: './connected-friends-list.component.html',
   styleUrls: ['./connected-friends-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

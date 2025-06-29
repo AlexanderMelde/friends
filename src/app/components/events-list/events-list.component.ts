@@ -10,11 +10,12 @@ import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { NavigationService } from '../../services/navigation.service';
 import { GraphService } from '../../services/graph.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
+import { SectionHeaderComponent } from '../section-header/section-header.component';
 
 @Component({
   selector: 'app-events-list',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, EventListItemComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, EventListItemComponent, SectionHeaderComponent],
   templateUrl: './events-list.component.html',
   styleUrls: ['./events-list.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

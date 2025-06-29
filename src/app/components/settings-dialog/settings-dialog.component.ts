@@ -10,6 +10,7 @@ import { DataService } from '../../services/data.service';
 import { Friend } from '../../models/friend.model';
 import { Event as AppEvent } from '../../models/event.model';
 import { SAMPLE_DATA } from '../../services/sample-data';
+import { SectionHeaderComponent } from '../section-header/section-header.component';
 
 interface AppData {
   version: string;
@@ -27,7 +28,8 @@ interface AppData {
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatDividerModule
+    MatDividerModule,
+    SectionHeaderComponent
   ],
   templateUrl: './settings-dialog.component.html',
   styleUrls: ['./settings-dialog.component.css'],

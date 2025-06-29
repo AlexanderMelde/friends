@@ -1,8 +1,8 @@
 <div class="connected-friends">
-  <h3 class="section-title">
-    <mat-icon class="section-icon">people</mat-icon>
-    Connected Friends
-  </h3>
+  <app-section-header 
+    icon="people"
+    title="Connected Friends">
+  </app-section-header>
   <div class="friends-list">
     <div *ngFor="let connection of connectedFriends" 
          class="friend-item" 

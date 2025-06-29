@@ -118,11 +118,11 @@
     </ng-container>
     
     <ng-template #noEvents>
-      <div class="no-events">
-        <mat-icon style="font-size: 48px; color: #ccc; margin-bottom: 16px;">event_busy</mat-icon>
-        <p>No events to display</p>
-        <p *ngIf="hasActiveFilters()" class="filter-hint">Try adjusting your filters</p>
-      </div>
+      <app-empty-state 
+        icon="event_busy"
+        title="No events to display"
+        [description]="hasActiveFilters() ? 'Try adjusting your filters' : undefined">
+      </app-empty-state>
     </ng-template>
   </div>
 </div>

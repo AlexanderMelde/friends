@@ -13,6 +13,7 @@ import { GraphService } from '../../services/graph.service';
 import { UiStateService } from '../../services/ui-state.service';
 import { FriendTooltipComponent } from '../friend-tooltip/friend-tooltip.component';
 import { EventDetailsCardComponent } from '../event-details-card/event-details-card.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 @Component({
   selector: 'app-graph-visualization',
@@ -26,7 +27,8 @@ import { EventDetailsCardComponent } from '../event-details-card/event-details-c
     MatTabsModule,
     MatTooltipModule,
     FriendTooltipComponent,
-    EventDetailsCardComponent
+    EventDetailsCardComponent,
+    EmptyStateComponent
   ],
   templateUrl: './graph-visualization.component.html',
   styleUrls: ['./graph-visualization.component.css'],
