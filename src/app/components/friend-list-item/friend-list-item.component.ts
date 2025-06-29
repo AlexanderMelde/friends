@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +12,8 @@ import { DragService } from '../../services/drag.service';
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, DragDropModule],
   templateUrl: './friend-list-item.component.html',
-  styleUrls: ['./friend-list-item.component.css']
+  styleUrls: ['./friend-list-item.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FriendListItemComponent {
   @Input() friend!: Friend & { eventCount: number };
