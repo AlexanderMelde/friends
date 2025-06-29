@@ -1,4 +1,4 @@
-import { Component, Inject, computed } from '@angular/core';
+import { Component, Inject, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Friend } from '../../models/friend.model';
 import { Event } from '../../models/event.model';
+import { UiStateService } from '../../services/ui-state.service';
 import { HeaderAction } from '../app-header-bar/app-header-bar.component';
 
 @Component({
@@ -35,6 +36,8 @@ export class FriendDialogComponent {
   selectedEvents: string[] = [];
   isEdit: boolean;
 
+  private uiStateService = inject(UiStateService);
+
   get isValid(): boolean {
     return !!(this.friend.name && this.friend.photoUrl);
   }
@@ -42,7 +45,7 @@ export class FriendDialogComponent {
   // Computed property for header actions (mobile only)
   readonly headerActions = computed((): HeaderAction[] => {
     // Only show save action on mobile
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       return [
         {
           icon: 'save',
@@ -75,10 +78,6 @@ export class FriendDialogComponent {
         joinDate: new Date()
       };
     }
-  }
-
-  isMobileView(): boolean {
-    return window.innerWidth <= 800;
   }
 
   onKeyDown(event: KeyboardEvent): void {

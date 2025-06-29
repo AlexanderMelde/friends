@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatExpansionModule
   ],
   templateUrl: './help-dialog.component.html',
-  styleUrls: ['./help-dialog.component.css']
+  styleUrls: ['./help-dialog.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HelpDialogComponent {
   // Component logic can be added here if needed

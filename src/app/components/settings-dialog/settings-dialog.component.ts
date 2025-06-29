@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -30,7 +30,8 @@ interface AppData {
     MatDividerModule
   ],
   templateUrl: './settings-dialog.component.html',
-  styleUrls: ['./settings-dialog.component.css']
+  styleUrls: ['./settings-dialog.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsDialogComponent {
   isExporting = false;

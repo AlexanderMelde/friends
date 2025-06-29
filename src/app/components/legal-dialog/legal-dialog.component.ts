@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatTabsModule
   ],
   templateUrl: './legal-dialog.component.html',
-  styleUrls: ['./legal-dialog.component.css']
+  styleUrls: ['./legal-dialog.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LegalDialogComponent {
   // Component logic can be added here if needed

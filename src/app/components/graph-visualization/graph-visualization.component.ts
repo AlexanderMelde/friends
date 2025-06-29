@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit, signal, inject } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,8 @@ import { EventDetailsCardComponent } from '../event-details-card/event-details-c
     EventDetailsCardComponent
   ],
   templateUrl: './graph-visualization.component.html',
-  styleUrls: ['./graph-visualization.component.css']
+  styleUrls: ['./graph-visualization.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('graphContainer', { static: true }) graphContainer!: ElementRef;

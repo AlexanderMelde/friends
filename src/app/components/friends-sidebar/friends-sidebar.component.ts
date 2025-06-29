@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +26,8 @@ import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-heade
     AppHeaderBarComponent
   ],
   templateUrl: './friends-sidebar.component.html',
-  styleUrls: ['./friends-sidebar.component.css']
+  styleUrls: ['./friends-sidebar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FriendsSidebarComponent {
   @Input() isOpen: boolean = false;

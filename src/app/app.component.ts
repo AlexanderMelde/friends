@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,7 +43,8 @@ import { Event } from './models/event.model';
     FriendsSidebarComponent
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   title = 'Friends!';
@@ -72,6 +73,24 @@ export class AppComponent {
     if (!event.relatedTarget) {
       this.dragService.endDrag();
     }
+  }
+
+  // Handle window resize to close overlays when switching to desktop
+  @HostListener('window:resize', ['$event'])
+  onWindowResize(event: any) {
+    // This is now handled by UiStateService
+  }
+
+  // Handle escape key to close overlays
+  @HostListener('document:keydown.escape', ['$event'])
+  onEscapeKey(event: KeyboardEvent) {
+    // This is now handled by UiStateService
+  }
+
+  // Prevent body scroll when overlay is active
+  @HostListener('document:touchmove', ['$event'])
+  onTouchMove(event: TouchEvent) {
+    // This is now handled by UiStateService
   }
 
   toggleCalendarSidebar(): void {

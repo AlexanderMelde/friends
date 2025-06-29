@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, inject, effect, signal, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, effect, signal, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -71,7 +71,8 @@ interface EventTypeOption {
       transition('in => out', animate('300ms ease-in-out')),
       transition('out => in', animate('300ms ease-in-out'))
     ])
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CalendarSidebarComponent {
   @Input() isOpen: boolean = false;
@@ -84,7 +85,7 @@ export class CalendarSidebarComponent {
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
   private navigationService = inject(NavigationService);
-  uiStateService = inject(UiStateService);
+  readonly uiStateService = inject(UiStateService);
 
   selectedType: string = '';
   // Convert year filter values to signals so they're reactive
