@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector, signal, computed, effect } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector, signal, computed, effect, runInInjectionContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -193,12 +193,14 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
       // Set up reactive monitoring of child component's header actions
       if (this.componentRef.instance && this.componentRef.instance.headerActions) {
         // Create an effect to watch for changes in the child component's header actions
-        effect(() => {
-          if (this.componentRef?.instance?.headerActions) {
-            const childActions = this.componentRef.instance.headerActions();
-            this._childHeaderActions.set(childActions);
-          }
-        }, { allowSignalWrites: true });
+        runInInjectionContext(this.injector, () => {
+          effect(() => {
+            if (this.componentRef?.instance?.headerActions) {
+              const childActions = this.componentRef.instance.headerActions();
+              this._childHeaderActions.set(childActions);
+            }
+          }, { allowSignalWrites: true });
+        });
       }
 
       // Trigger change detection
