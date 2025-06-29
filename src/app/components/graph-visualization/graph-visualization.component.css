@@ -209,6 +209,7 @@ svg {
   .network-controls.mobile-adjusted {
     bottom: calc(50vh + 8px + env(safe-area-inset-bottom, 0px));
     right: 16px;
+    background: red;
   }
 
   .network-controls:not(.mobile-adjusted) {
