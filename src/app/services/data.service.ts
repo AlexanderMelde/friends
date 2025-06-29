@@ -46,10 +46,28 @@ export class DataService {
     this.initDatabase();
   }
 
-  private ensureDate(value: any): Date | undefined {
+  private ensureDate(value: any): Date {
+    if (!value) return new Date();
+    if (value instanceof Date) return value;
+    if (typeof value === 'string') {
+      const date = new Date(value);
+      return isNaN(date.getTime()) ? new Date() : date;
+    }
+    if (typeof value === 'number') {
+      const date = new Date(value);
+      return isNaN(date.getTime()) ? new Date() : date;
+    }
+    return new Date();
+  }
+
+  private ensureDateOptional(value: any): Date | undefined {
     if (!value) return undefined;
     if (value instanceof Date) return value;
     if (typeof value === 'string') {
+      const date = new Date(value);
+      return isNaN(date.getTime()) ? undefined : date;
+    }
+    if (typeof value === 'number') {
       const date = new Date(value);
       return isNaN(date.getTime()) ? undefined : date;
     }
@@ -59,14 +77,15 @@ export class DataService {
   private normalizeFriend(friend: any): Friend {
     return {
       ...friend,
-      joinDate: this.ensureDate(friend.joinDate)
+      joinDate: this.ensureDateOptional(friend.joinDate)
     };
   }
 
   private normalizeEvent(event: any): Event {
     return {
       ...event,
-      date: this.ensureDate(event.date)
+      date: this.ensureDate(event.date),
+      attendees: Array.isArray(event.attendees) ? event.attendees : []
     };
   }
 
@@ -193,7 +212,19 @@ export class DataService {
 
   async addEvent(event: Event): Promise<void> {
     try {
-      const normalizedEvent = this.normalizeEvent(event);
+      // Ensure the event has a valid structure before saving
+      const normalizedEvent = this.normalizeEvent({
+        ...event,
+        id: event.id || crypto.randomUUID(),
+        title: event.title || '',
+        location: event.location || '',
+        description: event.description || '',
+        type: event.type || '',
+        attendees: event.attendees || []
+      });
+
+      console.log('Adding event to database:', normalizedEvent);
+      
       await this.db.events.add(normalizedEvent);
 
       // Update signals
@@ -203,9 +234,30 @@ export class DataService {
       setTimeout(() => {
         localStorage.setItem('events', JSON.stringify(this.events()));
       }, 0);
+
+      console.log('Event added successfully');
     } catch (error) {
       console.error('Failed to add event:', error);
-      await this.loadAllData(); // Rollback to consistent state
+      
+      // If database fails, at least update the signals and localStorage
+      try {
+        const normalizedEvent = this.normalizeEvent({
+          ...event,
+          id: event.id || crypto.randomUUID(),
+          title: event.title || '',
+          location: event.location || '',
+          description: event.description || '',
+          type: event.type || '',
+          attendees: event.attendees || []
+        });
+
+        this.eventsSignal.update(events => [...events, normalizedEvent]);
+        localStorage.setItem('events', JSON.stringify(this.events()));
+        console.log('Event saved to localStorage as fallback');
+      } catch (fallbackError) {
+        console.error('Failed to save event even to localStorage:', fallbackError);
+        throw fallbackError;
+      }
     }
   }
 
