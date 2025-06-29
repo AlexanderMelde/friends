@@ -78,7 +78,7 @@ export class AttendeeListComponent {
    * 2. The dragged attendee is this specific attendee
    * 3. We're not over a valid drop target (meaning it will be removed)
    */
-  isDraggingAttendeeForRemoval(attendee: { id: string }): boolean {
+  public isDraggingAttendeeForRemoval(attendee: { id: string }): boolean {
     const isDraggingAttendee = this.dragService.isDraggingAttendee();
     const isOverValidTarget = this.dragService.isOverValidDropTarget();
     const draggedFriend = this.dragService.draggedFriend();
