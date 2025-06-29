@@ -79,7 +79,9 @@ export class AppComponent {
   onCdkDropListEntered(event: any): void {
     // Only update if we're dragging an attendee
     if (this.dragService.isDraggingAttendee()) {
-      this.dragService.setOverValidDropTarget(true);
+      const dropListData = event.container.data;
+      const dragSourceEventId = this.dragService.dragSourceEventId();
+      this.dragService.setDropListState(dropListData, dragSourceEventId, true);
     }
   }
 
@@ -87,7 +89,9 @@ export class AppComponent {
   onCdkDropListExited(event: any): void {
     // Only update if we're dragging an attendee
     if (this.dragService.isDraggingAttendee()) {
-      this.dragService.setOverValidDropTarget(false);
+      const dropListData = event.container.data;
+      const dragSourceEventId = this.dragService.dragSourceEventId();
+      this.dragService.setDropListState(dropListData, dragSourceEventId, false);
     }
   }
 
