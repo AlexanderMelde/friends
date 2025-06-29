@@ -77,13 +77,20 @@ export class AttendeeListComponent {
    * 1. We're dragging an attendee (not a friend from the friends list)
    * 2. The dragged attendee is this specific attendee
    * 3. We're not over a valid drop target (meaning it will be removed)
+   * 4. The current event is the source event where the drag started
    */
   public isDraggingAttendeeForRemoval(attendee: { id: string }): boolean {
     const isDraggingAttendee = this.dragService.isDraggingAttendee();
     const isOverValidTarget = this.dragService.isOverValidDropTarget();
     const draggedFriend = this.dragService.draggedFriend();
+    const dragSourceEventId = this.dragService.dragSourceEventId();
     
     if (!isDraggingAttendee || isOverValidTarget || !draggedFriend) {
+      return false;
+    }
+    
+    // Only show trash bin in the source event where the drag started
+    if (dragSourceEventId !== this.event.id) {
       return false;
     }
     
@@ -99,7 +106,8 @@ export class AttendeeListComponent {
 
   onCdkDragStarted(event: CdkDragStart): void {
     const dragData = event.source.data;
-    this.dragService.startDrag(dragData.friend, 'attendee');
+    // Pass the source event ID when starting the drag
+    this.dragService.startDrag(dragData.friend, 'attendee', this.event.id);
   }
 
   onCdkDragEnded(event: CdkDragEnd): void {
