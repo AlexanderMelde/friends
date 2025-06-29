@@ -56,6 +56,11 @@ export class AttendeeListComponent {
     
     // If dragging an attendee from another event
     if (dragData.friend && dragData.sourceEventId) {
+      // Allow dropping on same event (this prevents removal)
+      if (dragData.sourceEventId === targetEventId) {
+        return true;
+      }
+      
       // Don't allow if it's the same event or friend is already an attendee
       return dragData.sourceEventId !== targetEventId && 
              !this.event.attendees.includes(dragData.friend.id);
@@ -122,6 +127,7 @@ export class AttendeeListComponent {
       
       // Only remove if we're not dropping back on the same list
       // If currentDropListId is null, it means we're dropping outside any drop list
+      // If currentDropListId equals sourceEventId, it means we dropped on the same list
       if (sourceEventId && friend && currentDropListId !== sourceEventId) {
         this.dataService.removeAttendeeFromEvent(friend.id, sourceEventId);
       }
