@@ -1,9 +1,10 @@
 <div class="friend-item" 
      [class.compact-view]="compactView"
      (click)="selectFriend($event)"
-     draggable="true"
-     (dragstart)="onDragStart($event)"
-     (dragend)="onDragEnd($event)">
+     cdkDrag
+     [cdkDragData]="friend"
+     (cdkDragStarted)="onCdkDragStarted()"
+     (cdkDragEnded)="onCdkDragEnded()">
   <img [src]="friend.photoUrl" 
        [alt]="friend.name" 
        class="friend-avatar"

@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Friend } from '../../models/friend.model';
 import { DragService } from '../../services/drag.service';
 
 @Component({
   selector: 'app-friend-list-item',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, DragDropModule],
   templateUrl: './friend-list-item.component.html',
   styleUrls: ['./friend-list-item.component.css']
 })
@@ -32,29 +33,11 @@ export class FriendListItemComponent {
     this.editFriendRequested.emit(this.friend);
   }
 
-  onDragStart(event: DragEvent): void {
-    if (event.dataTransfer) {
-      // Set the friend data as JSON string
-      event.dataTransfer.setData('application/json', JSON.stringify(this.friend));
-      event.dataTransfer.effectAllowed = 'copy';
-      
-      // Find the avatar image element within the friend item and use it as the drag image
-      const friendItem = event.currentTarget as HTMLElement;
-      const avatarImg = friendItem.querySelector('.friend-avatar') as HTMLImageElement;
-      if (avatarImg) {
-        // Use the existing avatar image as the drag image
-        event.dataTransfer.setDragImage(avatarImg, 24, 24);
-      }
-      
-      // Use setTimeout to ensure drag image is set before starting drag service
-      setTimeout(() => {
-        this.dragService.startDrag(this.friend, 'friend');
-      }, 0);
-    }
+  onCdkDragStarted(): void {
+    this.dragService.startDrag(this.friend, 'friend');
   }
 
-  onDragEnd(event: DragEvent): void {
-    // Notify drag service that dragging has ended
+  onCdkDragEnded(): void {
     this.dragService.endDrag();
   }
 }

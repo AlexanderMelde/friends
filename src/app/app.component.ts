@@ -8,6 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { GraphVisualizationComponent } from './components/graph-visualization/graph-visualization.component';
 import { CalendarSidebarComponent } from './components/calendar-sidebar/calendar-sidebar.component';
 import { FriendsSidebarComponent } from './components/friends-sidebar/friends-sidebar.component';
@@ -35,6 +36,7 @@ import { Event } from './models/event.model';
     MatSnackBarModule,
     MatMenuModule,
     MatDividerModule,
+    DragDropModule,
     GraphVisualizationComponent,
     CalendarSidebarComponent,
     FriendsSidebarComponent
@@ -59,9 +61,7 @@ export class AppComponent {
   private readonly FRIENDS_SIDEBAR_ID = 'friends-sidebar';
 
   constructor() {
-    // Add global drop event listener to handle drops outside of valid zones
-    document.addEventListener('drop', this.onGlobalDrop.bind(this));
-    document.addEventListener('dragover', this.onGlobalDragOver.bind(this));
+    // CDK drag and drop handles all drag events, so we don't need global listeners
   }
 
   // Check if mobile overlay should be active
@@ -366,52 +366,5 @@ export class AppComponent {
         }
       });
     }
-  }
-
-  onDocumentDragLeave(event: DragEvent): void {
-    // Only handle attendee drags
-    if (this.dragService.dragType() === 'attendee') {
-      // Check if we're leaving the document boundaries
-      const rect = document.documentElement.getBoundingClientRect();
-      const x = event.clientX;
-      const y = event.clientY;
-      
-      if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
-        this.dragService.setDropTarget(null);
-      }
-    }
-  }
-
-  private onGlobalDragOver(event: DragEvent): void {
-    // Prevent default to allow drop
-    event.preventDefault();
-  }
-
-  private onGlobalDrop(event: DragEvent): void {
-    // Only handle attendee drags
-    if (this.dragService.dragType() === 'attendee') {
-      const draggedFriend = this.dragService.draggedFriend();
-      const draggedFromEventId = this.dragService.draggedFromEventId();
-      const currentDropTarget = this.dragService.currentDropTarget();
-
-      // If no drop target was set, this means the drop happened outside any valid zone
-      if (!currentDropTarget && draggedFriend && draggedFromEventId) {
-        // Find the source event and remove the attendee
-        const sourceEvent = this.dataService.events().find(e => e.id === draggedFromEventId);
-        if (sourceEvent) {
-          const updatedEvent: Event = {
-            ...sourceEvent,
-            attendees: sourceEvent.attendees.filter(id => id !== draggedFriend.id)
-          };
-          this.dataService.updateEvent(updatedEvent);
-        }
-      }
-    }
-
-    // End the drag operation to clean up state
-    this.dragService.endDrag();
-
-    // Prevent default behavior
-    event.preventDefault();
   }
 }

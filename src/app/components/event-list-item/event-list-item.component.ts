@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, effect, computed, inject } from
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList, CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Event } from '../../models/event.model';
 import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
@@ -11,7 +12,7 @@ import { DragService } from '../../services/drag.service';
 @Component({
   selector: 'app-event-list-item',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, DragDropModule],
   templateUrl: './event-list-item.component.html',
   styleUrls: ['./event-list-item.component.css']
 })
@@ -21,13 +22,7 @@ export class EventListItemComponent {
   @Output() editEventClicked = new EventEmitter<Event>();
   
   selectedType: string = '';
-  isDragOver: boolean = false;
-  
-  // Touch handling state
-  private touchStartTime: number = 0;
-  private touchMoved: boolean = false;
-  private longPressTimer: any = null;
-  private isDraggingTouch: boolean = false;
+  showDropHint: boolean = false;
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
@@ -46,20 +41,32 @@ export class EventListItemComponent {
   isDraggedFriendAlreadyAttendee = computed(() => {
     const draggedFriend = this.dragService.draggedFriend();
     if (!draggedFriend) return false;
-    return this.event.attendees.includes(draggedFriend.id);
+    
+    // Handle both friend objects and attendee drag data
+    const friendId = draggedFriend.id || draggedFriend.friend?.id;
+    return this.event.attendees.includes(friendId);
   });
 
-  // Computed property to check if this event is the source of the drag
-  isDragSource = computed(() => {
-    const draggedFromEventId = this.dragService.draggedFromEventId();
-    return draggedFromEventId === this.event.id;
-  });
-
-  // Computed property to get the drag action for this event
-  dragAction = computed(() => {
-    if (!this.isDragSource()) return 'none';
-    return this.dragService.getDropAction();
-  });
+  // Predicate function to determine if a dragged item can be dropped into this list
+  canEnterDropList = (drag: CdkDrag, drop: CdkDropList): boolean => {
+    const dragData = drag.data;
+    const targetEventId = drop.data;
+    
+    // If dragging a friend from friends list
+    if (dragData.id) {
+      // Don't allow if friend is already an attendee
+      return !this.event.attendees.includes(dragData.id);
+    }
+    
+    // If dragging an attendee from another event
+    if (dragData.friend && dragData.sourceEventId) {
+      // Don't allow if it's the same event or friend is already an attendee
+      return dragData.sourceEventId !== targetEventId && 
+             !this.event.attendees.includes(dragData.friend.id);
+    }
+    
+    return false;
+  };
 
   constructor() {
     // Use effect to react to filter signal changes
@@ -67,13 +74,10 @@ export class EventListItemComponent {
       this.selectedType = this.graphService.filter();
     });
 
-    // Effect to clear local drag state when dragging ends
+    // Effect to show/hide drop hint based on drag state
     effect(() => {
       const isDragging = this.isDragging();
-      if (!isDragging) {
-        // Clear local drag over state when dragging ends
-        this.isDragOver = false;
-      }
+      this.showDropHint = isDragging;
     });
   }
 
@@ -119,236 +123,77 @@ export class EventListItemComponent {
     return this.selectedType === type;
   }
 
-  onDragOver(event: DragEvent): void {
-    // Only handle if dragging is active
-    if (!this.isDragging()) return;
-    
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragOver = true;
-    
-    // Update drop target in drag service
-    this.dragService.setDropTarget(this.event.id);
+  onCdkDragStarted(event: CdkDragStart): void {
+    const dragData = event.source.data;
+    this.dragService.startDrag(dragData.friend, 'attendee');
   }
 
-  onDragLeave(event: DragEvent): void {
-    // Only handle if dragging is active
-    if (!this.isDragging()) return;
+  onCdkDragEnded(event: CdkDragEnd): void {
+    const dragData = event.source.data;
     
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Check if we're actually leaving this element (not just moving to a child)
-    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-    const x = event.clientX;
-    const y = event.clientY;
-    
-    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-      this.isDragOver = false;
-      // Clear drop target if leaving this event
-      this.dragService.setDropTarget(null);
-    }
-  }
-
-  onDrop(event: DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    this.isDragOver = false;
-
-    // Clear drop target
-    this.dragService.setDropTarget(null);
-
-    const friendData = event.dataTransfer?.getData('application/json');
-    if (friendData) {
-      try {
-        const friend: Friend = JSON.parse(friendData);
-        
-        // Check if friend is already an attendee
-        if (!this.event.attendees.includes(friend.id)) {
-          // Update the event to include the new attendee
+    // If the item was not dropped into a valid drop container, remove it from the source event
+    if (!event.dropPoint || !event.source.dropContainer) {
+      // Check if the drop point is outside the viewport or not over a valid drop zone
+      const sourceEventId = dragData.sourceEventId;
+      const friendId = dragData.friend.id;
+      
+      if (sourceEventId) {
+        const sourceEvent = this.dataService.events().find(e => e.id === sourceEventId);
+        if (sourceEvent) {
           const updatedEvent: Event = {
-            ...this.event,
-            attendees: [...this.event.attendees, friend.id]
+            ...sourceEvent,
+            attendees: sourceEvent.attendees.filter(id => id !== friendId)
           };
-          
-          // Update the event in the data service
           this.dataService.updateEvent(updatedEvent);
         }
-      } catch (error) {
-        console.error('Error parsing dropped friend data:', error);
       }
     }
-
-    // Handle attendee being moved from another event
-    const attendeeData = event.dataTransfer?.getData('application/attendee');
-    if (attendeeData) {
-      try {
-        const { friend, sourceEventId } = JSON.parse(attendeeData);
-        
-        // Only proceed if this is a different event
-        if (sourceEventId !== this.event.id) {
-          // Remove from source event
-          const sourceEvent = this.dataService.events().find(e => e.id === sourceEventId);
-          if (sourceEvent) {
-            const updatedSourceEvent: Event = {
-              ...sourceEvent,
-              attendees: sourceEvent.attendees.filter(id => id !== friend.id)
-            };
-            this.dataService.updateEvent(updatedSourceEvent);
-          }
-
-          // Add to this event if not already present
-          if (!this.event.attendees.includes(friend.id)) {
-            const updatedEvent: Event = {
-              ...this.event,
-              attendees: [...this.event.attendees, friend.id]
-            };
-            this.dataService.updateEvent(updatedEvent);
-          }
-        }
-      } catch (error) {
-        console.error('Error parsing dropped attendee data:', error);
-      }
-    }
-
-    // End the drag operation here - this is where the drag completes successfully
+    
     this.dragService.endDrag();
   }
 
-  onAttendeeDragStart(event: DragEvent, attendee: Friend): void {
-    event.stopPropagation();
+  onCdkDropListDropped(event: CdkDragDrop<any, any, any>): void {
+    const draggedItem = event.item.data;
+    const targetEventId = event.container.data;
     
-    if (event.dataTransfer) {
-      // Set attendee data with source event information
-      const attendeeData = {
-        friend: attendee,
-        sourceEventId: this.event.id
-      };
-      
-      event.dataTransfer.setData('application/attendee', JSON.stringify(attendeeData));
-      event.dataTransfer.effectAllowed = 'move';
-      
-      // Find the avatar image element and use it as the drag image
-      const avatarImg = (event.target as HTMLElement).closest('.attendee-avatar') as HTMLImageElement;
-      if (avatarImg) {
-        // Use the existing avatar image as the drag image
-        event.dataTransfer.setDragImage(avatarImg, 12, 12); // Center the 24px image
+    // If dragging a friend from friends list
+    if (draggedItem.id) {
+      // Check if friend is not already an attendee
+      if (!this.event.attendees.includes(draggedItem.id)) {
+        const updatedEvent: Event = {
+          ...this.event,
+          attendees: [...this.event.attendees, draggedItem.id]
+        };
+        this.dataService.updateEvent(updatedEvent);
       }
+    }
+    
+    // If dragging an attendee from another event
+    if (draggedItem.friend && draggedItem.sourceEventId) {
+      const sourceEventId = draggedItem.sourceEventId;
+      const friendId = draggedItem.friend.id;
       
-      // Use setTimeout to delay the drag service notification slightly
-      // This ensures the drag operation starts properly before we hide the avatar
-      setTimeout(() => {
-        this.dragService.startDrag(attendee, 'attendee', this.event.id);
-      }, 0);
-    }
-  }
+      // Only proceed if it's a different event
+      if (sourceEventId !== targetEventId) {
+        // Remove from source event
+        const sourceEvent = this.dataService.events().find(e => e.id === sourceEventId);
+        if (sourceEvent) {
+          const updatedSourceEvent: Event = {
+            ...sourceEvent,
+            attendees: sourceEvent.attendees.filter(id => id !== friendId)
+          };
+          this.dataService.updateEvent(updatedSourceEvent);
+        }
 
-  onAttendeeDragEnd(event: DragEvent): void {
-    // The global drop handler in AppComponent will handle removal if needed
-    // Just notify drag service that dragging has ended
-    this.dragService.endDrag();
-  }
-
-  // Touch event handlers for attendee avatars
-  onAttendeeTouchStart(event: TouchEvent, attendee: Friend): void {
-    // Prevent context menu and other default behaviors
-    event.preventDefault();
-    event.stopPropagation();
-    
-    this.touchStartTime = Date.now();
-    this.touchMoved = false;
-    this.isDraggingTouch = false;
-    
-    // Clear any existing timer
-    if (this.longPressTimer) {
-      clearTimeout(this.longPressTimer);
-    }
-    
-    // Set up long press timer for drag initiation
-    this.longPressTimer = setTimeout(() => {
-      if (!this.touchMoved) {
-        this.startTouchDrag(attendee);
-      }
-    }, 500); // 500ms for long press
-  }
-
-  onAttendeeTouchMove(event: TouchEvent): void {
-    // Prevent default behaviors
-    event.preventDefault();
-    event.stopPropagation();
-    
-    this.touchMoved = true;
-    
-    // Clear long press timer if user moves
-    if (this.longPressTimer) {
-      clearTimeout(this.longPressTimer);
-      this.longPressTimer = null;
-    }
-    
-    // Handle drag move if we're in drag mode
-    if (this.isDraggingTouch) {
-      // Handle touch drag move logic here if needed
-      // For now, we'll rely on the existing drag service
-    }
-  }
-
-  onAttendeeTouchEnd(event: TouchEvent): void {
-    // Prevent default behaviors including context menu
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Clear long press timer
-    if (this.longPressTimer) {
-      clearTimeout(this.longPressTimer);
-      this.longPressTimer = null;
-    }
-    
-    const touchDuration = Date.now() - this.touchStartTime;
-    
-    // If it was a quick tap and no movement, treat as click
-    if (!this.touchMoved && touchDuration < 300 && !this.isDraggingTouch) {
-      // Handle as click - find the attendee from the event target
-      const target = event.target as HTMLElement;
-      const avatarElement = target.closest('.attendee-avatar') as HTMLImageElement;
-      if (avatarElement) {
-        const attendeeName = avatarElement.alt;
-        const attendee = this.attendees().find(a => a.name === attendeeName);
-        if (attendee) {
-          this.selectAttendee(attendee, event as any);
+        // Add to target event if not already present
+        if (!this.event.attendees.includes(friendId)) {
+          const updatedEvent: Event = {
+            ...this.event,
+            attendees: [...this.event.attendees, friendId]
+          };
+          this.dataService.updateEvent(updatedEvent);
         }
       }
-    }
-    
-    // End touch drag if active
-    if (this.isDraggingTouch) {
-      this.endTouchDrag();
-    }
-    
-    this.isDraggingTouch = false;
-  }
-
-  onAttendeeContextMenu(event: MouseEvent): void {
-    // Always prevent context menu on attendee avatars
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  private startTouchDrag(attendee: Friend): void {
-    this.isDraggingTouch = true;
-    
-    // Start drag operation
-    this.dragService.startDrag(attendee, 'attendee', this.event.id);
-    
-    // Add visual feedback or haptic feedback if available
-    if ('vibrate' in navigator) {
-      navigator.vibrate(50);
-    }
-  }
-
-  private endTouchDrag(): void {
-    if (this.isDraggingTouch) {
-      this.dragService.endDrag();
-      this.isDraggingTouch = false;
     }
   }
 }

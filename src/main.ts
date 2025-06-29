@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AppComponent } from './app/app.component';
 
 bootstrapApplication(AppComponent, {
@@ -28,7 +29,8 @@ bootstrapApplication(AppComponent, {
       MatMenuModule,
       MatDividerModule,
       MatTabsModule,
-      MatExpansionModule
+      MatExpansionModule,
+      DragDropModule
     )
   ]
 }).catch(err => console.error(err));
