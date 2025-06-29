@@ -6,6 +6,7 @@ html, body {
   min-height: -webkit-fill-available; /* Fallback for WebKit browsers */
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
 }
 
 * {
