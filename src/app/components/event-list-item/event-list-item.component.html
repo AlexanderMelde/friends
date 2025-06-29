@@ -19,10 +19,9 @@
         {{ event.type }}
       </div>
       
-      <!-- Use the new AttendeeListComponent -->
+      <!-- Use the AttendeeListComponent without the erroneous event binding -->
       <app-attendee-list
-        [event]="event"
-        (attendeeSelected)="selectAttendee($event)">
+        [event]="event">
       </app-attendee-list>
     </div>
   </div>
