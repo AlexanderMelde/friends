@@ -55,11 +55,16 @@ export class FriendDialogComponent {
   });
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) data: { friend?: Friend; events: Event[]; isEdit: boolean },
+    @Inject(MAT_DIALOG_DATA) data: { friend?: Friend; events: Event[]; isEdit: boolean; headerActions?: HeaderAction[] },
     private dialogRef: MatDialogRef<FriendDialogComponent>
   ) {
     this.isEdit = data.isEdit;
     this.availableEvents = data.events;
+    
+    // Merge header actions if provided (for mobile)
+    if (data.headerActions) {
+      // The header actions will be handled by the computed property
+    }
     
     if (data.friend) {
       this.friend = { ...data.friend };

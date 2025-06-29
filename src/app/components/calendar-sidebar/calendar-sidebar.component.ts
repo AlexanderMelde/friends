@@ -358,7 +358,7 @@ export class CalendarSidebarComponent {
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
-        closeCallback: (result?: any) => dialogRef.close(result)
+        closeCallback: () => dialogRef.close()
       });
       
       dialogRef.afterClosed().subscribe(result => {

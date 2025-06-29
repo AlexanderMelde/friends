@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 export interface NavigationState {
   id: string;
   type: 'dialog' | 'sidebar' | 'overlay';
-  closeCallback: (result?: any) => void;
+  closeCallback: () => void;
 }
 
 @Injectable({
@@ -42,7 +42,7 @@ export class NavigationService {
     this.location.go(this.location.path(), '', { navigationId: state.id });
   }
 
-  closeItem(id: string, result?: any): void {
+  closeItem(id: string): void {
     const stack = this.navigationStack();
     const itemIndex = stack.findIndex(item => item.id === id);
     
@@ -61,8 +61,8 @@ export class NavigationService {
       this.location.back();
     }
     
-    // Call the close callback with the result
-    item.closeCallback(result);
+    // Call the close callback
+    item.closeCallback();
     
     // Reset the flag after a short delay
     setTimeout(() => {
