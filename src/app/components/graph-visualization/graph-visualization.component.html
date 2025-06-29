@@ -1,18 +1,18 @@
 <div class="graph-container" #graphContainer>
-  <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer"  class="boltbadge" [class.mobile-adjusted]="isMobileView() && showMobileTabs()">
+  <a href="https://bolt.new/" target="_blank" rel="noopener noreferrer"  class="boltbadge" [class.mobile-adjusted]="uiStateService.isMobileView() && showMobileTabs()">
     <img src="assets/black_circle_360x360.png" alt="Built with Bolt.new badge" />
   </a>
   
   <!-- Graph visualization area -->
   <div class="graph-area" 
-       [class.mobile-reduced]="isMobileView() && showMobileTabs()"  
+       [class.mobile-reduced]="uiStateService.isMobileView() && showMobileTabs()"  
        (click)="graphService.selectNode(null); graphService.selectLink(null)">
     <!-- D3 will attach the SVG graph here -->
   </div>
 
   <!-- Controls overlay -->
   <div class="network-controls" 
-       [class.mobile-adjusted]="isMobileView() && showMobileTabs()">
+       [class.mobile-adjusted]="uiStateService.isMobileView() && showMobileTabs()">
     <div class="zoom-controls">
       <button mat-mini-fab color="primary" (click)="zoomIn()" matTooltip="Zoom In">
         <mat-icon>add</mat-icon>
@@ -27,7 +27,7 @@
   </div>
 
   <!-- Desktop overlays (shown when >= 800px) -->
-  <div class="desktop-overlays" *ngIf="!isMobileView()">
+  <div class="desktop-overlays" *ngIf="!uiStateService.isMobileView()">
     <!-- Friend Details Tooltip -->
     @if (selectedNode(); as node) {
       <app-friend-tooltip [friend]="node"></app-friend-tooltip>
@@ -41,7 +41,7 @@
 
   <!-- Mobile tab system (shown when < 800px AND something is selected) -->
   <div class="mobile-tabs" 
-       *ngIf="isMobileView()"
+       *ngIf="uiStateService.isMobileView()"
        [class.visible]="showMobileTabs()">
     <mat-tab-group 
       [selectedIndex]="selectedTabIndex()"

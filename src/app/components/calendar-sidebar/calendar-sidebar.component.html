@@ -129,7 +129,7 @@
 
 <!-- Compact Friends Sidebar (Mobile Only - as overlay within calendar sidebar) -->
 <div class="compact-friends-sidebar" 
-     *ngIf="isMobileView()"
+     *ngIf="uiStateService.isMobileView()"
      [class.open]="compactFriendsSidebarOpen()">
   
   <!-- Compact Friends Content (no header) -->
