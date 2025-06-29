@@ -41,7 +41,7 @@ export class EventEditDialogComponent {
   isNew: boolean;
 
   private dataService = inject(DataService);
-  private uiStateService = inject(UiStateService);
+  public uiStateService = inject(UiStateService);
 
   // Computed property for event type suggestions
   readonly eventTypeSuggestions = computed(() => {

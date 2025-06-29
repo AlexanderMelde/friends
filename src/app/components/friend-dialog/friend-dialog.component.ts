@@ -36,7 +36,7 @@ export class FriendDialogComponent {
   selectedEvents: string[] = [];
   isEdit: boolean;
 
-  private uiStateService = inject(UiStateService);
+  public uiStateService = inject(UiStateService);
 
   get isValid(): boolean {
     return !!(this.friend.name && this.friend.photoUrl);
