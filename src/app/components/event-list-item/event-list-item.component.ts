@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Event } from '../../models/event.model';
-import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
-import { DataService } from '../../services/data.service';
 import { AttendeeListComponent } from '../attendee-list/attendee-list.component';
 
 @Component({
@@ -24,7 +22,6 @@ export class EventListItemComponent {
   selectedType: string = '';
 
   private graphService = inject(GraphService);
-  private dataService = inject(DataService);
 
   constructor() {
     // Use effect to react to filter signal changes
@@ -61,15 +58,5 @@ export class EventListItemComponent {
 
   isTypeSelected(type: string): boolean {
     return this.selectedType === type;
-  }
-
-  selectAttendee(attendee: Friend): void {
-    // Find the corresponding node in the graph nodes
-    const nodes = this.graphService.nodes();
-    const node = nodes.find(n => n.id === attendee.id);
-    
-    if (node) {
-      this.graphService.selectNode(node);
-    }
   }
 }

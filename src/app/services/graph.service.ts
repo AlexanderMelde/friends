@@ -257,6 +257,16 @@ export class GraphService {
       this._selectedLink.set(null);
     }
   }
+
+  selectAttendeeById(attendeeId: string): void {
+    // Find the corresponding node in the graph nodes
+    const nodes = this.nodes();
+    const node = nodes.find(n => n.id === attendeeId);
+    
+    if (node) {
+      this.selectNode(node);
+    }
+  }
   
   selectLink(link: EventLink | null) {
     this._selectedLink.set(link);

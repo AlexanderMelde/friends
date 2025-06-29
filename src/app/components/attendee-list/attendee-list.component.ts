@@ -1,9 +1,8 @@
-import { Component, Input, Output, EventEmitter, computed, inject, ChangeDetectionStrategy, effect } from '@angular/core';
+import { Component, Input, computed, inject, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule, CdkDragDrop, CdkDrag, CdkDropList, CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Event } from '../../models/event.model';
-import { Friend } from '../../models/friend.model';
 import { GraphService } from '../../services/graph.service';
 import { DataService } from '../../services/data.service';
 import { DragService } from '../../services/drag.service';
@@ -18,7 +17,6 @@ import { DragService } from '../../services/drag.service';
 })
 export class AttendeeListComponent {
   @Input() event!: Event;
-  @Output() attendeeSelected = new EventEmitter<Friend>();
 
   private graphService = inject(GraphService);
   private dataService = inject(DataService);
@@ -73,9 +71,9 @@ export class AttendeeListComponent {
     });
   }
 
-  selectAttendee(attendee: Friend, e: MouseEvent): void {
+  selectAttendee(attendee: { id: string }, e: MouseEvent): void {
     e.stopPropagation();
-    this.attendeeSelected.emit(attendee);
+    this.graphService.selectAttendeeById(attendee.id);
   }
 
   onCdkDragStarted(event: CdkDragStart): void {
