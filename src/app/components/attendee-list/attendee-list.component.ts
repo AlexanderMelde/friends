@@ -140,22 +140,26 @@ export class AttendeeListComponent {
       if (!this.event.attendees.includes(draggedItem.id)) {
         this.dataService.addAttendeeToEvent(draggedItem.id, this.event.id);
       }
+      return; // Exit early for friend drops
     }
     
-    // If dragging an attendee from another event (not the same event)
+    // If dragging an attendee from another event (or same event)
     if (draggedItem.friend && draggedItem.sourceEventId) {
       const sourceEventId = draggedItem.sourceEventId;
       const friend = draggedItem.friend;
       
-      // Only proceed if it's a different event (not dropping back on same list)
+      // If dropping on the same list, do nothing (this prevents removal)
+      if (sourceEventId === targetEventId) {
+        return; // Exit early - no action needed for same-list drops
+      }
+      
+      // Only proceed if it's a different event
       if (sourceEventId !== targetEventId) {
         // Check if friend is not already an attendee in target event
         if (!this.event.attendees.includes(friend.id)) {
           this.dataService.moveAttendeeBetweenEvents(friend.id, sourceEventId, this.event.id);
         }
       }
-      // If dropping back on the same list (sourceEventId === targetEventId), do nothing
-      // This prevents removal when dropping an attendee back on their original list
     }
   }
 }
