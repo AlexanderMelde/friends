@@ -1,5 +1,9 @@
 <ng-container *ngIf="sortedFriends().length > 0; else noFriends">
-  <div class="friends-list" [class.compact-view]="compactView">
+  <div class="friends-list" 
+       [class.compact-view]="compactView"
+       cdkDropList
+       cdkDropListSortingDisabled
+       [cdkDropListData]="'friends-list'">
     <app-friend-list-item 
       *ngFor="let friend of sortedFriends()"
       [friend]="friend"
