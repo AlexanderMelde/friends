@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Friend } from '../../models/friend.model';
@@ -15,7 +15,8 @@ interface ConnectedFriend {
   standalone: true,
   imports: [CommonModule, MatIconModule, MatTooltipModule],
   templateUrl: './connected-friends-list.component.html',
-  styleUrls: ['./connected-friends-list.component.css']
+  styleUrls: ['./connected-friends-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectedFriendsListComponent {
   @Input() connectedFriends: ConnectedFriend[] = [];

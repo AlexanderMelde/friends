@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal, effect } from '@angular/core';
+import { Component, Input, computed, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,7 +33,8 @@ interface ConnectedFriend {
     ConnectedFriendsListComponent
   ],
   templateUrl: './friend-tooltip.component.html',
-  styleUrls: ['./friend-tooltip.component.css']
+  styleUrls: ['./friend-tooltip.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FriendTooltipComponent {
   // Convert friend input to a signal to make it reactive

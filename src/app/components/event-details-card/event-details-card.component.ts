@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -13,7 +13,8 @@ import { DataService } from '../../services/data.service';
   standalone: true,
   imports: [CommonModule, MatCardModule, MatDividerModule, EventsListComponent],
   templateUrl: './event-details-card.component.html',
-  styleUrls: ['./event-details-card.component.css']
+  styleUrls: ['./event-details-card.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventDetailsCardComponent {
   // Convert link input to a signal to make it reactive

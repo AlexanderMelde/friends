@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, effect, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, effect, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,8 @@ import { DragService } from '../../services/drag.service';
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule, DragDropModule],
   templateUrl: './event-list-item.component.html',
-  styleUrls: ['./event-list-item.component.css']
+  styleUrls: ['./event-list-item.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventListItemComponent {
   @Input() event!: Event;

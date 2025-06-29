@@ -1,4 +1,4 @@
-import { Component, Input, effect } from '@angular/core';
+import { Component, Input, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,8 @@ import { EventListItemComponent } from '../event-list-item/event-list-item.compo
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule, EventListItemComponent],
   templateUrl: './events-list.component.html',
-  styleUrls: ['./events-list.component.css']
+  styleUrls: ['./events-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EventsListComponent {
   @Input() events: Event[] = [];

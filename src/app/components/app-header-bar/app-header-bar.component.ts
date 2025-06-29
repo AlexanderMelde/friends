@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +22,8 @@ export interface HeaderAction {
     MatTooltipModule
   ],
   templateUrl: './app-header-bar.component.html',
-  styleUrls: ['./app-header-bar.component.css']
+  styleUrls: ['./app-header-bar.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppHeaderBarComponent {
   @Input() title: string = '';

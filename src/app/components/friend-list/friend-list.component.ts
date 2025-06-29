@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,8 @@ import { FriendListItemComponent } from '../friend-list-item/friend-list-item.co
     FriendListItemComponent
   ],
   templateUrl: './friend-list.component.html',
-  styleUrls: ['./friend-list.component.css']
+  styleUrls: ['./friend-list.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FriendListComponent {
   @Input() compactView: boolean = false;
