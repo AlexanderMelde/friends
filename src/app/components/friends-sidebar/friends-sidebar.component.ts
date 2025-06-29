@@ -9,6 +9,7 @@ import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { NavigationService } from '../../services/navigation.service';
+import { UiStateService } from '../../services/ui-state.service';
 import { FriendListComponent } from '../friend-list/friend-list.component';
 import { FriendDialogComponent } from '../friend-dialog/friend-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
@@ -38,6 +39,7 @@ export class FriendsSidebarComponent {
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
   private navigationService = inject(NavigationService);
+  private uiStateService = inject(UiStateService);
 
   // Computed property for header actions
   readonly headerActions = computed((): HeaderAction[] => [
@@ -47,10 +49,6 @@ export class FriendsSidebarComponent {
       action: () => this.addFriend()
     }
   ]);
-
-  private isMobileView(): boolean {
-    return window.innerWidth <= 800;
-  }
 
   close(): void {
     this.closeRequested.emit();
@@ -71,7 +69,7 @@ export class FriendsSidebarComponent {
   }
 
   editFriend(friend: Friend & { eventCount: number }): void {
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Edit Friend',
         FriendDialogComponent,

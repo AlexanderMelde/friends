@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector, computed, signal } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, HostListener, ViewChild, ViewContainerRef, ComponentRef, AfterViewInit, ViewEncapsulation, Injector, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
 import { NavigationService } from '../../services/navigation.service';
+import { UiStateService } from '../../services/ui-state.service';
 
 export interface MobileDialogData {
   title: string;
@@ -56,6 +57,7 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
   hasFooterContent = false;
   private componentRef: ComponentRef<any> | null = null;
   private navigationId: string;
+  private uiStateService = inject(UiStateService);
   
   // Signal to track when component is ready
   private componentReady = signal(false);

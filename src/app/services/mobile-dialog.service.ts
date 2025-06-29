@@ -1,8 +1,9 @@
-import { Injectable, ComponentRef, ViewContainerRef } from '@angular/core';
+import { Injectable, ComponentRef, ViewContainerRef, inject } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MobileDialogComponent, MobileDialogData } from '../components/mobile-dialog/mobile-dialog.component';
 import { ComponentType } from '@angular/cdk/portal';
 import { HeaderAction } from '../components/app-header-bar/app-header-bar.component';
+import { UiStateService } from './ui-state.service';
 
 export interface MobileDialogConfig extends MobileDialogData {
   disableClose?: boolean;
@@ -14,18 +15,15 @@ export interface MobileDialogConfig extends MobileDialogData {
   providedIn: 'root'
 })
 export class MobileDialogService {
-  private isMobile(): boolean {
-    return window.innerWidth < 800;
-  }
-
-  constructor(private dialog: MatDialog) {}
+  private dialog = inject(MatDialog);
+  private uiStateService = inject(UiStateService);
 
   open<T = any>(
     component: ComponentType<T> | null,
     config: MobileDialogConfig
   ): MatDialogRef<any> {
     
-    if (!this.isMobile()) {
+    if (!this.uiStateService.isMobileView()) {
       // For desktop, use regular dialog
       if (component) {
         return this.dialog.open(component, {

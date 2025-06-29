@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, computed, effect, AfterViewInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +10,7 @@ import * as d3 from 'd3';
 import { FriendNode } from '../../models/friend.model';
 import { EventLink } from '../../models/event.model';
 import { GraphService } from '../../services/graph.service';
+import { UiStateService } from '../../services/ui-state.service';
 import { FriendTooltipComponent } from '../friend-tooltip/friend-tooltip.component';
 import { EventDetailsCardComponent } from '../event-details-card/event-details-card.component';
 
@@ -43,6 +44,9 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   private nodeElements!: d3.Selection<SVGGElement, FriendNode, SVGGElement, unknown>;
   private linkElements!: d3.Selection<SVGLineElement, EventLink, SVGGElement, unknown>;
   
+  private graphService = inject(GraphService);
+  private uiStateService = inject(UiStateService);
+  
   readonly nodes = computed(() => this.graphService.nodes());
   readonly links = computed(() => this.graphService.links());
   readonly selectedNode = computed(() => this.graphService.selectedNode());
@@ -51,12 +55,12 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
   
   // Computed property to determine if mobile tabs should be shown
   readonly showMobileTabs = computed(() => {
-    const isMobile = this.isMobileView();
+    const isMobile = this.uiStateService.isMobileView();
     const hasSelection = this.selectedNode() !== null || this.selectedLink() !== null;
     return isMobile && hasSelection;
   });
   
-  constructor(public graphService: GraphService) {
+  constructor() {
     // Effect for data changes (nodes/links)
     effect(() => {
       // Only update graph if initialized and we have nodes (data is loaded)
@@ -83,7 +87,7 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
       const selectedLink = this.selectedLink();
       
       // Only auto-switch if we're on mobile and something was just selected
-      if (this.isMobileView()) {
+      if (this.uiStateService.isMobileView()) {
         if (selectedNode && !selectedLink) {
           // Only switch to friend tab if not already there
           if (this.selectedTabIndex() !== 0) {
@@ -125,10 +129,6 @@ export class GraphVisualizationComponent implements OnInit, AfterViewInit, OnDes
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
-  }
-
-  isMobileView(): boolean {
-    return document.getElementsByClassName('graph-container')[0].clientWidth <= 800;
   }
 
   onTabChange(index: number): void {

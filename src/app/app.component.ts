@@ -1,4 +1,4 @@
-import { Component, inject, HostListener } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ import { DragService } from './services/drag.service';
 import { GraphService } from './services/graph.service';
 import { MobileDialogService } from './services/mobile-dialog.service';
 import { NavigationService } from './services/navigation.service';
+import { UiStateService } from './services/ui-state.service';
 import { Event } from './models/event.model';
 
 @Component({
@@ -46,15 +47,16 @@ import { Event } from './models/event.model';
 })
 export class AppComponent {
   title = 'Friends!';
-  calendarSidebarOpen = false;
-  friendsSidebarOpen = false;
-  graphService = inject(GraphService);
-
+  
   private dialog = inject(MatDialog);
   private dataService = inject(DataService);
   private dragService = inject(DragService);
   private mobileDialogService = inject(MobileDialogService);
   private navigationService = inject(NavigationService);
+  
+  // Inject the centralized UI state service
+  readonly uiStateService = inject(UiStateService);
+  readonly graphService = inject(GraphService);
 
   // Navigation state IDs
   private readonly CALENDAR_SIDEBAR_ID = 'calendar-sidebar';
@@ -72,126 +74,48 @@ export class AppComponent {
     }
   }
 
-  // Check if mobile overlay should be active
-  isOverlayActive(): boolean {
-    return this.isMobileView() && (this.calendarSidebarOpen || this.friendsSidebarOpen);
-  }
-
-  // Check if current viewport is mobile
-  private isMobileView(): boolean {
-    return window.innerWidth <= 800;
-  }
-
-  // Handle window resize to close overlays when switching to desktop
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any) {
-    // Close sidebars when switching from mobile to desktop to prevent layout issues
-    if (!this.isMobileView() && this.isOverlayActive()) {
-      this.closeAllSidebars();
-    }
-  }
-
-  // Handle escape key to close overlays
-  @HostListener('document:keydown.escape', ['$event'])
-  onEscapeKey(event: KeyboardEvent) {
-    if (this.isOverlayActive()) {
-      this.closeAllSidebars();
-      event.preventDefault();
-    }
-  }
-
-  // Prevent body scroll when overlay is active
-  @HostListener('document:touchmove', ['$event'])
-  onTouchMove(event: TouchEvent) {
-    if (this.isOverlayActive()) {
-      event.preventDefault();
-    }
-  }
-
   toggleCalendarSidebar(): void {
-    if (this.isMobileView()) {
-      // On mobile, close friends sidebar if open, then toggle calendar
-      if (this.friendsSidebarOpen) {
-        this.closeFriendsSidebar();
+    const wasOpen = this.uiStateService.calendarSidebarOpen();
+    this.uiStateService.toggleCalendarSidebar();
+    
+    // Handle navigation state for mobile
+    if (this.uiStateService.isMobileView()) {
+      if (!wasOpen && this.uiStateService.calendarSidebarOpen()) {
+        this.navigationService.pushState({
+          id: this.CALENDAR_SIDEBAR_ID,
+          type: 'sidebar',
+          closeCallback: () => this.uiStateService.closeCalendarSidebar()
+        });
+      } else if (wasOpen && !this.uiStateService.calendarSidebarOpen()) {
+        if (this.navigationService.isInStack(this.CALENDAR_SIDEBAR_ID)) {
+          this.navigationService.closeItem(this.CALENDAR_SIDEBAR_ID);
+        }
       }
-      
-      if (this.calendarSidebarOpen) {
-        this.closeCalendarSidebar();
-      } else {
-        this.openCalendarSidebar();
-      }
-    } else {
-      // Desktop behavior remains the same
-      this.calendarSidebarOpen = !this.calendarSidebarOpen;
     }
   }
 
   toggleFriendsSidebar(): void {
-    if (this.isMobileView()) {
-      // On mobile, close calendar sidebar if open, then toggle friends
-      if (this.calendarSidebarOpen) {
-        this.closeCalendarSidebar();
+    const wasOpen = this.uiStateService.friendsSidebarOpen();
+    this.uiStateService.toggleFriendsSidebar();
+    
+    // Handle navigation state for mobile
+    if (this.uiStateService.isMobileView()) {
+      if (!wasOpen && this.uiStateService.friendsSidebarOpen()) {
+        this.navigationService.pushState({
+          id: this.FRIENDS_SIDEBAR_ID,
+          type: 'sidebar',
+          closeCallback: () => this.uiStateService.closeFriendsSidebar()
+        });
+      } else if (wasOpen && !this.uiStateService.friendsSidebarOpen()) {
+        if (this.navigationService.isInStack(this.FRIENDS_SIDEBAR_ID)) {
+          this.navigationService.closeItem(this.FRIENDS_SIDEBAR_ID);
+        }
       }
-      
-      if (this.friendsSidebarOpen) {
-        this.closeFriendsSidebar();
-      } else {
-        this.openFriendsSidebar();
-      }
-    } else {
-      // Desktop behavior remains the same
-      this.friendsSidebarOpen = !this.friendsSidebarOpen;
-    }
-  }
-
-  private openCalendarSidebar(): void {
-    this.calendarSidebarOpen = true;
-    this.updateBodyClass();
-    
-    if (this.isMobileView()) {
-      this.navigationService.pushState({
-        id: this.CALENDAR_SIDEBAR_ID,
-        type: 'sidebar',
-        closeCallback: () => this.closeCalendarSidebar()
-      });
-    }
-  }
-
-  private closeCalendarSidebar(): void {
-    this.calendarSidebarOpen = false;
-    this.updateBodyClass();
-    
-    if (this.navigationService.isInStack(this.CALENDAR_SIDEBAR_ID)) {
-      this.navigationService.closeItem(this.CALENDAR_SIDEBAR_ID);
-    }
-  }
-
-  private openFriendsSidebar(): void {
-    this.friendsSidebarOpen = true;
-    this.updateBodyClass();
-    
-    if (this.isMobileView()) {
-      this.navigationService.pushState({
-        id: this.FRIENDS_SIDEBAR_ID,
-        type: 'sidebar',
-        closeCallback: () => this.closeFriendsSidebar()
-      });
-    }
-  }
-
-  private closeFriendsSidebar(): void {
-    this.friendsSidebarOpen = false;
-    this.updateBodyClass();
-    
-    if (this.navigationService.isInStack(this.FRIENDS_SIDEBAR_ID)) {
-      this.navigationService.closeItem(this.FRIENDS_SIDEBAR_ID);
     }
   }
 
   closeAllSidebars(): void {
-    this.calendarSidebarOpen = false;
-    this.friendsSidebarOpen = false;
-    this.updateBodyClass();
+    this.uiStateService.closeAllSidebars();
     
     // Close any navigation items for these sidebars
     if (this.navigationService.isInStack(this.CALENDAR_SIDEBAR_ID)) {
@@ -204,23 +128,19 @@ export class AppComponent {
 
   // Handle overlay backdrop clicks
   onOverlayBackdropClick(event: MouseEvent): void {
-    // Only close if clicking the backdrop itself, not the content
-    if (event.target === event.currentTarget) {
-      this.closeAllSidebars();
-    }
-  }
-
-  // Update body class for overlay state
-  private updateBodyClass(): void {
-    if (this.isOverlayActive()) {
-      document.body.classList.add('overlay-active');
-    } else {
-      document.body.classList.remove('overlay-active');
+    if (this.uiStateService.handleOverlayBackdropClick(event)) {
+      // Also handle navigation cleanup
+      if (this.navigationService.isInStack(this.CALENDAR_SIDEBAR_ID)) {
+        this.navigationService.closeItem(this.CALENDAR_SIDEBAR_ID);
+      }
+      if (this.navigationService.isInStack(this.FRIENDS_SIDEBAR_ID)) {
+        this.navigationService.closeItem(this.FRIENDS_SIDEBAR_ID);
+      }
     }
   }
 
   openHelp(): void {
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Help & User Guide',
         HelpDialogComponent,
@@ -244,7 +164,7 @@ export class AppComponent {
   }
 
   openSettings(): void {
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Settings',
         SettingsDialogComponent,
@@ -268,7 +188,7 @@ export class AppComponent {
   }
 
   openLegal(): void {
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Legal Information',
         LegalDialogComponent,
@@ -294,7 +214,7 @@ export class AppComponent {
   addFriend(): void {
     const events = this.dataService.events();
     
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Add Friend',
         FriendDialogComponent,
@@ -340,7 +260,7 @@ export class AppComponent {
       attendees: []
     };
 
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Add Event',
         EventEditDialogComponent,

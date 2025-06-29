@@ -14,6 +14,7 @@ import { DataService } from '../../services/data.service';
 import { GraphService } from '../../services/graph.service';
 import { MobileDialogService } from '../../services/mobile-dialog.service';
 import { NavigationService } from '../../services/navigation.service';
+import { UiStateService } from '../../services/ui-state.service';
 import { EventListItemComponent } from '../event-list-item/event-list-item.component';
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
@@ -83,6 +84,7 @@ export class CalendarSidebarComponent {
   private dialog = inject(MatDialog);
   private mobileDialogService = inject(MobileDialogService);
   private navigationService = inject(NavigationService);
+  private uiStateService = inject(UiStateService);
 
   selectedType: string = '';
   // Convert year filter values to signals so they're reactive
@@ -107,7 +109,7 @@ export class CalendarSidebarComponent {
     ];
 
     // Add friends list button only on mobile
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       actions.push({
         icon: 'people_alt',
         label: 'Friends List',
@@ -302,10 +304,6 @@ export class CalendarSidebarComponent {
     }
   }
 
-  isMobileView(): boolean {
-    return window.innerWidth <= 800;
-  }
-
   close(): void {
     this.closeRequested.emit();
   }
@@ -325,7 +323,7 @@ export class CalendarSidebarComponent {
   private openCompactFriendsSidebar(): void {
     this.compactFriendsSidebarOpen.set(true);
     
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       this.navigationService.pushState({
         id: this.COMPACT_FRIENDS_ID,
         type: 'overlay',
@@ -343,7 +341,7 @@ export class CalendarSidebarComponent {
   }
 
   editEvent(event: Event): void {
-    if (this.isMobileView()) {
+    if (this.uiStateService.isMobileView()) {
       const dialogRef = this.mobileDialogService.openWithContent(
         'Edit Event',
         EventEditDialogComponent,
