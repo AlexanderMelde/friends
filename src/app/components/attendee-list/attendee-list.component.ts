@@ -114,12 +114,15 @@ export class AttendeeListComponent {
     const dragData = event.source.data;
     
     // Check if we were dragging an attendee and it wasn't dropped over a valid target
-    // AND it wasn't dropped back on the same list (which would be a valid target)
+    // BUT only remove if it wasn't dropped back on the same list
     if (this.dragService.isDraggingAttendee() && !this.dragService.isOverValidDropTarget()) {
       const sourceEventId = dragData.sourceEventId;
       const friend = dragData.friend;
+      const currentDropListId = this.dragService.currentDropListId();
       
-      if (sourceEventId && friend) {
+      // Only remove if we're not dropping back on the same list
+      // If currentDropListId is null, it means we're dropping outside any drop list
+      if (sourceEventId && friend && currentDropListId !== sourceEventId) {
         this.dataService.removeAttendeeFromEvent(friend.id, sourceEventId);
       }
     }
