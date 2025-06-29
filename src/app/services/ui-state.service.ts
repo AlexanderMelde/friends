@@ -1,9 +1,13 @@
-import { Injectable, signal, computed, HostListener } from '@angular/core';
+import { Injectable, signal, computed, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { fromEvent } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UiStateService {
+  private destroyRef = inject(DestroyRef);
+
   // Core UI state signals
   private _calendarSidebarOpen = signal(false);
   private _friendsSidebarOpen = signal(false);
@@ -27,35 +31,41 @@ export class UiStateService {
     // Initialize mobile view state
     this.updateMobileViewState();
     
-    // Set up event listeners
+    // Set up event listeners using RxJS and DestroyRef
     this.setupEventListeners();
   }
 
   private setupEventListeners(): void {
-    // Window resize listener
-    window.addEventListener('resize', () => {
-      this.updateMobileViewState();
-      
-      // Close sidebars when switching from mobile to desktop to prevent layout issues
-      if (!this._isMobileView() && this.isOverlayActive()) {
-        this.closeAllSidebars();
-      }
-    });
+    // Window resize listener using RxJS
+    fromEvent(window, 'resize')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.updateMobileViewState();
+        
+        // Close sidebars when switching from mobile to desktop to prevent layout issues
+        if (!this._isMobileView() && this.isOverlayActive()) {
+          this.closeAllSidebars();
+        }
+      });
 
-    // Escape key listener
-    document.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && this.isOverlayActive()) {
-        this.closeAllSidebars();
-        event.preventDefault();
-      }
-    });
+    // Escape key listener using RxJS
+    fromEvent<KeyboardEvent>(document, 'keydown')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event: KeyboardEvent) => {
+        if (event.key === 'Escape' && this.isOverlayActive()) {
+          this.closeAllSidebars();
+          event.preventDefault();
+        }
+      });
 
-    // Touch move listener for mobile overlay
-    document.addEventListener('touchmove', (event: TouchEvent) => {
-      if (this.isOverlayActive()) {
-        event.preventDefault();
-      }
-    });
+    // Touch move listener for mobile overlay using RxJS
+    fromEvent<TouchEvent>(document, 'touchmove')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((event: TouchEvent) => {
+        if (this.isOverlayActive()) {
+          event.preventDefault();
+        }
+      });
   }
 
   private updateMobileViewState(): void {

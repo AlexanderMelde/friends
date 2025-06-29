@@ -140,73 +140,55 @@ export class AppComponent {
   }
 
   openHelp(): void {
+    const dialogRef = this.mobileDialogService.openWithContent(
+      'Help & User Guide',
+      HelpDialogComponent,
+      { showBackButton: true }
+    );
+    
+    // Add to navigation stack only for mobile
     if (this.uiStateService.isMobileView()) {
-      const dialogRef = this.mobileDialogService.openWithContent(
-        'Help & User Guide',
-        HelpDialogComponent,
-        { showBackButton: true }
-      );
-      
-      // Add to navigation stack
       const dialogId = `help-dialog-${Date.now()}`;
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
         closeCallback: () => dialogRef.close()
       });
-    } else {
-      this.dialog.open(HelpDialogComponent, {
-        width: '700px',
-        maxWidth: '90vw',
-        maxHeight: '90vh'
-      });
     }
   }
 
   openSettings(): void {
+    const dialogRef = this.mobileDialogService.openWithContent(
+      'Settings',
+      SettingsDialogComponent,
+      { showBackButton: true }
+    );
+    
+    // Add to navigation stack only for mobile
     if (this.uiStateService.isMobileView()) {
-      const dialogRef = this.mobileDialogService.openWithContent(
-        'Settings',
-        SettingsDialogComponent,
-        { showBackButton: true }
-      );
-      
-      // Add to navigation stack
       const dialogId = `settings-dialog-${Date.now()}`;
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
         closeCallback: () => dialogRef.close()
       });
-    } else {
-      this.dialog.open(SettingsDialogComponent, {
-        width: '600px',
-        maxWidth: '90vw',
-        disableClose: false
-      });
     }
   }
 
   openLegal(): void {
+    const dialogRef = this.mobileDialogService.openWithContent(
+      'Legal Information',
+      LegalDialogComponent,
+      { showBackButton: true }
+    );
+    
+    // Add to navigation stack only for mobile
     if (this.uiStateService.isMobileView()) {
-      const dialogRef = this.mobileDialogService.openWithContent(
-        'Legal Information',
-        LegalDialogComponent,
-        { showBackButton: true }
-      );
-      
-      // Add to navigation stack
       const dialogId = `legal-dialog-${Date.now()}`;
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
         closeCallback: () => dialogRef.close()
-      });
-    } else {
-      this.dialog.open(LegalDialogComponent, {
-        width: '600px',
-        maxWidth: '90vw',
-        maxHeight: '90vh'
       });
     }
   }
@@ -214,40 +196,30 @@ export class AppComponent {
   addFriend(): void {
     const events = this.dataService.events();
     
+    const dialogRef = this.mobileDialogService.openWithContent(
+      'Add Friend',
+      FriendDialogComponent,
+      {
+        data: { events, isEdit: false },
+        showBackButton: true
+      }
+    );
+    
+    // Add to navigation stack only for mobile
     if (this.uiStateService.isMobileView()) {
-      const dialogRef = this.mobileDialogService.openWithContent(
-        'Add Friend',
-        FriendDialogComponent,
-        {
-          data: { events, isEdit: false },
-          showBackButton: true
-        }
-      );
-      
-      // Add to navigation stack
       const dialogId = `add-friend-dialog-${Date.now()}`;
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
         closeCallback: () => dialogRef.close()
       });
-      
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.dataService.addFriend(result.friend, result.selectedEvents);
-        }
-      });
-    } else {
-      const dialogRef = this.dialog.open(FriendDialogComponent, {
-        data: { events, isEdit: false }
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.dataService.addFriend(result.friend, result.selectedEvents);
-        }
-      });
     }
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dataService.addFriend(result.friend, result.selectedEvents);
+      }
+    });
   }
 
   addEvent(): void {
@@ -260,39 +232,29 @@ export class AppComponent {
       attendees: []
     };
 
+    const dialogRef = this.mobileDialogService.openWithContent(
+      'Add Event',
+      EventEditDialogComponent,
+      {
+        data: { event: newEvent, friends, isNew: true },
+        showBackButton: true
+      }
+    );
+    
+    // Add to navigation stack only for mobile
     if (this.uiStateService.isMobileView()) {
-      const dialogRef = this.mobileDialogService.openWithContent(
-        'Add Event',
-        EventEditDialogComponent,
-        {
-          data: { event: newEvent, friends, isNew: true },
-          showBackButton: true
-        }
-      );
-      
-      // Add to navigation stack
       const dialogId = `add-event-dialog-${Date.now()}`;
       this.navigationService.pushState({
         id: dialogId,
         type: 'dialog',
         closeCallback: () => dialogRef.close()
       });
-      
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.dataService.addEvent(result);
-        }
-      });
-    } else {
-      const dialogRef = this.dialog.open(EventEditDialogComponent, {
-        data: { event: newEvent, friends, isNew: true }
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.dataService.addEvent(result);
-        }
-      });
     }
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dataService.addEvent(result);
+      }
+    });
   }
 }

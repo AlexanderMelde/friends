@@ -73,9 +73,35 @@ export class MobileDialogService {
       config.data = { ...config.data, htmlContent: content };
       return this.open(null, config);
     } else {
-      // Handle component content
-      return this.open(content, config);
+      // Handle component content - centralized mobile/desktop logic
+      if (this.uiStateService.isMobileView()) {
+        // Mobile: use MobileDialogComponent wrapper
+        return this.open(content, config);
+      } else {
+        // Desktop: open component directly with appropriate sizing
+        if (content) {
+          const dialogConfig: MatDialogConfig = {
+            width: config.panelClass?.includes('wide') ? '800px' : '600px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: config.disableClose || false,
+            data: config.data
+          };
+
+          // Apply specific sizing based on component type
+          if (title === 'Help & User Guide') {
+            dialogConfig.width = '700px';
+          } else if (title === 'Settings' || title === 'Legal Information') {
+            dialogConfig.width = '600px';
+          }
+
+          return this.dialog.open(content, dialogConfig);
+        }
+      }
     }
+
+    // Fallback - should not reach here
+    return this.open(null, config);
   }
 
   openSettings(): MatDialogRef<any> {
