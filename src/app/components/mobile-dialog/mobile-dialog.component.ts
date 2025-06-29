@@ -193,15 +193,12 @@ export class MobileDialogComponent implements OnInit, OnDestroy, AfterViewInit {
       // Set up reactive monitoring of child component's header actions
       if (this.componentRef.instance && this.componentRef.instance.headerActions) {
         // Create an effect to watch for changes in the child component's header actions
-        // Wrap the effect call in runInInjectionContext to provide proper injection context
-        this.injector.runInInjectionContext(() => {
-          effect(() => {
-            if (this.componentRef?.instance?.headerActions) {
-              const childActions = this.componentRef.instance.headerActions();
-              this._childHeaderActions.set(childActions);
-            }
-          }, { allowSignalWrites: true });
-        });
+        effect(() => {
+          if (this.componentRef?.instance?.headerActions) {
+            const childActions = this.componentRef.instance.headerActions();
+            this._childHeaderActions.set(childActions);
+          }
+        }, { allowSignalWrites: true });
       }
 
       // Trigger change detection
