@@ -19,6 +19,7 @@ import { EventListItemComponent } from '../event-list-item/event-list-item.compo
 import { EventEditDialogComponent } from '../event-edit-dialog/event-edit-dialog.component';
 import { AppHeaderBarComponent, HeaderAction } from '../app-header-bar/app-header-bar.component';
 import { FriendListComponent } from '../friend-list/friend-list.component';
+import { EmptyStateComponent } from '../empty-state/empty-state.component';
 
 interface MonthGroup {
   month: string;
@@ -50,7 +51,8 @@ interface EventTypeOption {
     MatSliderModule,
     EventListItemComponent,
     AppHeaderBarComponent,
-    FriendListComponent
+    FriendListComponent,
+    EmptyStateComponent
   ],
   templateUrl: './calendar-sidebar.component.html',
   styleUrls: ['./calendar-sidebar.component.css'],
