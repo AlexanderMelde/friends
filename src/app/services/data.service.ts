@@ -94,8 +94,13 @@ export class DataService {
    */
   private updateLocalStorageAsync(): void {
     setTimeout(() => {
-      localStorage.setItem('friends', JSON.stringify(this.friends()));
-      localStorage.setItem('events', JSON.stringify(this.events()));
+      try {
+        localStorage.setItem('friends', JSON.stringify(this.friends()));
+        localStorage.setItem('events', JSON.stringify(this.events()));
+        console.log('LocalStorage updated successfully');
+      } catch (error) {
+        console.error('Failed to update localStorage:', error);
+      }
     }, 0);
   }
 
@@ -104,12 +109,18 @@ export class DataService {
    */
   private updateEventsLocalStorageAsync(): void {
     setTimeout(() => {
-      localStorage.setItem('events', JSON.stringify(this.events()));
+      try {
+        localStorage.setItem('events', JSON.stringify(this.events()));
+        console.log('Events localStorage updated successfully');
+      } catch (error) {
+        console.error('Failed to update events localStorage:', error);
+      }
     }, 0);
   }
 
   private async initDatabase() {
     try {
+      await this.db.open();
       const friendCount = await this.db.friends.count();
       if (friendCount === 0) {
         await this.loadSampleData();
@@ -118,6 +129,7 @@ export class DataService {
       }
 
       this.dbReady.set(true);
+      console.log('Database initialized successfully');
     } catch (error) {
       console.error('Failed to initialize Dexie', error);
       this.loadFromLocalStorage();
@@ -137,6 +149,7 @@ export class DataService {
       
       this.friendsSignal.set(normalizedFriends);
       this.eventsSignal.set(normalizedEvents);
+      console.log('Data loaded from database:', { friends: normalizedFriends.length, events: normalizedEvents.length });
     } catch (error) {
       console.error('Failed to load data from Dexie', error);
       this.loadFromLocalStorage();
@@ -162,6 +175,7 @@ export class DataService {
       // Store clean data without eventCount
       localStorage.setItem('friends', JSON.stringify(cleanFriends));
       localStorage.setItem('events', JSON.stringify(normalizedEvents));
+      console.log('Sample data loaded successfully');
     } catch (error) {
       console.error('Failed to load sample data', error);
       this.loadFromLocalStorage();
@@ -173,10 +187,18 @@ export class DataService {
     const storedEvents = localStorage.getItem('events');
     
     if (storedFriends) {
-      const friends = JSON.parse(storedFriends);
-      // Use the utility function to clean and normalize stored friends
-      const cleanFriends = friends.map((friend: any) => this.normalizeAndCleanFriend(friend));
-      this.friendsSignal.set(cleanFriends);
+      try {
+        const friends = JSON.parse(storedFriends);
+        // Use the utility function to clean and normalize stored friends
+        const cleanFriends = friends.map((friend: any) => this.normalizeAndCleanFriend(friend));
+        this.friendsSignal.set(cleanFriends);
+        console.log('Friends loaded from localStorage:', cleanFriends.length);
+      } catch (error) {
+        console.error('Failed to parse friends from localStorage:', error);
+        const cleanFriends = SAMPLE_DATA.friends.map(friend => this.normalizeAndCleanFriend(friend));
+        this.friendsSignal.set(cleanFriends);
+        localStorage.setItem('friends', JSON.stringify(cleanFriends));
+      }
     } else {
       const cleanFriends = SAMPLE_DATA.friends.map(friend => this.normalizeAndCleanFriend(friend));
       this.friendsSignal.set(cleanFriends);
@@ -184,9 +206,17 @@ export class DataService {
     }
     
     if (storedEvents) {
-      const events = JSON.parse(storedEvents);
-      const normalizedEvents = events.map((event: any) => this.normalizeEvent(event));
-      this.eventsSignal.set(normalizedEvents);
+      try {
+        const events = JSON.parse(storedEvents);
+        const normalizedEvents = events.map((event: any) => this.normalizeEvent(event));
+        this.eventsSignal.set(normalizedEvents);
+        console.log('Events loaded from localStorage:', normalizedEvents.length);
+      } catch (error) {
+        console.error('Failed to parse events from localStorage:', error);
+        const normalizedEvents = SAMPLE_DATA.events.map(event => this.normalizeEvent(event));
+        this.eventsSignal.set(normalizedEvents);
+        localStorage.setItem('events', JSON.stringify(normalizedEvents));
+      }
     } else {
       const normalizedEvents = SAMPLE_DATA.events.map(event => this.normalizeEvent(event));
       this.eventsSignal.set(normalizedEvents);
@@ -194,6 +224,7 @@ export class DataService {
     }
     
     this.dbReady.set(true);
+    console.log('Data loaded from localStorage fallback');
   }
 
   async clearAllData(): Promise<void> {
@@ -213,6 +244,8 @@ export class DataService {
       // Clear localStorage
       localStorage.removeItem('friends');
       localStorage.removeItem('events');
+      
+      console.log('All data cleared successfully');
     } catch (error) {
       console.error('Failed to clear data:', error);
       throw error;
@@ -222,81 +255,163 @@ export class DataService {
   async addEvent(event: Event): Promise<void> {
     try {
       const normalizedEvent = this.normalizeEvent(event);
-      await this.db.events.add(normalizedEvent);
+      console.log('Adding event:', normalizedEvent);
+      
+      // Try to add to IndexedDB first
+      if (this.dbReady()) {
+        await this.db.events.add(normalizedEvent);
+        console.log('Event added to IndexedDB');
+      }
 
-      // Update signals
-      this.eventsSignal.update(events => [...events, normalizedEvent]);
+      // Update signals immediately
+      this.eventsSignal.update(events => {
+        const newEvents = [...events, normalizedEvent];
+        console.log('Events signal updated, new count:', newEvents.length);
+        return newEvents;
+      });
 
       // Update localStorage in background (events only)
       this.updateEventsLocalStorageAsync();
     } catch (error) {
       console.error('Failed to add event:', error);
-      await this.loadAllData(); // Rollback to consistent state
+      
+      // Fallback: at least update the signal and localStorage
+      this.eventsSignal.update(events => [...events, normalizedEvent]);
+      this.updateEventsLocalStorageAsync();
     }
   }
 
   async addFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
-      await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        // Use the utility function to clean and normalize the friend
-        const cleanFriend = this.normalizeAndCleanFriend(friend);
-        await this.db.friends.add(cleanFriend);
-        
-        // Update events
-        for (const eventId of eventIds) {
-          const event = await this.db.events.get(eventId);
-          if (event) {
-            event.attendees.push(friend.id);
-            await this.db.events.put(event);
+      const cleanFriend = this.normalizeAndCleanFriend(friend);
+      console.log('Adding friend:', cleanFriend, 'with events:', eventIds);
+      
+      // Try to add to IndexedDB first
+      if (this.dbReady()) {
+        await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
+          await this.db.friends.add(cleanFriend);
+          console.log('Friend added to IndexedDB');
+          
+          // Update events
+          for (const eventId of eventIds) {
+            const event = await this.db.events.get(eventId);
+            if (event) {
+              if (!event.attendees.includes(friend.id)) {
+                event.attendees.push(friend.id);
+                await this.db.events.put(event);
+                console.log('Updated event attendees for event:', eventId);
+              }
+            }
           }
-        }
-      });
+        });
+      }
 
-      // Update signals
+      // Update signals immediately
+      this.friendsSignal.update(friends => {
+        const newFriends = [...friends, cleanFriend];
+        console.log('Friends signal updated, new count:', newFriends.length);
+        return newFriends;
+      });
+      
+      this.eventsSignal.update(events => 
+        events.map(event => {
+          if (eventIds.includes(event.id) && !event.attendees.includes(friend.id)) {
+            const updatedEvent = { ...event, attendees: [...event.attendees, friend.id] };
+            console.log('Updated event attendees in signal for event:', event.id);
+            return updatedEvent;
+          }
+          return event;
+        })
+      );
+
+      // Update localStorage in background (clean data only)
+      this.updateLocalStorageAsync();
+      
+      console.log('Friend added successfully:', cleanFriend.name);
+    } catch (error) {
+      console.error('Failed to add friend:', error);
+      
+      // Fallback: at least update the signals and localStorage
       const cleanFriend = this.normalizeAndCleanFriend(friend);
       this.friendsSignal.update(friends => [...friends, cleanFriend]);
       
       this.eventsSignal.update(events => 
         events.map(event => 
-          eventIds.includes(event.id) 
+          eventIds.includes(event.id) && !event.attendees.includes(friend.id)
             ? { ...event, attendees: [...event.attendees, friend.id] }
             : event
         )
       );
-
-      // Update localStorage in background (clean data only)
+      
       this.updateLocalStorageAsync();
-    } catch (error) {
-      console.error('Failed to add friend:', error);
-      await this.loadAllData(); // Rollback to consistent state
+      console.log('Friend added with fallback method:', cleanFriend.name);
     }
   }
 
   async updateFriend(friend: Friend, eventIds: string[]): Promise<void> {
     try {
-      await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
-        // Use the utility function to clean and normalize the friend
-        const cleanFriend = this.normalizeAndCleanFriend(friend);
-        await this.db.friends.put(cleanFriend);
-        
-        // Get all events to update
-        const events = await this.db.events.toArray();
-        
-        // Update event attendees
-        for (const event of events) {
+      const cleanFriend = this.normalizeAndCleanFriend(friend);
+      console.log('Updating friend:', cleanFriend, 'with events:', eventIds);
+      
+      // Try to update in IndexedDB first
+      if (this.dbReady()) {
+        await this.db.transaction('rw', this.db.friends, this.db.events, async () => {
+          await this.db.friends.put(cleanFriend);
+          console.log('Friend updated in IndexedDB');
+          
+          // Get all events to update
+          const events = await this.db.events.toArray();
+          
+          // Update event attendees
+          for (const event of events) {
+            const shouldBeIncluded = eventIds.includes(event.id);
+            const isIncluded = event.attendees.includes(friend.id);
+            
+            if (shouldBeIncluded !== isIncluded) {
+              event.attendees = shouldBeIncluded
+                ? [...event.attendees, friend.id]
+                : event.attendees.filter((id: string) => id !== friend.id);
+              await this.db.events.put(event);
+              console.log('Updated event attendees for event:', event.id);
+            }
+          }
+        });
+      }
+
+      // Update signals immediately
+      this.friendsSignal.update(friends => {
+        const updatedFriends = friends.map(f => f.id === friend.id ? cleanFriend : f);
+        console.log('Friends signal updated for friend:', friend.id);
+        return updatedFriends;
+      });
+      
+      this.eventsSignal.update(events => 
+        events.map(event => {
           const shouldBeIncluded = eventIds.includes(event.id);
           const isIncluded = event.attendees.includes(friend.id);
           
           if (shouldBeIncluded !== isIncluded) {
-            event.attendees = shouldBeIncluded
-              ? [...event.attendees, friend.id]
-              : event.attendees.filter((id: string) => id !== friend.id);
-            await this.db.events.put(event);
+            const updatedEvent = {
+              ...event,
+              attendees: shouldBeIncluded
+                ? [...event.attendees, friend.id]
+                : event.attendees.filter((id: string) => id !== friend.id)
+            };
+            console.log('Updated event attendees in signal for event:', event.id);
+            return updatedEvent;
           }
-        }
-      });
+          return event;
+        })
+      );
 
-      // Update signals
+      // Update localStorage in background (clean data only)
+      this.updateLocalStorageAsync();
+      
+      console.log('Friend updated successfully:', cleanFriend.name);
+    } catch (error) {
+      console.error('Failed to update friend:', error);
+      
+      // Fallback: at least update the signals and localStorage
       const cleanFriend = this.normalizeAndCleanFriend(friend);
       this.friendsSignal.update(friends => 
         friends.map(f => f.id === friend.id ? cleanFriend : f)
@@ -318,30 +433,42 @@ export class DataService {
           return event;
         })
       );
-
-      // Update localStorage in background (clean data only)
+      
       this.updateLocalStorageAsync();
-    } catch (error) {
-      console.error('Failed to update friend:', error);
-      await this.loadAllData(); // Rollback to consistent state
+      console.log('Friend updated with fallback method:', cleanFriend.name);
     }
   }
 
   async updateEvent(updatedEvent: Event): Promise<void> {
     try {
       const normalizedEvent = this.normalizeEvent(updatedEvent);
-      await this.db.events.put(normalizedEvent);
+      console.log('Updating event:', normalizedEvent);
+      
+      // Try to update in IndexedDB first
+      if (this.dbReady()) {
+        await this.db.events.put(normalizedEvent);
+        console.log('Event updated in IndexedDB');
+      }
 
-      // Update signals
-      this.eventsSignal.update(events =>
-        events.map(event => event.id === updatedEvent.id ? normalizedEvent : event)
-      );
+      // Update signals immediately
+      this.eventsSignal.update(events => {
+        const updatedEvents = events.map(event => event.id === updatedEvent.id ? normalizedEvent : event);
+        console.log('Events signal updated for event:', updatedEvent.id);
+        return updatedEvents;
+      });
 
       // Update localStorage in background (events only)
       this.updateEventsLocalStorageAsync();
+      
+      console.log('Event updated successfully:', normalizedEvent.title);
     } catch (error) {
       console.error('Failed to update event:', error);
-      await this.loadAllData(); // Rollback to consistent state
+      
+      // Fallback: at least update the signal and localStorage
+      this.eventsSignal.update(events =>
+        events.map(event => event.id === updatedEvent.id ? normalizedEvent : event)
+      );
+      this.updateEventsLocalStorageAsync();
     }
   }
 
@@ -361,6 +488,7 @@ export class DataService {
         };
         
         await this.updateEvent(updatedEvent);
+        console.log('Added attendee to event:', friendId, eventId);
       }
     } catch (error) {
       console.error('Failed to add attendee to event:', error);
@@ -381,6 +509,7 @@ export class DataService {
       };
       
       await this.updateEvent(updatedEvent);
+      console.log('Removed attendee from event:', friendId, eventId);
     } catch (error) {
       console.error('Failed to remove attendee from event:', error);
       throw error;
@@ -408,6 +537,8 @@ export class DataService {
         };
         await this.updateEvent(updatedTargetEvent);
       }
+      
+      console.log('Moved attendee between events:', friendId, sourceEventId, targetEventId);
     } catch (error) {
       console.error('Failed to move attendee between events:', error);
       throw error;
@@ -416,16 +547,24 @@ export class DataService {
 
   async getFriend(id: string): Promise<Friend | undefined> {
     if (this.dbReady()) {
-      const friend = await this.db.friends.get(id);
-      return friend ? this.normalizeFriend(friend) : undefined;
+      try {
+        const friend = await this.db.friends.get(id);
+        return friend ? this.normalizeFriend(friend) : undefined;
+      } catch (error) {
+        console.error('Failed to get friend from database:', error);
+      }
     }
     return this.friends().find(f => f.id === id);
   }
 
   async getEvent(id: string): Promise<Event | undefined> {
     if (this.dbReady()) {
-      const event = await this.db.events.get(id);
-      return event ? this.normalizeEvent(event) : undefined;
+      try {
+        const event = await this.db.events.get(id);
+        return event ? this.normalizeEvent(event) : undefined;
+      } catch (error) {
+        console.error('Failed to get event from database:', error);
+      }
     }
     return this.events().find(e => e.id === id);
   }
