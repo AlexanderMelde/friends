@@ -63,42 +63,17 @@ export class EventListItemComponent {
     return this.selectedType === type;
   }
 
-  // Handle attendee list events
+  // Handle attendee list events - now using data service methods
   onAttendeeAdded(data: { friend: Friend, targetEventId: string }): void {
-    const updatedEvent: Event = {
-      ...this.event,
-      attendees: [...this.event.attendees, data.friend.id]
-    };
-    this.dataService.updateEvent(updatedEvent);
+    this.dataService.addAttendeeToEvent(data.friend.id, data.targetEventId);
   }
 
   onAttendeeRemoved(data: { friend: Friend, sourceEventId: string }): void {
-    const updatedEvent: Event = {
-      ...this.event,
-      attendees: this.event.attendees.filter(id => id !== data.friend.id)
-    };
-    this.dataService.updateEvent(updatedEvent);
+    this.dataService.removeAttendeeFromEvent(data.friend.id, data.sourceEventId);
   }
 
   onAttendeeMoved(data: { friend: Friend, sourceEventId: string, targetEventId: string }): void {
-    // Remove from source event
-    const sourceEvent = this.dataService.events().find(e => e.id === data.sourceEventId);
-    if (sourceEvent) {
-      const updatedSourceEvent: Event = {
-        ...sourceEvent,
-        attendees: sourceEvent.attendees.filter(id => id !== data.friend.id)
-      };
-      this.dataService.updateEvent(updatedSourceEvent);
-    }
-
-    // Add to target event (this event)
-    if (!this.event.attendees.includes(data.friend.id)) {
-      const updatedEvent: Event = {
-        ...this.event,
-        attendees: [...this.event.attendees, data.friend.id]
-      };
-      this.dataService.updateEvent(updatedEvent);
-    }
+    this.dataService.moveAttendeeBetweenEvents(data.friend.id, data.sourceEventId, data.targetEventId);
   }
 
   selectAttendee(attendee: Friend): void {

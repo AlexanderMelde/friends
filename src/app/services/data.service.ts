@@ -331,6 +331,120 @@ export class DataService {
     }
   }
 
+  // New attendee management methods
+  async addAttendeeToEvent(friendId: string, eventId: string): Promise<void> {
+    try {
+      const event = await this.db.events.get(eventId);
+      if (!event) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      // Check if friend is not already an attendee
+      if (!event.attendees.includes(friendId)) {
+        const updatedEvent = {
+          ...event,
+          attendees: [...event.attendees, friendId]
+        };
+        
+        await this.db.events.put(updatedEvent);
+
+        // Update signals
+        this.eventsSignal.update(events =>
+          events.map(e => e.id === eventId ? updatedEvent : e)
+        );
+
+        // Update localStorage in background
+        setTimeout(() => {
+          localStorage.setItem('events', JSON.stringify(this.events()));
+        }, 0);
+      }
+    } catch (error) {
+      console.error('Failed to add attendee to event:', error);
+      await this.loadAllData(); // Rollback to consistent state
+    }
+  }
+
+  async removeAttendeeFromEvent(friendId: string, eventId: string): Promise<void> {
+    try {
+      const event = await this.db.events.get(eventId);
+      if (!event) {
+        throw new Error(`Event with id ${eventId} not found`);
+      }
+
+      const updatedEvent = {
+        ...event,
+        attendees: event.attendees.filter(id => id !== friendId)
+      };
+      
+      await this.db.events.put(updatedEvent);
+
+      // Update signals
+      this.eventsSignal.update(events =>
+        events.map(e => e.id === eventId ? updatedEvent : e)
+      );
+
+      // Update localStorage in background
+      setTimeout(() => {
+        localStorage.setItem('events', JSON.stringify(this.events()));
+      }, 0);
+    } catch (error) {
+      console.error('Failed to remove attendee from event:', error);
+      await this.loadAllData(); // Rollback to consistent state
+    }
+  }
+
+  async moveAttendeeBetweenEvents(friendId: string, sourceEventId: string, targetEventId: string): Promise<void> {
+    try {
+      await this.db.transaction('rw', this.db.events, async () => {
+        // Remove from source event
+        const sourceEvent = await this.db.events.get(sourceEventId);
+        if (sourceEvent) {
+          const updatedSourceEvent = {
+            ...sourceEvent,
+            attendees: sourceEvent.attendees.filter(id => id !== friendId)
+          };
+          await this.db.events.put(updatedSourceEvent);
+        }
+
+        // Add to target event
+        const targetEvent = await this.db.events.get(targetEventId);
+        if (targetEvent && !targetEvent.attendees.includes(friendId)) {
+          const updatedTargetEvent = {
+            ...targetEvent,
+            attendees: [...targetEvent.attendees, friendId]
+          };
+          await this.db.events.put(updatedTargetEvent);
+        }
+      });
+
+      // Update signals
+      this.eventsSignal.update(events =>
+        events.map(event => {
+          if (event.id === sourceEventId) {
+            return {
+              ...event,
+              attendees: event.attendees.filter(id => id !== friendId)
+            };
+          } else if (event.id === targetEventId && !event.attendees.includes(friendId)) {
+            return {
+              ...event,
+              attendees: [...event.attendees, friendId]
+            };
+          }
+          return event;
+        })
+      );
+
+      // Update localStorage in background
+      setTimeout(() => {
+        localStorage.setItem('events', JSON.stringify(this.events()));
+      }, 0);
+    } catch (error) {
+      console.error('Failed to move attendee between events:', error);
+      await this.loadAllData(); // Rollback to consistent state
+    }
+  }
+
   async getFriend(id: string): Promise<Friend | undefined> {
     if (this.dbReady()) {
       const friend = await this.db.friends.get(id);
